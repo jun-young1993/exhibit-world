@@ -1,23 +1,23 @@
 import {getSingleMaterial} from "../../utills/mesh-info.utills";
-import {Mesh} from "three";
+import {Color, Mesh} from "three";
 import {useMemo} from "react";
 import {useControls} from "leva";
+import {EditControlsInterface} from "./edit.controls";
+import {rgbColor} from "../../types/color";
+export function MaterialControlsOptions(mesh: Mesh) {
+        let color:string =  '#ffffff';
+        let wireframe: boolean = false;
 
-export default function MaterialControls({mesh}: {mesh: Mesh}){
-    const name= 'material';
+        const material = getSingleMaterial(mesh);
+        if(material && 'color' in material){
 
-    let color: string = '#ffffff';
-    let wireframe: boolean = false;
+            const materialColor = material.color as Color;
+            color = `#${materialColor.getHexString()}`;
 
-    const material = getSingleMaterial(mesh);
-    if(material && 'color' in material){
-        color = material.color as string;
-    }
-    if(material && 'wireframe' in material){
-        wireframe = material.wireframe as boolean;
-    }
-
-    const options = useMemo(() => {
+        }
+        if(material && 'wireframe' in material){
+            wireframe = material.wireframe as boolean;
+        }
         return {
             wireframe: {
                 value: wireframe,
@@ -29,14 +29,21 @@ export default function MaterialControls({mesh}: {mesh: Mesh}){
             },
             color: {
                 value: color,
-                onChange: (v: string) => {
-                    if(material && 'color' in material){
-                        material.color = v;
+                onChange: (colorHex: string) => {
+                    if (material && 'color' in material) {
+                        material.color = new Color(colorHex);
                     }
                 }
             },
-        }
-    }, []);
+        };
+
+}
+export default function MaterialControls({mesh}: EditControlsInterface){
+    const name= 'Material';
+
+
+
+    const options = useMemo(() => MaterialControlsOptions(mesh), []);
 
     useControls(name,options);
     return <></>;

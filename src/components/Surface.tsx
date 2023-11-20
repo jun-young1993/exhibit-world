@@ -3,6 +3,7 @@ import selectedMeshStore from "../store/selected-mesh.store";
 import {Color, Mesh} from "three";
 import {useEffect, useMemo, useRef} from "react";
 import MaterialControls from "../lib/edit-controls/material.controls";
+import GeometryControls from "../lib/edit-controls/geometry.controls";
 
 
 
@@ -36,7 +37,13 @@ export default function Surface(props: SurfaceProps) {
         >
             <boxGeometry />
             <meshBasicMaterial />
-            {target && <MaterialControls mesh={target}/>}
+            {target &&
+                <>
+                    <GeometryControls mesh={target}/>
+                    <MaterialControls mesh={target}/>
+
+                </>
+            }
         </mesh>
     )
 }
