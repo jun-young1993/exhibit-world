@@ -56,7 +56,6 @@ export function GeometryControlsOptions(mesh?: Mesh | undefined){
             onChange: (geometryType: GeometryControlsType) => {
                 if(mesh){
                     mesh.geometry = new GeometryClasses[geometryType]()
-                    console.log(mesh.geometry);
                 }
 
             }

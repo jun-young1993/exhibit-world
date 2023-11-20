@@ -1,7 +1,7 @@
-import {MeshProps} from "@react-three/fiber";
+import {MeshProps, ThreeEvent} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
 import {Color, Mesh} from "three";
-import {useEffect, useMemo, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import MaterialControls from "../lib/edit-controls/material.controls";
 import GeometryControls from "../lib/edit-controls/geometry.controls";
 
@@ -10,6 +10,7 @@ import GeometryControls from "../lib/edit-controls/geometry.controls";
 
 interface SurfaceProps extends MeshProps {
     onSelected?: (mesh: Mesh) => void
+    clicked?: boolean
 }
 
 export default function Surface(props: SurfaceProps) {
@@ -18,9 +19,16 @@ export default function Surface(props: SurfaceProps) {
     const {target, setTarget} = selectedMeshStore();
 
 
+    const handleClick = useCallback((e:  ThreeEvent<MouseEvent>) => {
+            e.stopPropagation();
+            setTarget(e.object as Mesh);
+    },[setTarget])
 
-
-
+    useEffect(() => {
+        if(meshRef){
+            setTarget(meshRef.current as Mesh);
+        }
+    },[props.clicked, meshRef])
 
 
 
@@ -29,11 +37,7 @@ export default function Surface(props: SurfaceProps) {
         <mesh
             {...props}
             ref={meshRef}
-            onClick={
-                (e) => {
-                    setTarget(e.object as Mesh)
-                }
-            }
+            onClick={handleClick}
         >
             <boxGeometry />
             <meshBasicMaterial />

@@ -12,7 +12,7 @@ export function ButtonControlsOptions(props: ButtonControlsOptionsEvents){
 
     return {
         add: button((get) => {
-            const mesh = <Surface />;
+            const mesh = <Surface clicked />;
             props.setMesh(mesh);
 
         }),
