@@ -1,9 +1,12 @@
 import {MeshProps, ThreeEvent} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
 import {Color, Mesh} from "three";
-import {useCallback, useEffect, useMemo, useRef} from "react";
+import {SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import MaterialControls from "../lib/edit-controls/material.controls";
 import GeometryControls from "../lib/edit-controls/geometry.controls";
+import {Html} from "@react-three/drei";
+import ContextMenu from "../lib/ContextMenu";
+
 
 
 
@@ -15,6 +18,8 @@ interface SurfaceProps extends MeshProps {
 
 export default function Surface(props: SurfaceProps) {
     const meshRef = useRef<Mesh>(null!);
+    const [showContextMenu, setShowContextMenu] = useState(false);
+
     // const setSelectedMesh = selectedMeshStore((state) => state.setTarget);
     const {target, setTarget} = selectedMeshStore();
 
@@ -31,14 +36,17 @@ export default function Surface(props: SurfaceProps) {
     },[props.clicked, meshRef])
 
 
-
-
     return (
         <mesh
             {...props}
             ref={meshRef}
             onClick={handleClick}
+            onContextMenu={(e) => {
+                e.nativeEvent.preventDefault();
+                setShowContextMenu(true);
+            }}
         >
+
             <boxGeometry />
             <meshBasicMaterial />
             {target &&
@@ -48,6 +56,13 @@ export default function Surface(props: SurfaceProps) {
 
                 </>
             }
+            <Html>
+                <ContextMenu
+                    name={""}
+                    open={showContextMenu}
+                    setOpen={setShowContextMenu}
+                />
+            </Html>
         </mesh>
     )
 }

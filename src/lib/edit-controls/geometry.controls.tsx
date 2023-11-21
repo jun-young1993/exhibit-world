@@ -52,7 +52,7 @@ export function GeometryControlsOptions(mesh?: Mesh | undefined){
         geometry: {
             value: geometry ? geometry.type : GeometryControlsType.BoxGeometry,
             // value: "BoxGeometry",
-            options: [null, ...Object.values(GeometryControlsType)],
+            options: Object.values(GeometryControlsType),
             onChange: (geometryType: GeometryControlsType) => {
                 if(mesh){
                     mesh.geometry = new GeometryClasses[geometryType]()

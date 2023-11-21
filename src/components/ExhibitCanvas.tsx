@@ -16,7 +16,7 @@ export default function ExhibitCanvas() {
         ]}>
             <Canvas
                 dpr={[1, 2]}
-                shadows camera={{ fov: 45, position: [0, 10, 0] }}
+                shadows camera={{ fov: 45, position: [15, 10, 0] }}
                 onPointerMissed={() => setTarget(null)}
             >
                 <Sky sunPosition={[100, 20, 100]} />
