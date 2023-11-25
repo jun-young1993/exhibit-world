@@ -3,7 +3,6 @@ import {useMemo} from "react";
 import {Mesh} from "three";
 import {TransformControls} from "@react-three/drei";
 import {EditControlsInterface} from "./edit.controls";
-import {controlsOrder} from "../../config";
 enum TransformControlsMode {
     Translate = 'translate',
     Rotate = 'rotate',

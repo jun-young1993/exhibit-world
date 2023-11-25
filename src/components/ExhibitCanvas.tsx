@@ -3,6 +3,7 @@ import Editor from "./Editor";
 import selectedMeshStore from "../store/selected-mesh.store";
 import {KeyboardControls, Sky} from "@react-three/drei";
 import Player from "./Player";
+import {cameraFar} from "../config";
 
 export default function ExhibitCanvas() {
     const {target, setTarget} = selectedMeshStore();
@@ -16,10 +17,10 @@ export default function ExhibitCanvas() {
         ]}>
             <Canvas
                 dpr={[1, 2]}
-                shadows camera={{ fov: 45, position: [15, 10, 0] }}
+                shadows camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
                 onPointerMissed={() => setTarget(null)}
             >
-                <Sky sunPosition={[100, 20, 100]} />
+                {/*<Sky sunPosition={[100, 20, 100]} />*/}
                 {/*<Player />*/}
                 <Editor />
 

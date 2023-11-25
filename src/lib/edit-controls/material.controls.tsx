@@ -18,6 +18,7 @@ export function MaterialControlsOptions(mesh: Mesh) {
         if(material && 'wireframe' in material){
             wireframe = material.wireframe as boolean;
         }
+
         return {
             wireframe: {
                 value: wireframe,

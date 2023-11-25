@@ -1,73 +1,79 @@
-import React, {useEffect, useState} from 'react';
-
 export interface ContextMenuInterface {
     open: boolean,
     name?: string,
-    setOpen: (open: boolean) => void
+    items: ContextItemInterface[]
 }
-enum ItemType {
+export enum ItemType {
     Item = 'item',
     Contour = 'contour'
 }
 
-interface ContextItemInterface {
+export interface ContextItemInterface {
     type: ItemType
     name: string
+    onClick?: () => void
 }
+
+const checkForDuplicates = (items: ContextItemInterface[]): void => {
+    const seen = new Set<string>();
+    items.forEach(item => {
+        if(seen.has(item.name)){
+            throw new Error(`Context Items for Duplicate name found: ${item.name}`);
+        }
+        seen.add(item.name);
+    });
+}
+
+const createContextItemMap = (items: ContextItemInterface[]): Map<string, ContextItemInterface> => {
+    const itemMap = new Map<string, ContextItemInterface>();
+    items.forEach(item => {
+        itemMap.set(item.name, item);
+    })
+    return itemMap;
+}
+
 const ContextMenu = (props: ContextMenuInterface) => {
 
+    checkForDuplicates(props.items);
+    const itemMap = createContextItemMap(props.items);
 
-    // 컨텍스트 메뉴 아이템 클릭 시 실행될 함수들을 작성합니다.
     const handleItemClick = (itemName: string) => {
-        // 각 아이템 클릭 시 실행될 동작을 정의합니다.
-
-        // 여기서 원하는 동작을 수행할 수 있습니다.
-        switch (itemName){
-            case 'Close':
-                props.setOpen(false);
-                break;
-            default:
-                break;
+        const item = itemMap.get(itemName);
+        if(item && item.onClick){
+            item.onClick();
         }
     };
 
-    const items: ContextItemInterface[]  = [{
-        type: ItemType.Item,
-        name: 'Delete',
-    },{
-        type: ItemType.Contour,
-        name: ItemType.Contour,
-    },{
-        type: ItemType.Item,
-        name: 'Close'
-    }]
 
     return (
         <div className={`${props.open? 'block' : 'hidden'}`}>
             <div
                 className="bg-white w-60 border border-gray-300 rounded-lg flex flex-col text-sm py-4 px-2 text-gray-500 shadow-lg">
-                {items.map((item) => {
+                <small className="ms-2 font-semibold text-gray-500 dark:text-gray-400">{props.name}</small>
+                <hr className={"my-1 border-gray-300"} />
+                {props.items.map((item,index) => {
                     if(item.type === ItemType.Item){
                         return (
-                            <div
+                            <small
+                                key={index}
                                 className="flex hover:bg-gray-100 py-1 px-2 rounded hover:cursor-pointer"
                                 onClick={() => handleItemClick(item.name)}
                             >
                                 <div>{item.name}</div>
-                            </div>
+                            </small>
                         )
                     }else{
                         return (
-                            <hr className="my-3 border-gray-300"/>
+                            <hr
+                                key={index}
+                                className="my-2 border-gray-300"
+                            />
                         )
 
                     }
 
 
                 })}
-
-
-
             </div>
         </div>
     );

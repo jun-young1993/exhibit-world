@@ -1,6 +1,6 @@
 import create from "zustand";
 import {Mesh} from "three";
-interface SelectedMeshInterface {
+export interface SelectedMeshInterface {
     target: null | Mesh
     setTarget: (target: Mesh| null) => void
 }
