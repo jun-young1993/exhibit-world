@@ -1,15 +1,18 @@
 import create from "zustand";
 import ExhibitMeshEntity, {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
+import {Mesh} from "three";
+
+
 
 export interface MeshesStoreInterface {
-    meshes: ExhibitMeshEntities,
-    set: (mesh: ExhibitMeshEntity) => void
+    meshes: Map<string, Mesh>,
+    set: (mesh: Mesh) => void
 }
 
 const MeshesStore = create<MeshesStoreInterface>((set) => ({
-    meshes: [],
-    set: (mesh: ExhibitMeshEntity) => set((state) => ({
-        meshes: [...state.meshes, mesh]
+    meshes: new Map<string, Mesh>(),
+    set: (mesh: Mesh) => set((state) => ({
+        meshes: state.meshes.set(mesh.uuid, mesh)
     }))
 }))
 export default MeshesStore;

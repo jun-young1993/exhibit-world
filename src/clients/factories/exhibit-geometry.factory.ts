@@ -28,6 +28,8 @@ export default class ExhibitGeometryFactory {
         }
 
         geometry.uuid = this.entity.id;
+        geometry.computeBoundingBox();
+        geometry.computeBoundingSphere();
         return geometry;
     }
     get(){

@@ -6,7 +6,7 @@ import Player from "./Player";
 import {cameraFar} from "../config";
 
 export default function ExhibitCanvas() {
-    const {target, setTarget} = selectedMeshStore();
+    const {select} = selectedMeshStore();
     return (
         <KeyboardControls map={[
             { name: "forward", keys: ["ArrowUp", "w", "W"] },
@@ -18,7 +18,7 @@ export default function ExhibitCanvas() {
             <Canvas
                 dpr={[1, 2]}
                 shadows camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
-                onPointerMissed={() => setTarget(null)}
+                onPointerMissed={() => select(undefined)}
             >
                 {/*<Sky sunPosition={[100, 20, 100]} />*/}
                 {/*<Player />*/}

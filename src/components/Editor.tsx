@@ -7,9 +7,10 @@ import {Fragment, useEffect, useMemo, useState} from "react";
 import MeshClient from "../clients/mesh.client";
 import ExhibitMeshFactory from "../clients/factories/exhibit-mesh.factory";
 import Surface, {SurfaceProps} from "./Surface";
-import {MeshProps} from "@react-three/fiber";
+import {MeshProps, useThree} from "@react-three/fiber";
 import {floorSize} from "../config";
 import {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
+import {Mesh} from "three";
 
 
 const meshClient = new MeshClient();
@@ -34,39 +35,40 @@ function useMeshes() {
 
 
 export default function Editor() {
-    const { target } = selectedMeshStore();
-    const { meshes, set } = MeshesStore();
+    const { selected } = selectedMeshStore();
+    const { meshes } = MeshesStore();
+    console.log("=>(Editor.tsx:41) selected", selected);
+    console.log("=>(Editor.tsx:42) meshes", meshes);
+    // const [target, setTarget] = useState<Mesh | null>(null);
+
     // const [ exhibit, setExhibit ] = useMeshes();
     // const [exhibitMeshes, setExhibitMeshes] = useMeshes();
     // useMemo(() => {
     //     set(exhibitMeshes as ExhibitMeshEntities);
     // },[exhibitMeshes])
     // set(data);
-    console.log('meshes',meshes);
+
     return (
         <>
-            {meshes.map((exhibitMeshEntity, index) => {
-                const meshFactory = new ExhibitMeshFactory(exhibitMeshEntity);
-                const meshProps = meshFactory.get() as unknown as MeshProps;
+            {Array.from(meshes.entries()).map(([uuid, mesh])=>{
+                const meshProps = mesh as unknown as MeshProps;
                 return (
-                        // <Fragment key={exhibitMeshEntity.id}>
-                            <Surface
-                                key={meshProps.uuid}
-                                {...meshProps}
-                            />
-                        // </Fragment>
+                <Surface
+                    key={uuid}
+                    {...meshProps}
+                />
                 )
             })}
-            {target
-                ? <EditTransformControls mesh={target} />
-                :
-                <>
-                    <ButtonControls
-
-                    />
-                    <OrbitControls/>
+            {selected ?
+                <EditTransformControls  />
+                : <>
+                <ButtonControls/>
                 </>
             }
+            <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 1.75} />
+
+
+
             <gridHelper args={[floorSize, floorSize]}/>
             {/*<Stats />*/}
         </>

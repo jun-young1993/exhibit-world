@@ -18,10 +18,10 @@ export default interface ExhibitGeometryEntity {
 }
 
 export class DefaultExhibitGeometryEntity<ExhibitGeometryEntity> {
-    depth= 50;
-    height= 50;
+    depth= 5;
+    height= 5;
     id= uuid();
-    radius= 50;
+    radius= 5;
     type= GeometryType.BoxGeometry;
-    width= 50;
+    width= 5;
 }

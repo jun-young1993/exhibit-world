@@ -22,7 +22,7 @@ export default class ExhibitMaterialFactory {
                 break;
         }
         material.uuid = this.entity.id;
-
+        material.needsUpdate = true;
         return material;
     }
 

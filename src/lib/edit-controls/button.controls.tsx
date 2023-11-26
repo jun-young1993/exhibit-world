@@ -17,9 +17,11 @@ export function ButtonControlsOptions(props: ButtonControlsOptionsEvents){
         add: button((get) => {
 
             // const mesh = new ExhibitMeshFactory(DefaultExhibitMeshEntity);
-            const exhibitMeshEntity = new DefaultExhibitMeshEntity<ExhibitMeshEntity>();
-            console.log(exhibitMeshEntity);
-            props.set(exhibitMeshEntity);
+            const defaultExhibitMeshEntity = new DefaultExhibitMeshEntity();
+            const exhibitMeshFactory = new ExhibitMeshFactory(defaultExhibitMeshEntity);
+
+            props.set(exhibitMeshFactory.get());
+            console.log("=>(button.controls.tsx:25) exhibitMeshFactory.get()", exhibitMeshFactory.get());
 
         }),
     }

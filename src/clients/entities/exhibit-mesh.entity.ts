@@ -4,6 +4,7 @@ import {Euler} from "three/src/math/Euler";
 import ExhibitMaterialEntity, {DefaultExhibitMaterialEntity} from "./exhibit-material.entity";
 import ExhibitGeometryEntity, {DefaultExhibitGeometryEntity} from "./exhibit-geometry.entity";
 import { v4 as uuid } from 'uuid';
+import ExhibitMeshFactory from "../factories/exhibit-mesh.factory";
 export default interface ExhibitMeshEntity {
     id: string
     positionX: Vector3['x']
@@ -36,7 +37,7 @@ export class DefaultExhibitMeshEntity <ExhibitMeshEntity> {
     rotationY= 0;
     rotationZ= 0;
     type= "";
-    material= new DefaultExhibitMaterialEntity() as ExhibitMaterialEntity;
-    geometry= new DefaultExhibitGeometryEntity() as ExhibitGeometryEntity;
+    material= new DefaultExhibitMaterialEntity();
+    geometry= new DefaultExhibitGeometryEntity();
 }
 

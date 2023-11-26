@@ -20,7 +20,14 @@ export default class ExhibitMeshFactory {
         mesh.quaternion.set(this.entity.quaternionX, this.entity.quaternionY, this.entity.quaternionZ, this.entity.quaternionW);
         mesh.rotation.set(this.entity.rotationX, this.entity.rotationY, this.entity.rotationZ);
 
+        mesh.scale.set(
+            this.entity.geometry.width,
+            this.entity.geometry.height,
+            this.entity.geometry.depth,
+        );
         mesh.uuid = this.entity.id;
+
+        mesh.updateMatrix();
         return mesh;
     }
 
