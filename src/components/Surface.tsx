@@ -1,6 +1,6 @@
 import {MeshProps, ThreeEvent, useThree} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
-import { Mesh } from "three";
+import {BoxGeometry, BufferGeometry, Material, Mesh} from "three";
 import {
     Component,
     createRef, MutableRefObject,
@@ -8,12 +8,15 @@ import {
 } from "react";
 import MaterialControls from "../lib/edit-controls/material.controls";
 import GeometryControls from "../lib/edit-controls/geometry.controls";
-import {Html} from "@react-three/drei";
+import {Html, TransformControls} from "@react-three/drei";
 import EditContextMenuControls from "../lib/edit-controls/context-menu.controls";
 import MeshClient from "../clients/mesh.client";
 import ExhibitMeshEntity from "../clients/entities/exhibit-mesh.entity";
 import MeshesStore from "../store/meshes.store";
 import meshesStore from "../store/meshes.store";
+import EditTransformControls from "../lib/edit-controls/transform.controls";
+import EditSidebar from "../lib/edit-controls/edit-sidebar";
+import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
 
 export interface SurfaceProps extends MeshProps{
     onSelected?: (mesh: Mesh) => void
@@ -21,13 +24,9 @@ export interface SurfaceProps extends MeshProps{
 }
 
 export default function Surface(props: SurfaceProps) {
-
-
     const { selected , select } = selectedMeshStore();
     const { scene } = useThree();
-
     const [showContext, setShowContext] = useState<boolean>(false);
-
 
     const handleClick = useCallback((e:  ThreeEvent<MouseEvent>) => {
             e.stopPropagation();
@@ -51,35 +50,44 @@ export default function Surface(props: SurfaceProps) {
 
 
 
-
-
-
+    const geometry = props.geometry as BufferGeometry;
+    const material = props.material as Material;
+    // const geometry = new BoxGeometry(2, 2, 2);
 
     return (
-        <mesh
-            {...props}
-            onClick={handleClick}
-            onContextMenu={handleContextMenu}
+        <>
+         <mesh
+             {...props}
+             onClick={handleClick}
+             onContextMenu={handleContextMenu}
+         >
+             {/*<primitive object={geometry}/>*/}
+             {/*<primitive object={material} />*/}
+             {/*{props.geometry && <primitive object={props.geometry} />}*/}
+             {/*<boxGeometry />*/}
+             {/*<meshBasicMaterial />*/}
 
-        >
-            <boxGeometry />
-            <meshBasicMaterial />
-            {(selected && isCurrentTarget()) && (
-                <>
-                    <GeometryControls mesh={selected}/>
-                    <MaterialControls mesh={selected}/>
-                </>
-            )}
-            <Html>
-                {(selected && isCurrentTarget() && showContext) && (
-                        <>
-                            <EditContextMenuControls
-                                mesh={selected}
-                            />
-                        </>
-                )}
-            </Html>
+
         </mesh>
+            <Html
+                fullscreen={true}
+            >
+                {/*{(selected && isCurrentTarget() && showContext) && (*/}
+                {/*        <>*/}
+                {/*            /!*<EditContextMenuControls*!/*/}
+                {/*            /!*    mesh={selected}*!/*/}
+                {/*            /!*//*/}
+                {/*            <MeshEditControls*/}
+                {/*                mesh={selected}*/}
+                {/*            />*/}
+                {/*        </>*/}
+                {/*)}*/}
+                {/*{(selected && isCurrentTarget()) &&*/}
+                {/*    <MeshEditControls*/}
+                {/*        mesh={selected}*/}
+                {/*    />}*/}
+            </Html>
+        </>
     )
 }
 

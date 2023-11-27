@@ -24,9 +24,9 @@ export function EditTransformControlsOptions() {
 
 }
 
-export default function EditTransformControls()
+export default function EditTransformControls({mesh}: EditControlsInterface)
 {
-    const { selected } = selectedMeshStore();
+    // const { selected } = selectedMeshStore();
 
     // console.log("=>(transform.controls.tsx:32) selected instanceof Object3D", selected instanceof Object3D);
 
@@ -35,14 +35,14 @@ export default function EditTransformControls()
     const options = useMemo(() => {
         return EditTransformControlsOptions();
     },[]);
-    const {mode} = useControls(controlName,options);
-    console.log("=>(transform.controls.tsx:38) selected", selected);
-    if(selected){
-        console.log("=>(transform.controls.tsx:39) selected.clone()", selected.clone());
-    }
+    // const {mode} = useControls(controlName,options);
+
 
     return <>
-        <TransformControls object={selected} mode={mode} />
+        <TransformControls
+            object={mesh}
+            // mode={mode}
+        />
     </>;
 
 }

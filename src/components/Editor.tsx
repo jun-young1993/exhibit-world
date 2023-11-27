@@ -1,5 +1,5 @@
 import selectedMeshStore from "../store/selected-mesh.store";
-import {OrbitControls, TransformControls, Stats} from "@react-three/drei";
+import {OrbitControls, TransformControls, Stats, Html, TransformControlsProps} from "@react-three/drei";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import MeshesStore from "../store/meshes.store";
 import ButtonControls from "../lib/edit-controls/button.controls";
@@ -9,45 +9,55 @@ import ExhibitMeshFactory from "../clients/factories/exhibit-mesh.factory";
 import Surface, {SurfaceProps} from "./Surface";
 import {MeshProps, useThree} from "@react-three/fiber";
 import {floorSize} from "../config";
-import {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
-import {Mesh} from "three";
+import ExhibitMeshEntity, {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
+import {Camera, Mesh} from "three";
+import GeometryControls from "../lib/edit-controls/geometry.controls";
+import MaterialControls from "../lib/edit-controls/material.controls";
+import EditSidebar from "../lib/edit-controls/edit-sidebar";
+import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
+import {ForwardRefComponent} from "@react-three/drei/helpers/ts-utils";
 
 
 const meshClient = new MeshClient();
 
 function useMeshes() {
-    const [meshes, setMeshes] = useState<ExhibitMeshEntities>([]);
+    const [exhibitEntities, setExhibitEntities] = useState<ExhibitMeshEntities>([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try{
-                const data = await meshClient.findAll();
-                console.log('data',data)
-                setMeshes(data)
-            }catch(error){
-                throw new Error('There was an issue fetching the Mesh data. Please try again.');
-            }
-        }
-        fetchData();
+    useMemo(() => {
+
+        meshClient.findAll()
+            .then((result) => {
+                setExhibitEntities(result);
+            })
+            .catch((error) => {
+                throw new Error(`
+                    ${error}: 
+                    There was an issue fetching the Mesh data. Please try again.
+                `);
+            });
+
+
     },[])
-    return [meshes, setMeshes];
+    return exhibitEntities;
 }
 
 
 export default function Editor() {
     const { selected } = selectedMeshStore();
-    const { meshes } = MeshesStore();
-    console.log("=>(Editor.tsx:41) selected", selected);
-    console.log("=>(Editor.tsx:42) meshes", meshes);
-    // const [target, setTarget] = useState<Mesh | null>(null);
+    const { meshes, merge } = MeshesStore();
+    const exhibitEntities = useMeshes();
 
-    // const [ exhibit, setExhibit ] = useMeshes();
-    // const [exhibitMeshes, setExhibitMeshes] = useMeshes();
-    // useMemo(() => {
-    //     set(exhibitMeshes as ExhibitMeshEntities);
-    // },[exhibitMeshes])
-    // set(data);
+    useMemo(() => {
+        // merge(exhibitEntities.map((exhibitEntity) => {
+        //     const exhibitMeshFactory = new ExhibitMeshFactory(exhibitEntity);
+        //     return exhibitMeshFactory.get();
+        // }));
 
+    },[exhibitEntities, merge])
+
+    console.log("=>(Editor.tsx:53) selected, meshes, exhibitEntities", selected, meshes, exhibitEntities);
+
+    const transformControls = <TransformControls object={selected} />;
     return (
         <>
             {Array.from(meshes.entries()).map(([uuid, mesh])=>{
@@ -59,17 +69,34 @@ export default function Editor() {
                 />
                 )
             })}
-            {selected ?
-                <EditTransformControls  />
-                : <>
-                <ButtonControls/>
-                </>
+            {
+                (selected &&
+                    transformControls
+                )
+                //     <Fragment >
+                //         {/*<EditTransformControls  mesh={selected}/>*/}
+                //         {/*<GeometryControls mesh={selected}/>*/}
+                //         {/*<MaterialControls mesh={selected}/>*/}
+                //     </Fragment>
+                // : <>
+
+                // </>
+
             }
             <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 1.75} />
 
-
-
             <gridHelper args={[floorSize, floorSize]}/>
+            <Html
+                zIndexRange={[90000000,90000001]}
+                fullscreen={true}
+            >
+                <span className={"flex justify-between"}>
+                    <EditSidebar />
+                    {selected &&
+                        <MeshEditControls mesh={selected} />
+                    }
+                </span>
+            </Html>
             {/*<Stats />*/}
         </>
     )
