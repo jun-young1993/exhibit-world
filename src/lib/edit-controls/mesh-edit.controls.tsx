@@ -5,7 +5,7 @@ import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } 
 
 import {Color, Mesh} from "three";
 import selectedMeshStore from "../../store/selected-mesh.store";
-import {Fragment, ReactNode, useCallback, useRef, useState} from "react";
+import {Fragment, ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {ThreeEvent, useThree} from "@react-three/fiber";
 import {getSingleMaterial} from "../../utills/mesh-info.utills";
 import {TransformControls, TransformControlsProps} from "@react-three/drei";
@@ -122,9 +122,12 @@ interface transformItemInterface {
  * @returns 
  */
 export default function MeshEditControls({ mesh, transformControls }: MeshEditControlsInterface) {
-    const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
-    const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
     
+    
+    const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
+    
+    const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
+    const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
     const transformItems: transformItemInterface[] = [{
         name: 'translate',
         icon: HiCubeTransparent
@@ -172,11 +175,14 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
             name: MeshEditItemName.Color,
             icon: HiColorSwatch,
             element: <input
-                value={`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`}
+                value={color}
                 type={'color'}
                 onChange={(event)=>{
                     if('color' in mesh.material){
-                        mesh.material.color = new Color(event.target.value);
+                        const threeColor = new Color(event.target.value)
+                        mesh.material.color = threeColor;
+                        setColor(`#${threeColor.getHexString()}`);
+                        
                         
                     }
                 }}

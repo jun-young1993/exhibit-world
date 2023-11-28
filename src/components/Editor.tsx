@@ -49,10 +49,10 @@ export default function Editor() {
     const transfromControls = useRef<any>(null);
 
     useMemo(() => {
-        // merge(exhibitEntities.map((exhibitEntity) => {
-        //     const exhibitMeshFactory = new ExhibitMeshFactory(exhibitEntity);
-        //     return exhibitMeshFactory.get();
-        // }));
+        merge(exhibitEntities.map((exhibitEntity) => {
+            const exhibitMeshFactory = new ExhibitMeshFactory(exhibitEntity);
+            return exhibitMeshFactory.get();
+        }));
 
     },[exhibitEntities, merge])
 
@@ -94,7 +94,11 @@ export default function Editor() {
                 <span className={"flex justify-between"}>
                     <EditSidebar />
                     {selected &&
-                        <MeshEditControls mesh={selected} transformControls={transfromControls}/>
+                        <Fragment
+                            key={selected.uuid}
+                        >
+                            <MeshEditControls mesh={selected} transformControls={transfromControls}/>
+                        </Fragment>
                     }
                 </span>
             </Html>
