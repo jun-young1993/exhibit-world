@@ -3,7 +3,7 @@ import {OrbitControls, TransformControls, Stats, Html, TransformControlsProps} f
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import MeshesStore from "../store/meshes.store";
 import ButtonControls from "../lib/edit-controls/button.controls";
-import {Fragment, useEffect, useMemo, useState} from "react";
+import {Fragment, useEffect, useMemo, useRef, useState} from "react";
 import MeshClient from "../clients/mesh.client";
 import ExhibitMeshFactory from "../clients/factories/exhibit-mesh.factory";
 import Surface, {SurfaceProps} from "./Surface";
@@ -46,6 +46,7 @@ export default function Editor() {
     const { selected } = selectedMeshStore();
     const { meshes, merge } = MeshesStore();
     const exhibitEntities = useMeshes();
+    const transfromControls = useRef<any>(null);
 
     useMemo(() => {
         // merge(exhibitEntities.map((exhibitEntity) => {
@@ -57,7 +58,7 @@ export default function Editor() {
 
     console.log("=>(Editor.tsx:53) selected, meshes, exhibitEntities", selected, meshes, exhibitEntities);
 
-    const transformControls = <TransformControls object={selected} />;
+    
     return (
         <>
             {Array.from(meshes.entries()).map(([uuid, mesh])=>{
@@ -71,7 +72,7 @@ export default function Editor() {
             })}
             {
                 (selected &&
-                    transformControls
+                    <TransformControls ref={transfromControls} object={selected} />
                 )
                 //     <Fragment >
                 //         {/*<EditTransformControls  mesh={selected}/>*/}
@@ -93,7 +94,7 @@ export default function Editor() {
                 <span className={"flex justify-between"}>
                     <EditSidebar />
                     {selected &&
-                        <MeshEditControls mesh={selected} />
+                        <MeshEditControls mesh={selected} transformControls={transfromControls}/>
                     }
                 </span>
             </Html>

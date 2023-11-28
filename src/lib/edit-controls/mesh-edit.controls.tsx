@@ -1,15 +1,21 @@
 import {Sidebar} from "flowbite-react";
 import {DefaultExhibitMeshEntity} from "../../clients/entities/exhibit-mesh.entity";
 import ExhibitMeshFactory from "../../clients/factories/exhibit-mesh.factory";
-import { HiCubeTransparent } from "react-icons/hi";
+import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
 
 import {Color, Mesh} from "three";
 import selectedMeshStore from "../../store/selected-mesh.store";
-import {Fragment, ReactNode, useCallback, useState} from "react";
+import {Fragment, ReactNode, useCallback, useRef, useState} from "react";
 import {ThreeEvent, useThree} from "@react-three/fiber";
 import {getSingleMaterial} from "../../utills/mesh-info.utills";
 import {TransformControls, TransformControlsProps} from "@react-three/drei";
-
+interface IconBaseProps extends React.SVGAttributes<SVGElement> {
+    children?: React.ReactNode;
+    size?: string | number;
+    color?: string;
+    title?: string;
+}
+type IconType = (props: IconBaseProps) => JSX.Element;
 const theme = {
     "root": {
         "base": "h-full float-right",
@@ -41,7 +47,7 @@ const theme = {
         "list": "space-y-2 py-2"
     },
     "cta": {
-        "base": "mt-6 rounded-lg p-4 bg-gray-100 dark:bg-gray-700",
+        "base": "mt-6 rounded-lg p-4 bg-cyan-40 dark:bg-gray-700",
         "color": {
             "blue": "bg-cyan-50 dark:bg-cyan-900",
             "dark": "bg-dark-50 dark:bg-dark-900",
@@ -57,7 +63,7 @@ const theme = {
         }
     },
     "item": {
-        "base": "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
+        "base": "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 hover:cursor-pointer",
         "active": "bg-gray-100 dark:bg-gray-700",
         "collapsed": {
             "insideCollapse": "group w-full pl-8 transition duration-75",
@@ -90,40 +96,94 @@ const theme = {
 };
 interface MeshEditControlsInterface {
     mesh: Mesh
+    transformControls: any
 }
 enum MeshEditItemName {
     Transform = 'transform',
     Color = 'color'
 }
+
+
 interface meshEditItemInterface {
     name: MeshEditItemName,
-    element: ReactNode
+    element: ReactNode,
+    icon:  IconType
 }
-export default function MeshEditControls({ mesh }: MeshEditControlsInterface) {
-    const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
 
+interface transformItemInterface {
+    name: TransformControlsProps['mode'],
+    icon: IconType
+}
+
+/**
+ * url - https://www.flowbite-react.com/docs/components/sidebar#
+ * 
+ * @param param0 
+ * @returns 
+ */
+export default function MeshEditControls({ mesh, transformControls }: MeshEditControlsInterface) {
+    const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
+    const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
+    
+    const transformItems: transformItemInterface[] = [{
+        name: 'translate',
+        icon: HiCubeTransparent
+    },{
+        name: 'rotate',
+        icon: HiOutlineRefresh 
+    },{
+        name: 'scale',
+        icon: HiArrowsExpand 
+    }];
+    
 
     const meshEditItems: meshEditItemInterface[] = [
         {
             name: MeshEditItemName.Transform,
+            icon: (
+                (transformMode === 'scale')
+                ? HiArrowsExpand
+                : (transformMode === 'rotate')
+                ? HiOutlineRefresh
+                : HiCubeTransparent
+
+            ),
             element: (
-               <div>hi</div>
+                <>
+                {transformItems.map(({name, icon}) => {
+                    return (
+                        <Sidebar.Item 
+                            icon={icon}
+                            onClick={()=>{
+                                if(transformControls){
+                                    transformControls.current.setMode(name);
+                                    setTransformMode(name);
+                                }
+                            }}
+                        >
+                            {name}
+                        </Sidebar.Item>    
+                    )
+                })}
+                </>
             )
         },{
 
             name: MeshEditItemName.Color,
+            icon: HiColorSwatch,
             element: <input
                 value={`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`}
                 type={'color'}
                 onChange={(event)=>{
                     if('color' in mesh.material){
                         mesh.material.color = new Color(event.target.value);
+                        
                     }
                 }}
             />
         }
     ]
-
+    
 
     return (
         <Sidebar
@@ -136,7 +196,7 @@ export default function MeshEditControls({ mesh }: MeshEditControlsInterface) {
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                     {
-                        meshEditItems.map(({name, element}, index) => {
+                        meshEditItems.map(({name, element, icon}, index) => {
                             return (
                                 <Fragment
                                     key={index}
@@ -144,25 +204,24 @@ export default function MeshEditControls({ mesh }: MeshEditControlsInterface) {
                                     <Sidebar.Item
                                         onClick={()=> {
                                             if(clicked === name){
-                                                setClicked(name)
+                                                setClicked(null);
                                             }else if(clicked !== name){
                                                 setClicked(name);
                                             }else{
-                                                setClicked(null);
+                                                setClicked(name)
                                             }
-
-
                                         }}
-                                        icon={HiCubeTransparent}
+                                        icon={icon}
                                     >
-                                        {name}
+                                    {name}
                                     </Sidebar.Item>
-                                    {(clicked === name) &&
+                                    {
+                                        (clicked === name) &&
                                         <Sidebar.CTA>
-                                            <div>test</div>
                                             {element}
                                         </Sidebar.CTA>
-                                    }
+                                    }   
+                                    <hr />
                                 </Fragment>
                             )
                         })
@@ -173,3 +232,4 @@ export default function MeshEditControls({ mesh }: MeshEditControlsInterface) {
         </Sidebar>
     )
 }
+
