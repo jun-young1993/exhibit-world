@@ -9,6 +9,7 @@ import {Fragment, ReactNode, useCallback, useEffect, useRef, useState} from "rea
 import {ThreeEvent, useThree} from "@react-three/fiber";
 import {getSingleMaterial} from "../../utills/mesh-info.utills";
 import {TransformControls, TransformControlsProps} from "@react-three/drei";
+import { TransformMode } from "../../types/transform";
 interface IconBaseProps extends React.SVGAttributes<SVGElement> {
     children?: React.ReactNode;
     size?: string | number;
@@ -111,7 +112,7 @@ interface meshEditItemInterface {
 }
 
 interface transformItemInterface {
-    name: TransformControlsProps['mode'],
+    name: TransformMode,
     icon: IconType
 }
 
@@ -129,13 +130,13 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
     const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
     const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
     const transformItems: transformItemInterface[] = [{
-        name: 'translate',
+        name: TransformMode.Translate,
         icon: HiCubeTransparent
     },{
-        name: 'rotate',
+        name: TransformMode.Rotate,
         icon: HiOutlineRefresh 
     },{
-        name: 'scale',
+        name: TransformMode.Scale,
         icon: HiArrowsExpand 
     }];
     
@@ -144,9 +145,9 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
         {
             name: MeshEditItemName.Transform,
             icon: (
-                (transformMode === 'scale')
+                (transformMode === TransformMode.Scale)
                 ? HiArrowsExpand
-                : (transformMode === 'rotate')
+                : (transformMode === TransformMode.Rotate)
                 ? HiOutlineRefresh
                 : HiCubeTransparent
 
@@ -171,7 +172,6 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                 </>
             )
         },{
-
             name: MeshEditItemName.Color,
             icon: HiColorSwatch,
             element: <input
@@ -182,8 +182,6 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                         const threeColor = new Color(event.target.value)
                         mesh.material.color = threeColor;
                         setColor(`#${threeColor.getHexString()}`);
-                        
-                        
                     }
                 }}
             />
