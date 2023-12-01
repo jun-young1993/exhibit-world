@@ -4,7 +4,9 @@ import {DefaultExhibitMeshEntity} from "../../clients/entities/exhibit-mesh.enti
 import ExhibitMeshFactory from "../../clients/factories/exhibit-mesh.factory";
 import MeshesStore from "../../store/meshes.store";
 import {useState} from "react";
-import {Button} from "@material-tailwind/react";
+import MeshClient from "../../clients/mesh.client";
+import CreateBulkMeshDto from "../../clients/dto/exhibit-create-bulk-mesh.dto";
+const meshClient = new MeshClient();
 
 
 const theme = {
@@ -114,8 +116,15 @@ export default function EditSidebar() {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     const defaultExhibitMeshEntity = new DefaultExhibitMeshEntity();
-                                    const exhibitMeshFactory = new ExhibitMeshFactory(defaultExhibitMeshEntity);
-                                    set(exhibitMeshFactory.get());
+                                    const defaultExhibitMeshFactory = new ExhibitMeshFactory(defaultExhibitMeshEntity);
+                                    
+                                    meshClient.createBulk(
+                                        new CreateBulkMeshDto(defaultExhibitMeshFactory.getEntity())
+                                    )
+                                    .then(() => {
+                                        set(defaultExhibitMeshFactory.get());
+                                    })
+                                    
                                 }}
                                 icon={HiPlus}
                             />

@@ -29,7 +29,12 @@ export default class ExhibitMeshFactory {
         // mesh.updateMatrix();
         return mesh;
     }
+    
+    getEntity(){
+        return this.entity;
+    }
 
+    
     get(){
 
         return this.create();

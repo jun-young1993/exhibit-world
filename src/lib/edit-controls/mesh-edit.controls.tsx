@@ -1,15 +1,14 @@
 import {Sidebar} from "flowbite-react";
-import {DefaultExhibitMeshEntity} from "../../clients/entities/exhibit-mesh.entity";
-import ExhibitMeshFactory from "../../clients/factories/exhibit-mesh.factory";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
-
 import {Color, Mesh} from "three";
-import selectedMeshStore from "../../store/selected-mesh.store";
 import {Fragment, ReactNode, useCallback, useEffect, useRef, useState} from "react";
-import {ThreeEvent, useThree} from "@react-three/fiber";
-import {getSingleMaterial} from "../../utills/mesh-info.utills";
-import {TransformControls, TransformControlsProps} from "@react-three/drei";
+import { useDebounce } from 'usehooks-ts'
+import {TransformControlsProps} from "@react-three/drei";
 import { TransformMode } from "../../types/transform";
+import MeshClient from "../../clients/mesh.client";
+
+const meshClient = new MeshClient();
+
 interface IconBaseProps extends React.SVGAttributes<SVGElement> {
     children?: React.ReactNode;
     size?: string | number;
@@ -123,12 +122,26 @@ interface transformItemInterface {
  * @returns 
  */
 export default function MeshEditControls({ mesh, transformControls }: MeshEditControlsInterface) {
-    
-    
     const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
-    
     const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
     const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
+    const debouncedColorValue = useDebounce<string>(color, 500);
+    const debouncedMeshValue = useDebounce<Mesh>(mesh, 500);
+
+    useEffect(()=>{
+        console.log('debouncedColorValue',debouncedColorValue);
+    },[debouncedColorValue])
+    console.log(mesh);
+    
+    // if(transformControls && transformControls.current){
+    //     transformControls.onPointerUp((event:any) => {
+    //         console.log(event);
+    //     })
+    //     // transformControls.current.onChange((e:any) => {
+    //     //     console.log(e);
+    //     // })
+    // }
+
     const transformItems: transformItemInterface[] = [{
         name: TransformMode.Translate,
         icon: HiCubeTransparent
@@ -140,7 +153,6 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
         icon: HiArrowsExpand 
     }];
     
-
     const meshEditItems: meshEditItemInterface[] = [
         {
             name: MeshEditItemName.Transform,
@@ -161,6 +173,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                             onClick={()=>{
                                 if(transformControls){
                                     transformControls.current.setMode(name);
+                                    
                                     setTransformMode(name);
                                 }
                             }}
