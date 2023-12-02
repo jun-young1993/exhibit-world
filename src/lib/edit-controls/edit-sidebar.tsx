@@ -5,7 +5,7 @@ import ExhibitMeshFactory from "../../clients/factories/exhibit-mesh.factory";
 import MeshesStore from "../../store/meshes.store";
 import {useState} from "react";
 import MeshClient from "../../clients/mesh.client";
-import CreateBulkMeshDto from "../../clients/dto/exhibit-create-bulk-mesh.dto";
+import CreateBulkMeshDto from "../../clients/dto/mesh/exhibit-create-bulk-mesh.dto";
 const meshClient = new MeshClient();
 
 

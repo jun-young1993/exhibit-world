@@ -8,13 +8,16 @@ export enum GeometryType {
     TorusGeometry = 'TorusGeometry'
 }
 
-export default interface ExhibitGeometryEntity {
+export interface GeometryPropsEntity {
     depth: number
     height: number
-    id: string
     radius: number
     type: string
     width: number
+}
+
+export default interface ExhibitGeometryEntity extends GeometryPropsEntity{
+    id: string
 }
 
 export class DefaultExhibitGeometryEntity<ExhibitGeometryEntity> {

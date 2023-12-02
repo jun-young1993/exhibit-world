@@ -1,8 +1,9 @@
 import Client from "./client";
 import {Mesh, Vector3} from "three";
 import ExhibitMeshEntity, {ExhibitMeshEntities} from "./entities/exhibit-mesh.entity";
-import CreateBulkMeshDto from "./dto/exhibit-create-bulk-mesh.dto";
-import CreateUpdateMeshDto from "./dto/exhibit-update-mesh.dto";
+import CreateBulkMeshDto from "./dto/mesh/exhibit-create-bulk-mesh.dto";
+import UpdateMeshDto from "./dto/mesh/exhibit-update-mesh.dto";
+import UpdateResult from "./entities/update-result";
 
 export default class MeshClient extends Client {
     constructor() {
@@ -34,12 +35,18 @@ export default class MeshClient extends Client {
 
     }
 
-    public update(uuid: string, dto: CreateUpdateMeshDto)
+    /**
+     * Update the location of the Material
+     *
+     * @param uuid string
+     * @param dto UpdateMeshDto
+     */
+    public update(uuid: string, dto: UpdateMeshDto): Promise<UpdateResult>
     {
 
         return new Promise((resolve, reject) => {
             this.fetch(`/${uuid}`,{
-                method: 'post',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'accept': '*/*'
@@ -50,10 +57,9 @@ export default class MeshClient extends Client {
                 return response.json();
             })
             .then((response) => {
-                console.log('update mesh',response)
                 resolve(response)
             })
-            .catch((response) => reject(response));
+            .catch((exception) => reject(exception));
         })
     }
     

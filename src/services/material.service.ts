@@ -1,24 +1,29 @@
 import MeshClient from "../clients/mesh.client";
 import UpdateMeshDto from "../clients/dto/mesh/exhibit-update-mesh.dto";
-import {getJsonFromMesh} from "../utills/mesh-info.utills";
+import {getJsonFromMaterial, getJsonFromMesh, getMaterialId, getSingleMaterial} from "../utills/mesh-info.utills";
 import {Mesh} from "three";
+import MaterialClient from "../clients/material.client";
+import UpdateMaterialDto from "../clients/dto/material/update-material.dto";
 
 
-export default class MeshService {
+export default class MaterialService {
     private mesh: Mesh
-    private client: MeshClient;
+    private client: MaterialClient;
     constructor(mesh: Mesh) {
         this.mesh = mesh;
-        this.client = new MeshClient();
+        this.client = new MaterialClient();
     }
-    update(){
+    update()
+    {
         this.client.update(
-            this.mesh.uuid,
-            new UpdateMeshDto(getJsonFromMesh(this.mesh)))
+            getMaterialId(this.mesh),
+            new UpdateMaterialDto(getJsonFromMaterial(this.mesh)))
             .then((response) => {
+
             })
             .catch((exception) => {
-                console.log('mesh update exception',exception)
-            });
+
+            })
+
     }
 }

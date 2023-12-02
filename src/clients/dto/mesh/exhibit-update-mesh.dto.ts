@@ -1,12 +1,9 @@
-import ExhibitGeometryEntity from "../entities/exhibit-geometry.entity";
-import ExhibitMaterialEntity from "../entities/exhibit-material.entity";
-import ExhibitMeshEntity, {MeshPropsEntity} from "../entities/exhibit-mesh.entity";
-import ExhibitMeshFactory from "../factories/exhibit-mesh.factory";
+import {MeshPropsEntity} from "../../entities/exhibit-mesh.entity";
 
-export interface CreateUpdateMeshDtoInterface extends Partial<MeshPropsEntity>{}
+export interface UpdateMeshDtoInterface extends Partial<MeshPropsEntity>{}
 
-export default class CreateUpdateMeshDto {
-	constructor(property: CreateUpdateMeshDto) {
+export default class UpdateMeshDto {
+	constructor(property: UpdateMeshDtoInterface) {
 		Object.assign(this,property);
 	}
 }

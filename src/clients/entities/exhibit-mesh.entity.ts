@@ -5,8 +5,7 @@ import ExhibitMaterialEntity, {DefaultExhibitMaterialEntity} from "./exhibit-mat
 import ExhibitGeometryEntity, {DefaultExhibitGeometryEntity} from "./exhibit-geometry.entity";
 import { v4 as uuid } from 'uuid';
 import ExhibitMeshFactory from "../factories/exhibit-mesh.factory";
-export default interface ExhibitMeshEntity {
-    id: string
+export interface MeshPropsEntity {
     positionX: Vector3['x']
     positionY:  Vector3['y']
     positionZ:  Vector3['z']
@@ -17,6 +16,9 @@ export default interface ExhibitMeshEntity {
     rotationX: Euler['x']
     rotationY: Euler['y']
     rotationZ: Euler['z']
+}
+export default interface ExhibitMeshEntity extends MeshPropsEntity{
+    id: string
     type: string | 'Object3D'
     material: ExhibitMaterialEntity | DefaultExhibitMaterialEntity<ExhibitMaterialEntity>
     geometry: ExhibitGeometryEntity | DefaultExhibitGeometryEntity<ExhibitGeometryEntity>

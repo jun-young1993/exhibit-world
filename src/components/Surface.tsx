@@ -17,6 +17,9 @@ import meshesStore from "../store/meshes.store";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import EditSidebar from "../lib/edit-controls/edit-sidebar";
 import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
+import meshSelectedEventEmitter from "../events/mesh-selected.event";
+import meshSelectedEvent from "../events/mesh-selected.event";
+import meshSelectedOnPointerEventEmitter from "../events/mesh-selected.event";
 
 export interface SurfaceProps extends MeshProps{
     onSelected?: (mesh: Mesh) => void
@@ -60,6 +63,11 @@ export default function Surface(props: SurfaceProps) {
              {...props}
              onClick={handleClick}
              onContextMenu={handleContextMenu}
+             onPointerUp={(e) => {
+                 if(isCurrentTarget()){
+                     meshSelectedOnPointerEventEmitter.emit(`${selected?.uuid}`, selected);
+                 }
+             }}
          >
              {/*<primitive object={geometry}/>*/}
              {/*<primitive object={material} />*/}

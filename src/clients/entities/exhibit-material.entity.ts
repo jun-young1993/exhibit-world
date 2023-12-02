@@ -6,11 +6,13 @@ export enum MaterialType {
     MeshPhongMaterial = 'MeshPhongMaterial'
 }
 
-export default interface ExhibitMaterialEntity {
+export interface MaterialPropsEntity {
     color: string;
-    id: string;
     opacity: number;
     type: string;
+}
+export default interface ExhibitMaterialEntity extends MaterialPropsEntity{
+    id: string;
 }
 
 export class DefaultExhibitMaterialEntity<ExhibitMaterialEntity> {

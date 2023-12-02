@@ -1,23 +1,15 @@
 import selectedMeshStore from "../store/selected-mesh.store";
-import {OrbitControls, TransformControls, Stats, Html, TransformControlsProps} from "@react-three/drei";
-import EditTransformControls from "../lib/edit-controls/transform.controls";
+import {OrbitControls, TransformControls, Html} from "@react-three/drei";
 import MeshesStore from "../store/meshes.store";
-import ButtonControls from "../lib/edit-controls/button.controls";
-import {Fragment, useEffect, useMemo, useRef, useState} from "react";
+import {Fragment, useMemo, useRef, useState} from "react";
 import MeshClient from "../clients/mesh.client";
 import ExhibitMeshFactory from "../clients/factories/exhibit-mesh.factory";
-import Surface, {SurfaceProps} from "./Surface";
-import {MeshProps, useThree} from "@react-three/fiber";
+import Surface from "./Surface";
+import {MeshProps} from "@react-three/fiber";
 import {floorSize} from "../config";
-import ExhibitMeshEntity, {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
-import {Camera, Mesh} from "three";
-import GeometryControls from "../lib/edit-controls/geometry.controls";
-import MaterialControls from "../lib/edit-controls/material.controls";
+import {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
 import EditSidebar from "../lib/edit-controls/edit-sidebar";
 import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
-import {ForwardRefComponent} from "@react-three/drei/helpers/ts-utils";
-
-
 const meshClient = new MeshClient();
 
 function useMeshes() {
@@ -30,6 +22,7 @@ function useMeshes() {
                 setExhibitEntities(result);
             })
             .catch((error) => {
+                console.log(error);
                 throw new Error(`
                     ${error}: 
                     There was an issue fetching the Mesh data. Please try again.
@@ -46,7 +39,7 @@ export default function Editor() {
     const { selected } = selectedMeshStore();
     const { meshes, merge } = MeshesStore();
     const exhibitEntities = useMeshes();
-    const transfromControls = useRef<any>(null);
+    const transformControls = useRef<any>(null);
 
     useMemo(() => {
         merge(exhibitEntities.map((exhibitEntity) => {
@@ -56,7 +49,8 @@ export default function Editor() {
 
     },[exhibitEntities, merge])
 
-    console.log("=>(Editor.tsx:53) selected, meshes, exhibitEntities", selected, meshes, exhibitEntities);
+
+
 
     
     return (
@@ -72,7 +66,7 @@ export default function Editor() {
             })}
             {
                 (selected &&
-                    <TransformControls ref={transfromControls} object={selected} />
+                    <TransformControls ref={transformControls} object={selected} />
                 )
                 //     <Fragment >
                 //         {/*<EditTransformControls  mesh={selected}/>*/}
@@ -97,7 +91,10 @@ export default function Editor() {
                         <Fragment
                             key={selected.uuid}
                         >
-                            <MeshEditControls mesh={selected} transformControls={transfromControls}/>
+                            <MeshEditControls
+                                mesh={selected}
+                                transformControls={transformControls}
+                            />
                         </Fragment>
                     }
                 </span>

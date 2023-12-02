@@ -1,13 +1,16 @@
 import {Sidebar} from "flowbite-react";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
 import {Color, Mesh} from "three";
-import {Fragment, ReactNode, useCallback, useEffect, useRef, useState} from "react";
+import {Fragment, ReactNode, useEffect, useState} from "react";
 import { useDebounce } from 'usehooks-ts'
 import {TransformControlsProps} from "@react-three/drei";
 import { TransformMode } from "../../types/transform";
-import MeshClient from "../../clients/mesh.client";
+import MeshService from "../../services/mesh.service";
+import { useThree } from "@react-three/fiber";
+import MaterialService from "../../services/material.service";
+import GeometryService from "../../services/geometry.service";
 
-const meshClient = new MeshClient();
+
 
 interface IconBaseProps extends React.SVGAttributes<SVGElement> {
     children?: React.ReactNode;
@@ -122,66 +125,55 @@ interface transformItemInterface {
  * @returns 
  */
 export default function MeshEditControls({ mesh, transformControls }: MeshEditControlsInterface) {
+    // const {camera, gl} = useThree();
     const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
     const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
     const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
     const debouncedColorValue = useDebounce<string>(color, 500);
-    const debouncedMeshValue = useDebounce<Mesh>(mesh, 500);
 
-    useEffect(()=>{
-        console.log('debouncedColorValue',debouncedColorValue);
-    },[debouncedColorValue])
-    console.log(mesh);
-    
-    // if(transformControls && transformControls.current){
-    //     transformControls.onPointerUp((event:any) => {
-    //         console.log(event);
-    //     })
-    //     // transformControls.current.onChange((e:any) => {
-    //     //     console.log(e);
-    //     // })
-    // }
+    const meshService = new MeshService(mesh);
+    const materialService = new MaterialService(mesh);
+    const geometryService = new GeometryService(mesh);
 
     const transformItems: transformItemInterface[] = [{
         name: TransformMode.Translate,
         icon: HiCubeTransparent
     },{
         name: TransformMode.Rotate,
-        icon: HiOutlineRefresh 
+        icon: HiOutlineRefresh
     },{
         name: TransformMode.Scale,
-        icon: HiArrowsExpand 
+        icon: HiArrowsExpand
     }];
-    
     const meshEditItems: meshEditItemInterface[] = [
         {
             name: MeshEditItemName.Transform,
             icon: (
                 (transformMode === TransformMode.Scale)
-                ? HiArrowsExpand
-                : (transformMode === TransformMode.Rotate)
-                ? HiOutlineRefresh
-                : HiCubeTransparent
+                    ? HiArrowsExpand
+                    : (transformMode === TransformMode.Rotate)
+                        ? HiOutlineRefresh
+                        : HiCubeTransparent
 
             ),
             element: (
                 <>
-                {transformItems.map(({name, icon}) => {
-                    return (
-                        <Sidebar.Item 
-                            icon={icon}
-                            onClick={()=>{
-                                if(transformControls){
-                                    transformControls.current.setMode(name);
-                                    
-                                    setTransformMode(name);
-                                }
-                            }}
-                        >
-                            {name}
-                        </Sidebar.Item>    
-                    )
-                })}
+                    {transformItems.map(({name, icon}) => {
+                        return (
+                            <Sidebar.Item
+                                icon={icon}
+                                onClick={()=>{
+                                    if(transformControls){
+                                        transformControls.current.setMode(name);
+
+                                        setTransformMode(name);
+                                    }
+                                }}
+                            >
+                                {name}
+                            </Sidebar.Item>
+                        )
+                    })}
                 </>
             )
         },{
@@ -200,7 +192,24 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
             />
         }
     ]
-    
+
+    const onTransformControlsMouseUp = () => {
+        geometryService.update();
+        meshService.update();
+    }
+    useEffect(() => {
+        transformControls?.current?.addEventListener('mouseUp',onTransformControlsMouseUp)
+        return () => {
+            transformControls?.current?.removeEventListener('mouseUp',onTransformControlsMouseUp);
+        }
+    },[transformControls, onTransformControlsMouseUp]);
+
+    useEffect(()=>{
+        materialService.update();
+        console.log('debouncedColorValue',debouncedColorValue);
+
+    },[debouncedColorValue])
+
 
     return (
         <Sidebar

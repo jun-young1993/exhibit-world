@@ -1,8 +1,9 @@
-import {GeometryPropsEntity} from "../../entities/exhibit-geometry.entity";
+import {MaterialPropsEntity} from "../../entities/exhibit-material.entity";
 
-export interface UpdateGeometryInterface extends Partial<GeometryPropsEntity> {}
-export default class UpdateGeometryDto {
-    constructor(property: UpdateGeometryInterface) {
+
+export interface UpdateMaterialInterface extends Partial<MaterialPropsEntity> {}
+export default class UpdateMaterialDto {
+    constructor(property: UpdateMaterialInterface) {
         Object.assign(this, property);
     }
 }
