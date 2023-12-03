@@ -1,19 +1,21 @@
 import {Sidebar} from "flowbite-react";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
+import { TbGeometry } from "react-icons/tb";
 import {Color, Mesh} from "three";
-import {Fragment, ReactNode, useEffect, useState} from "react";
+import {Fragment, ReactNode, SVGAttributes, useEffect, useState} from "react";
 import { useDebounce } from 'usehooks-ts'
 import {TransformControlsProps} from "@react-three/drei";
 import { TransformMode } from "../../types/transform";
 import MeshService from "../../services/mesh.service";
-import { useThree } from "@react-three/fiber";
 import MaterialService from "../../services/material.service";
 import GeometryService from "../../services/geometry.service";
+import {DefaultExhibitGeometryEntity, GeometryType} from "../../clients/entities/exhibit-geometry.entity";
+import ExhibitGeometryFactory from "../../clients/factories/exhibit-geometry.factory";
 
 
 
-interface IconBaseProps extends React.SVGAttributes<SVGElement> {
-    children?: React.ReactNode;
+interface IconBaseProps extends SVGAttributes<SVGElement> {
+    children?: ReactNode;
     size?: string | number;
     color?: string;
     title?: string;
@@ -103,7 +105,8 @@ interface MeshEditControlsInterface {
 }
 enum MeshEditItemName {
     Transform = 'transform',
-    Color = 'color'
+    Color = 'color',
+    Geometry = 'geometry'
 }
 
 
@@ -135,6 +138,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
     const materialService = new MaterialService(mesh);
     const geometryService = new GeometryService(mesh);
 
+
     const transformItems: transformItemInterface[] = [{
         name: TransformMode.Translate,
         icon: HiCubeTransparent
@@ -154,7 +158,6 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                     : (transformMode === TransformMode.Rotate)
                         ? HiOutlineRefresh
                         : HiCubeTransparent
-
             ),
             element: (
                 <>
@@ -176,6 +179,27 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                     })}
                 </>
             )
+        },{
+            name: MeshEditItemName.Geometry,
+            icon: TbGeometry,
+            element: (<>
+                {Object.values(GeometryType).map((geometryType) => {
+                    return (
+                        <Sidebar.Item
+                            onClick={() => {
+                                const geometryFactory = new ExhibitGeometryFactory(new DefaultExhibitGeometryEntity({
+                                    id: mesh.geometry.uuid,
+                                    type: geometryType
+                                }));
+                                mesh.geometry = geometryFactory.create();
+                                geometryService.update();
+                            }}
+                        >
+                            {geometryType}
+                        </Sidebar.Item>
+                    )
+                })}
+            </>)
         },{
             name: MeshEditItemName.Color,
             icon: HiColorSwatch,

@@ -3,10 +3,15 @@ import ExhibitGeometryEntity, {GeometryType} from "../entities/exhibit-geometry.
 
 export default class ExhibitGeometryFactory {
     constructor(private entity: ExhibitGeometryEntity) {}
-    create(){
-        let geometry: BufferGeometry;
 
-        switch (this.entity.type) {
+    /**
+     *
+     * @param geometryType
+     */
+    createGeometry(geometryType: GeometryType): BufferGeometry
+    {
+        let geometry: BufferGeometry;
+        switch (geometryType) {
             case GeometryType.BoxGeometry:
                 geometry = new BoxGeometry(this.entity.width, this.entity.height, this.entity.depth);
                 break;
@@ -23,9 +28,14 @@ export default class ExhibitGeometryFactory {
                 geometry = new TorusGeometry(this.entity.radius, this.entity.width);
                 break;
             default:
-                    throw Error(`${this.entity.type}: Geometry was not correctly generated`)
+                throw Error(`${this.entity.type}: Geometry was not correctly generated`)
                 break;
         }
+        return geometry;
+    }
+
+    create(){
+        let geometry: BufferGeometry = this.createGeometry(this.entity.type as GeometryType);
 
         geometry.uuid = this.entity.id;
         geometry.computeBoundingBox();

@@ -27,4 +27,7 @@ export class DefaultExhibitGeometryEntity<ExhibitGeometryEntity> {
     radius= 1;
     type= GeometryType.BoxGeometry;
     width= 1;
+    constructor(props?: Partial<ExhibitGeometryEntity>) {
+        Object.assign(this,props);
+    }
 }

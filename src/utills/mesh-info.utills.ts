@@ -1,4 +1,4 @@
-import {Box3, Color, Material, Mesh, MeshBasicMaterial} from "three";
+import {Box3, Color, Material, Matrix4, Mesh, MeshBasicMaterial, Sphere} from "three";
 import {MeshPropsEntity} from "../clients/entities/exhibit-mesh.entity";
 import {MaterialProps} from "@react-three/fiber";
 import {MaterialPropsEntity} from "../clients/entities/exhibit-material.entity";
@@ -91,12 +91,20 @@ export function getJsonFromGeometry(mesh: Mesh): GeometryPropsEntity
     boundingBox.setFromObject(mesh);
     const size = new Vector3();
     const {x: width , y: height, z: depth} = boundingBox.getSize(size);
-    console.log(width, height, depth);
+
+    const sphereBoundingBox = new Box3();
+    sphereBoundingBox.setFromObject(mesh)
+    const center = new Vector3();
+    sphereBoundingBox.getCenter(center);
+    const sphere = sphereBoundingBox.getBoundingSphere(new Sphere(center));
+
+    console.log('sphere.radius',sphere.radius);
+
     return {
         width: width,
         height: height,
         depth: depth,
-        radius: 0,
+        radius: sphere.radius,
         type: geometry.type
     }
 }
