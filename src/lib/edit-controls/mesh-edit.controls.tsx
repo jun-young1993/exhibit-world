@@ -1,16 +1,19 @@
 import {Sidebar} from "flowbite-react";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
-import { TbGeometry } from "react-icons/tb";
-import {Color, Mesh} from "three";
-import {Fragment, ReactNode, SVGAttributes, useEffect, useState} from "react";
+import { TbGeometry, TbTexture } from "react-icons/tb";
+import {Color, Mesh, TextureLoader} from "three";
+import {Fragment, ReactNode, SVGAttributes, useEffect, useMemo, useState} from "react";
 import { useDebounce } from 'usehooks-ts'
-import {TransformControlsProps} from "@react-three/drei";
+import {Image, TransformControlsProps, useTexture} from "@react-three/drei";
 import { TransformMode } from "../../types/transform";
 import MeshService from "../../services/mesh.service";
 import MaterialService from "../../services/material.service";
 import GeometryService from "../../services/geometry.service";
 import {DefaultExhibitGeometryEntity, GeometryType} from "../../clients/entities/exhibit-geometry.entity";
 import ExhibitGeometryFactory from "../../clients/factories/exhibit-geometry.factory";
+import ImageClient from "../../clients/image.client";
+import {ImageEntity} from "../../clients/entities/image.entity";
+import {useLoader} from "@react-three/fiber";
 
 
 
@@ -106,7 +109,8 @@ interface MeshEditControlsInterface {
 enum MeshEditItemName {
     Transform = 'transform',
     Color = 'color',
-    Geometry = 'geometry'
+    Geometry = 'geometry',
+    Texture = 'texture'
 }
 
 
@@ -121,6 +125,8 @@ interface transformItemInterface {
     icon: IconType
 }
 
+const imageClient = new ImageClient();
+
 /**
  * url - https://www.flowbite-react.com/docs/components/sidebar#
  * 
@@ -128,16 +134,16 @@ interface transformItemInterface {
  * @returns 
  */
 export default function MeshEditControls({ mesh, transformControls }: MeshEditControlsInterface) {
-    // const {camera, gl} = useThree();
+
     const [ clicked, setClicked ] = useState<MeshEditItemName | null>(null)
     const [transformMode, setTransformMode] = useState<TransformControlsProps['mode']>('translate');
     const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
     const debouncedColorValue = useDebounce<string>(color, 500);
+    const [textures, setTextures] = useState<ImageEntity[] | []>([]);
 
     const meshService = new MeshService(mesh);
     const materialService = new MaterialService(mesh);
     const geometryService = new GeometryService(mesh);
-
 
     const transformItems: transformItemInterface[] = [{
         name: TransformMode.Translate,
@@ -201,6 +207,22 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                 })}
             </>)
         },{
+            name: MeshEditItemName.Texture,
+            icon: TbTexture,
+            element: <>
+                {textures.map((texture) => {
+                    return(
+                        <Sidebar.Item
+                            onClick={()=>{
+                                materialService.updateTexture(texture);
+                            }}
+                        >
+                            {texture.name}
+                        </Sidebar.Item>
+                    )
+                })}
+            </>
+        },{
             name: MeshEditItemName.Color,
             icon: HiColorSwatch,
             element: <input
@@ -234,6 +256,15 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
 
     },[debouncedColorValue])
 
+    useEffect(()=> {
+        imageClient.findAllPurposeByTexture()
+            .then((response: ImageEntity[] | []) => {
+                setTextures(response);
+            })
+            .catch((exception) => {
+
+            })
+    },[])
 
     return (
         <Sidebar

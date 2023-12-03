@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import TextureEntity from "./texture.entity";
 
 export enum MaterialType {
     MeshBasicMaterial = 'MeshBasicMaterial',
@@ -10,6 +11,7 @@ export interface MaterialPropsEntity {
     color: string;
     opacity: number;
     type: string;
+    texture?: TextureEntity
 }
 export default interface ExhibitMaterialEntity extends MaterialPropsEntity{
     id: string;

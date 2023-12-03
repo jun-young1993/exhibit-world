@@ -76,10 +76,15 @@ export function getJsonFromMaterial(mesh: Mesh): MaterialPropsEntity
     if(!(material?.color instanceof Color)){
         throw new Error('Material color is not of type Color');
     }
+
+
+
+
     return {
         "type": material.type,
         "color": `#${material.color.getHexString()}`,
-        "opacity": material.opacity
+        "opacity": material.opacity,
+        "texture": material.userData.texture
     }
 }
 

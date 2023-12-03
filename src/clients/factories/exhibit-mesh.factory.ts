@@ -16,14 +16,12 @@ export default class ExhibitMeshFactory {
             geometryFactory.create(),
             materialFactory.create()
         );
+
         mesh.position.set(this.entity.positionX, this.entity.positionY, this.entity.positionZ);
         mesh.quaternion.set(this.entity.quaternionX, this.entity.quaternionY, this.entity.quaternionZ, this.entity.quaternionW);
         mesh.rotation.set(this.entity.rotationX, this.entity.rotationY, this.entity.rotationZ);
-        console.log(this.entity.geometry);
-
         mesh.uuid = this.entity.id;
-        
-        // mesh.updateMatrix();
+
         return mesh;
     }
     

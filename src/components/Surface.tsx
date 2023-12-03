@@ -1,6 +1,6 @@
-import {MeshProps, ThreeEvent, useThree} from "@react-three/fiber";
+import {MeshProps, ThreeEvent, useLoader, useThree} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
-import {BoxGeometry, BufferGeometry, Material, Mesh} from "three";
+import {BoxGeometry, BufferGeometry, Material, Mesh, TextureLoader} from "three";
 import {
     Component,
     createRef, MutableRefObject,
@@ -29,6 +29,7 @@ export interface SurfaceProps extends MeshProps{
 export default function Surface(props: SurfaceProps) {
     const { selected , select } = selectedMeshStore();
     const { scene } = useThree();
+
     const [showContext, setShowContext] = useState<boolean>(false);
 
     const handleClick = useCallback((e:  ThreeEvent<MouseEvent>) => {
