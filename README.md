@@ -12,6 +12,9 @@ https://docs.pmnd.rs/react-three-fiber/getting-started/examples
 // 테일위드 css
 https://devdojo.com/pines/docs/context-menu
 
+// 리액트 icons
+https://react-icons.github.io/react-icons/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
