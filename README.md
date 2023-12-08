@@ -1,4 +1,7 @@
-
+// naming rules
+enum = > ImageType
+type => Image
+interface => ImageEntity
 
 // grid-helper
 https://sbcode.net/react-three-fiber/grid-helper/
