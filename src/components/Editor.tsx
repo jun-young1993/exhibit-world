@@ -1,5 +1,5 @@
 import selectedMeshStore from "../store/selected-mesh.store";
-import {OrbitControls, TransformControls, Html} from "@react-three/drei";
+import {OrbitControls, Html} from "@react-three/drei";
 import MeshesStore from "../store/meshes.store";
 import {Fragment, useMemo, useRef, useState} from "react";
 import MeshClient from "../clients/mesh.client";
@@ -10,6 +10,7 @@ import {floorSize} from "../config";
 import {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
 import EditSidebar from "../lib/edit-controls/edit-sidebar";
 import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
+import EditTransformControls from "../lib/edit-controls/transform.controls";
 const meshClient = new MeshClient();
 
 function useMeshes() {
@@ -66,7 +67,7 @@ export default function Editor() {
             })}
             {
                 (selected &&
-                    <TransformControls ref={transformControls} object={selected} />
+                    <EditTransformControls ref={transformControls} object={selected} />
                 )
                 //     <Fragment >
                 //         {/*<EditTransformControls  mesh={selected}/>*/}
