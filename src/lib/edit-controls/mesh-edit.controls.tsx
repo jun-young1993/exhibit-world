@@ -173,6 +173,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                                 icon={icon}
                                 onClick={()=>{
                                     if(transformControls){
+                                        console.log(transformControls);
                                         transformControls.current.setMode(name);
 
                                         setTransformMode(name);

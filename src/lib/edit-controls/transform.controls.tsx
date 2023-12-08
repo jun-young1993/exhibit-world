@@ -1,13 +1,14 @@
-import {useMemo, useRef} from "react";
+import {forwardRef, Ref, useMemo, useRef} from "react";
 import {TransformControls} from "@react-three/drei";
-import {TransformControlsProps} from "@react-three/drei/core/TransformControls";
+import {TransformControlsProps, TransformControls as TransformControlsType} from "@react-three/drei/core/TransformControls";
 import {getSingleMaterial} from "../../utills/mesh-info.utills";
 import {Mesh, SpotLight} from "three";
 import {useThree} from "@react-three/fiber";
+import {TransformControl} from "../../types/transform";
 
 
-export default function EditTransformControls(props: TransformControlsProps)
-{
+
+const EditTransformControls = forwardRef((props: TransformControlsProps, ref: Ref<TransformControl> | undefined) => {
 
     const mesh= props.object as Mesh;
     const material = getSingleMaterial(mesh);
@@ -17,8 +18,11 @@ export default function EditTransformControls(props: TransformControlsProps)
 
     return <>
         <TransformControls
+            ref={ref}
             {...props}
         />
     </>;
 
-}
+})
+
+export default EditTransformControls;

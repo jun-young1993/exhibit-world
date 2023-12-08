@@ -1,7 +1,7 @@
 import selectedMeshStore from "../store/selected-mesh.store";
 import {OrbitControls, Html} from "@react-three/drei";
 import MeshesStore from "../store/meshes.store";
-import {Fragment, useMemo, useRef, useState} from "react";
+import {Fragment, Ref, useMemo, useRef, useState} from "react";
 import MeshClient from "../clients/mesh.client";
 import ExhibitMeshFactory from "../clients/factories/exhibit-mesh.factory";
 import Surface from "./Surface";
@@ -11,6 +11,7 @@ import {ExhibitMeshEntities} from "../clients/entities/exhibit-mesh.entity";
 import EditSidebar from "../lib/edit-controls/edit-sidebar";
 import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
+import {TransformControl} from "../types/transform";
 const meshClient = new MeshClient();
 
 function useMeshes() {
@@ -40,7 +41,7 @@ export default function Editor() {
     const { selected } = selectedMeshStore();
     const { meshes, merge } = MeshesStore();
     const exhibitEntities = useMeshes();
-    const transformControls = useRef<any>(null);
+    const transformControls = useRef<TransformControl>(undefined!);
 
     useMemo(() => {
         merge(exhibitEntities.map((exhibitEntity) => {
