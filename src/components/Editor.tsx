@@ -67,12 +67,12 @@ export default function Editor() {
             {/*<directionalLight position={[0, 20, 0]} intensity={1} />*/}
             {Array.from(meshes.entries()).map(([uuid, mesh])=>{
                 const meshProps = mesh as unknown as SurfaceProps;
-                // return (
-                //     <Surface
-                //         key={uuid}
-                //         {...meshProps}
-                //     />
-                // );
+                return (
+                    <Surface
+                        key={uuid}
+                        {...meshProps}
+                    />
+                );
                 if(mesh.userData?.gltf?.id) {
                     return (
                         <GltfSurface
@@ -98,7 +98,7 @@ export default function Editor() {
                     <EditTransformControls object={selected} />
                 )
             }
-            <Test />
+
             <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 1.75} />
 
             <gridHelper args={[floorSize, floorSize]}/>

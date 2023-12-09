@@ -5,13 +5,11 @@ import {Html, KeyboardControls, Sky} from "@react-three/drei";
 import {cameraFar} from "../config";
 import {TransformControlsProvider} from "../context/transform-controls.context";
 
+
 export default function ExhibitCanvas() {
     const {select} = selectedMeshStore();
-
-
     return (
         <>
-
                 <KeyboardControls map={[
                     { name: "forward", keys: ["ArrowUp", "w", "W"] },
                     { name: "backward", keys: ["ArrowDown", "s", "S"] },
@@ -31,10 +29,8 @@ export default function ExhibitCanvas() {
                         <TransformControlsProvider>
                             <Editor />
                         </TransformControlsProvider>
-                    </Canvas>
-                    <div id={"sidebar"}>
 
-                    </div>
+                    </Canvas>
                 </KeyboardControls>
         </>
 

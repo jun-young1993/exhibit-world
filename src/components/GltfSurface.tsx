@@ -15,7 +15,7 @@ const gltfClient = new GltfClient();
 export default function GltfSurface(props: GltfSurfaceProps) {
     //@ts-ignore
     const { nodes } = useGLTF(gltfClient.getGltfFileUrl(props.userData.gltf.id));
-
+    console.log(nodes);
 
 
     return (

@@ -17,6 +17,11 @@ import GltfClient from "../../clients/gltf.client";
 import {GltfEntity} from "../../clients/entities/gltf.entity";
 import { PiCirclesThreeBold } from "react-icons/pi";
 import {useThree} from "@react-three/fiber";
+import {GltfAtom} from "../../store/recoil/atom/gltf.atom";
+import { useRecoilState } from "recoil";
+import meshesStore from "../../store/meshes.store";
+import MeshesStore from "../../store/meshes.store";
+import PreloadGltf from "../../utills/preload-gltf";
 
 
 
@@ -147,6 +152,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
     const [textures, setTextures] = useState<ImageEntity[] | []>([]);
     const [gltfEntities, setGltfEntities] = useState<GltfEntity[] | []>([]);
 
+
     const meshService = new MeshService(mesh);
     const materialService = new MaterialService(mesh);
     const geometryService = new GeometryService(mesh);
@@ -239,6 +245,10 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                             onClick={()=>{
                                 mesh.userData.gltf = gltf;
                                 meshService.update();
+                                PreloadGltf(mesh, (glb, glbMesh) => {
+                                    mesh.geometry = glbMesh.geometry;
+                                    mesh.material = glbMesh.material;
+                                })
                             }}
                         >
                             {gltf.name}
