@@ -1,10 +1,10 @@
 import {Sidebar} from "flowbite-react";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
 import { TbGeometry, TbTexture } from "react-icons/tb";
-import {Color, Mesh, TextureLoader} from "three";
+import {Color, Mesh} from "three";
 import {Fragment, ReactNode, SVGAttributes, useEffect, useMemo, useState} from "react";
 import { useDebounce } from 'usehooks-ts'
-import {Image, TransformControlsProps, useTexture} from "@react-three/drei";
+import { TransformControlsProps } from "@react-three/drei";
 import { TransformMode } from "../../types/transform";
 import MeshService from "../../services/mesh.service";
 import MaterialService from "../../services/material.service";
@@ -13,7 +13,10 @@ import {DefaultExhibitGeometryEntity, GeometryType} from "../../clients/entities
 import ExhibitGeometryFactory from "../../clients/factories/exhibit-geometry.factory";
 import ImageClient from "../../clients/image.client";
 import {ImageEntity} from "../../clients/entities/image.entity";
-import {useLoader} from "@react-three/fiber";
+import GltfClient from "../../clients/gltf.client";
+import {GltfEntity} from "../../clients/entities/gltf.entity";
+import { PiCirclesThreeBold } from "react-icons/pi";
+import {useThree} from "@react-three/fiber";
 
 
 
@@ -110,7 +113,8 @@ enum MeshEditItemName {
     Transform = 'transform',
     Color = 'color',
     Geometry = 'geometry',
-    Texture = 'texture'
+    Texture = 'texture',
+    Gltf = 'gltf'
 }
 
 
@@ -126,6 +130,7 @@ interface transformItemInterface {
 }
 
 const imageClient = new ImageClient();
+const gltfClient = new GltfClient();
 
 /**
  * url - https://www.flowbite-react.com/docs/components/sidebar#
@@ -140,6 +145,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
     const [color, setColor] = useState<string>(`#${new Color(mesh.toJSON().materials[0].color).getHexString()}`);
     const debouncedColorValue = useDebounce<string>(color, 500);
     const [textures, setTextures] = useState<ImageEntity[] | []>([]);
+    const [gltfEntities, setGltfEntities] = useState<GltfEntity[] | []>([]);
 
     const meshService = new MeshService(mesh);
     const materialService = new MaterialService(mesh);
@@ -224,6 +230,23 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                 })}
             </>
         },{
+            name: MeshEditItemName.Gltf,
+            icon: PiCirclesThreeBold,
+            element: <>
+                {gltfEntities.map((gltf) => {
+                    return(
+                        <Sidebar.Item
+                            onClick={()=>{
+                                mesh.userData.gltf = gltf;
+                                meshService.update();
+                            }}
+                        >
+                            {gltf.name}
+                        </Sidebar.Item>
+                    )
+                })}
+            </>
+        },{
             name: MeshEditItemName.Color,
             icon: HiColorSwatch,
             element: <input
@@ -261,6 +284,16 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
         imageClient.findAllPurposeByTexture()
             .then((response: ImageEntity[] | []) => {
                 setTextures(response);
+            })
+            .catch((exception) => {
+
+            })
+    },[])
+
+    useEffect(()=> {
+        gltfClient.findAll()
+            .then((response: GltfEntity[] | []) => {
+                setGltfEntities(response);
             })
             .catch((exception) => {
 
@@ -314,4 +347,5 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
         </Sidebar>
     )
 }
+
 

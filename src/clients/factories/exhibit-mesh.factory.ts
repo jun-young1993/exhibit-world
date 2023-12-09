@@ -21,6 +21,7 @@ export default class ExhibitMeshFactory {
         mesh.quaternion.set(this.entity.quaternionX, this.entity.quaternionY, this.entity.quaternionZ, this.entity.quaternionW);
         mesh.rotation.set(this.entity.rotationX, this.entity.rotationY, this.entity.rotationZ);
         mesh.uuid = this.entity.id;
+        mesh.userData.gltf = this.entity.gltf;
 
         return mesh;
     }

@@ -5,20 +5,19 @@ import {getSingleMaterial} from "../../utills/mesh-info.utills";
 import {Mesh, SpotLight} from "three";
 import {useThree} from "@react-three/fiber";
 import {TransformControl} from "../../types/transform";
+import {useTransformControls} from "../../context/transform-controls.context";
 
 
 
 const EditTransformControls = forwardRef((props: TransformControlsProps, ref: Ref<TransformControl> | undefined) => {
 
-    const mesh= props.object as Mesh;
-    const material = getSingleMaterial(mesh);
-
+    const transformControls = useTransformControls();
 
 
 
     return <>
         <TransformControls
-            ref={ref}
+            ref={transformControls}
             {...props}
         />
     </>;

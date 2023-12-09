@@ -32,7 +32,8 @@ export function getJsonFromMesh(mesh: Mesh): MeshPropsEntity
     "quaternionX": mesh.quaternion.x,
     "quaternionY": mesh.quaternion.y,
     "quaternionZ": mesh.quaternion.z,
-    "quaternionW": mesh.quaternion.w
+    "quaternionW": mesh.quaternion.w,
+    "gltf": mesh.userData.gltf
 });
     return {
             "positionX": mesh.position.x,
@@ -44,7 +45,8 @@ export function getJsonFromMesh(mesh: Mesh): MeshPropsEntity
             "quaternionX": mesh.quaternion.x,
             "quaternionY": mesh.quaternion.y,
             "quaternionZ": mesh.quaternion.z,
-            "quaternionW": mesh.quaternion.w
+            "quaternionW": mesh.quaternion.w,
+            "gltf": mesh.userData.gltf
     }
 }
 

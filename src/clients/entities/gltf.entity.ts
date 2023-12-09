@@ -1,13 +1,7 @@
-export enum ImageType {
-    Texture = 'texture',
-    Exhibit = 'exhibit',
-    Geometry = 'geometry'
-}
-export interface ImageEntity {
+
+export interface GltfEntity {
     id: string,
     name: string,
     path: string,
-    purpose: ImageType,
     isActive: boolean,
-    createdAt: string,
 }

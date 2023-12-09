@@ -4,7 +4,7 @@ import {Euler} from "three/src/math/Euler";
 import ExhibitMaterialEntity, {DefaultExhibitMaterialEntity} from "./exhibit-material.entity";
 import ExhibitGeometryEntity, {DefaultExhibitGeometryEntity} from "./exhibit-geometry.entity";
 import { v4 as uuid } from 'uuid';
-import ExhibitMeshFactory from "../factories/exhibit-mesh.factory";
+import {GltfEntity} from "./gltf.entity";
 export interface MeshPropsEntity {
     positionX: Vector3['x']
     positionY:  Vector3['y']
@@ -16,6 +16,7 @@ export interface MeshPropsEntity {
     rotationX: Euler['x']
     rotationY: Euler['y']
     rotationZ: Euler['z']
+    gltf?: GltfEntity
 }
 export default interface ExhibitMeshEntity extends MeshPropsEntity{
     id: string

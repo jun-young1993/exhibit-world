@@ -15,6 +15,10 @@ https://devdojo.com/pines/docs/context-menu
 // 리액트 icons
 https://react-icons.github.io/react-icons/
 
+// fiber example
+- 신발 gltf , 클릭시 모달 color picker, 오버레이 텍스트 , 스냅샷 예제
+https://codesandbox.io/p/sandbox/shoe-configurator-qxjoj?file=%2Fsrc%2FApp.js%3A59%2C26
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
