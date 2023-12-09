@@ -235,7 +235,8 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                     )
                 })}
             </>
-        },{
+        }
+        ,{
             name: MeshEditItemName.Gltf,
             icon: PiCirclesThreeBold,
             element: <>
@@ -246,8 +247,11 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                                 mesh.userData.gltf = gltf;
                                 meshService.update();
                                 PreloadGltf(mesh, (glb, glbMesh) => {
-                                    mesh.geometry = glbMesh.geometry;
-                                    mesh.material = glbMesh.material;
+                                    if(glbMesh instanceof Mesh){
+                                        mesh.geometry = glbMesh.geometry;
+                                        mesh.material = glbMesh.material;
+                                    }
+
                                 })
                             }}
                         >

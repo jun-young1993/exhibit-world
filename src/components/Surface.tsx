@@ -1,29 +1,28 @@
 import {MeshProps, ThreeEvent, useThree} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
-import {BufferGeometry, Material, Mesh} from "three";
+import {Group, Mesh} from "three";
 import {
     useCallback, useEffect, useRef, useState,
 } from "react";
-import {Html, useGLTF} from "@react-three/drei";
 import meshSelectedOnPointerEventEmitter from "../events/mesh-selected.event";
-import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import GltfClient from "../clients/gltf.client";
-import {GltfEntity} from "../clients/entities/gltf.entity";
 import PreloadGltf from "../utills/preload-gltf";
+import {ThemeProvider} from "@material-tailwind/react";
+import {Html} from "@react-three/drei";
 
 export interface SurfaceProps extends MeshProps{
     onSelected?: (mesh: Mesh) => void
     select?: boolean
     userData: {[key: string]: any}
+    isGroup?: boolean
 }
 
-
-
 export default function Surface(props: SurfaceProps) {
+
     const { selected , select } = selectedMeshStore();
     const [material , setMaterial] = useState(props.material);
     const [geometry, setGeometry] = useState(props.geometry);
     const { scene } = useThree();
+    const [group, setGroup] = useState<Group|null>(null);
     const [showContext, setShowContext] = useState<boolean>(false);
 
     const handleClick = useCallback((e:  ThreeEvent<MouseEvent>) => {
@@ -48,6 +47,7 @@ export default function Surface(props: SurfaceProps) {
 
     useEffect(() => {
         PreloadGltf(props,(glb, mesh) => {
+
             setMaterial(mesh.material);
             setGeometry(mesh.geometry);
         });
@@ -56,19 +56,34 @@ export default function Surface(props: SurfaceProps) {
 
     return (
         <>
-         <mesh
-             {...props}
-             onClick={handleClick}
-             onContextMenu={handleContextMenu}
-             material={material}
-             geometry={geometry}
-             onPointerUp={(e) => {
-                 if(isCurrentTarget()){
-                     meshSelectedOnPointerEventEmitter.emit(`${selected?.uuid}`, selected);
-                 }
-             }}
-         >
-        </mesh>
+            <mesh
+                {...props}
+                onClick={handleClick}
+                onContextMenu={handleContextMenu}
+                material={material}
+                geometry={geometry}
+                onPointerUp={(e) => {
+                    console.log('e',e);
+                    if(isCurrentTarget()){
+                        meshSelectedOnPointerEventEmitter.emit(`${selected?.uuid}`, selected);
+                    }
+                }}
+            >
+                <Html
+                    position={[2, 0, 2]}
+                    zIndexRange={[90000002,90000003]}
+                >
+                    {isCurrentTarget() &&
+                    <div onClick={(event) => {
+                        event.stopPropagation();
+                        console.log('hi')
+                    }}>
+                        <h1>hihi</h1>
+                    </div>
+                    }
+                </Html>
+            </mesh>
+
         </>
     )
 }
