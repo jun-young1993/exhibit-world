@@ -1,13 +1,14 @@
 import {MeshProps, ThreeEvent, useThree} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
-import {Group, Mesh} from "three";
-import {
-    useCallback, useEffect, useRef, useState,
-} from "react";
+import {FrontSide, Group, Mesh, NearestFilter, TextureLoader} from "three";
+import {useCallback, useEffect, useState,} from "react";
 import meshSelectedOnPointerEventEmitter from "../events/mesh-selected.event";
 import PreloadGltf from "../utills/preload-gltf";
-import {ThemeProvider} from "@material-tailwind/react";
 import {Html} from "@react-three/drei";
+import {GrDocumentImage} from "react-icons/gr";
+import IconButton, {IconButtonType} from "./icon-button";
+import ImageClient from "../clients/image.client";
+import {getSingleMaterial} from "../utills/mesh-info.utills";
 
 export interface SurfaceProps extends MeshProps{
     onSelected?: (mesh: Mesh) => void
@@ -15,7 +16,7 @@ export interface SurfaceProps extends MeshProps{
     userData: {[key: string]: any}
     isGroup?: boolean
 }
-
+const imageClient = new ImageClient()
 export default function Surface(props: SurfaceProps) {
 
     const { selected , select } = selectedMeshStore();
@@ -53,7 +54,31 @@ export default function Surface(props: SurfaceProps) {
         });
     },[]);
 
+    if(isCurrentTarget()){
 
+
+        const texture = new TextureLoader().load(imageClient.getImageFileUrl("78699463-1e70-43e3-a60a-c434c897b286"));
+        if (selected instanceof Mesh) {
+            texture.wrapS = 1001;
+            texture.wrapT = 1001;
+            texture.magFilter = NearestFilter;
+
+            const material = getSingleMaterial(selected)
+            const cloneMaterail = material.clone();
+
+            //@ts-ignore
+            material.map = texture;
+
+            const materials = [
+                material,
+                cloneMaterail,
+
+            ];
+            selected.material = materials;
+
+            console.log(selected);
+        }
+    }
     return (
         <>
             <mesh
@@ -76,9 +101,18 @@ export default function Surface(props: SurfaceProps) {
                     {isCurrentTarget() &&
                     <div onClick={(event) => {
                         event.stopPropagation();
-                        console.log('hi')
                     }}>
-                        <h1>hihi</h1>
+                        <IconButton
+                            icon={<GrDocumentImage />}
+                            type={IconButtonType.FILE}
+                            description={"front texture image upload"}
+                            onChangeFile={(event) => {
+                                if(event.target.files instanceof FileList){
+                                    // console.log(selected);
+                                    // console.log(event.target.files[0]);
+                                }
+                            }}
+                        />
                     </div>
                     }
                 </Html>

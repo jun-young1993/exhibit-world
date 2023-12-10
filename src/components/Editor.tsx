@@ -12,7 +12,6 @@ import EditSidebar from "../lib/edit-controls/edit-sidebar";
 import MeshEditControls from "../lib/edit-controls/mesh-edit.controls";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import {useTransformControls} from "../context/transform-controls.context";
-import TooltipMenu from "./tooltip-menu";
 const meshClient = new MeshClient();
 
 function useMeshes() {
@@ -84,9 +83,6 @@ export default function Editor() {
                                 key={selected.uuid}
                                 mesh={selected}
                                 transformControls={transformControls}
-                            />
-                            <TooltipMenu
-                                mesh={selected}
                             />
                         </Fragment>
                     }
