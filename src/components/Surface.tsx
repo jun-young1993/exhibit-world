@@ -1,6 +1,6 @@
 import {MeshProps, ThreeEvent, useThree} from "@react-three/fiber";
 import selectedMeshStore from "../store/selected-mesh.store";
-import {FrontSide, Group, Mesh, NearestFilter, TextureLoader} from "three";
+import {BackSide, BoxGeometry, FrontSide, Group, Mesh, MeshBasicMaterial, NearestFilter, TextureLoader} from "three";
 import {useCallback, useEffect, useState,} from "react";
 import meshSelectedOnPointerEventEmitter from "../events/mesh-selected.event";
 import PreloadGltf from "../utills/preload-gltf";
@@ -8,7 +8,7 @@ import {Html} from "@react-three/drei";
 import {GrDocumentImage} from "react-icons/gr";
 import IconButton, {IconButtonType} from "./icon-button";
 import ImageClient from "../clients/image.client";
-import {getSingleMaterial} from "../utills/mesh-info.utills";
+import {getJsonFromGeometry, getSingleMaterial} from "../utills/mesh-info.utills";
 
 export interface SurfaceProps extends MeshProps{
     onSelected?: (mesh: Mesh) => void
@@ -57,26 +57,44 @@ export default function Surface(props: SurfaceProps) {
     if(isCurrentTarget()){
 
 
-        const texture = new TextureLoader().load(imageClient.getImageFileUrl("78699463-1e70-43e3-a60a-c434c897b286"));
+        const texture = new TextureLoader().load("http://158.180.82.177/api/v1/images/file/ae7fa7f8-d0e9-473c-b443-afac1c872951");
+
         if (selected instanceof Mesh) {
             texture.wrapS = 1001;
             texture.wrapT = 1001;
             texture.magFilter = NearestFilter;
 
-            const material = getSingleMaterial(selected)
-            const cloneMaterail = material.clone();
+            // const cloneMesh = selected.clone()
 
-            //@ts-ignore
-            material.map = texture;
-
+            const leftMaterial = new MeshBasicMaterial({map: texture});
+            const rightMaterial = new MeshBasicMaterial({map: texture});
+            const topMaterial = new MeshBasicMaterial();
+            const bottomMaterial = new MeshBasicMaterial();
+            const frontMaterial = new MeshBasicMaterial();
+            const backMaterial = new MeshBasicMaterial();
             const materials = [
-                material,
-                cloneMaterail,
-
+                leftMaterial,
+                rightMaterial,
+                topMaterial,
+                bottomMaterial,
+                frontMaterial,
+                backMaterial
             ];
-            selected.material = materials;
+            const cloneGeometry =  selected.geometry.clone();
+            const {width, height, depth} = getJsonFromGeometry(selected);
+            cloneGeometry.uuid = 'test';
+            console.log(width, height, depth);
+            const cloneMesh = new Mesh(
+                new BoxGeometry(width, height, depth),
+                materials
+            );
+            cloneMesh.position.copy(selected.position);
+            // cloneMesh.scale.copy(selected.scale);
+            cloneMesh.rotation.copy(selected.rotation);
+            cloneMesh.quaternion.copy(selected.quaternion);
 
-            console.log(selected);
+            scene.add(cloneMesh);
+
         }
     }
     return (

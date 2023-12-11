@@ -105,7 +105,7 @@ export function getJsonFromGeometry(mesh: Mesh): GeometryPropsEntity
     sphereBoundingBox.getCenter(center);
     const sphere = sphereBoundingBox.getBoundingSphere(new Sphere(center));
 
-    console.log('sphere.radius',sphere.radius);
+
 
     return {
         width: width,

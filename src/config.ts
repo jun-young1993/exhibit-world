@@ -1,4 +1,4 @@
-export const serverDomain = 'http://localhost:3000';
+export const serverDomain = 'http://158.180.82.177:80';
 
 
 // THREE
