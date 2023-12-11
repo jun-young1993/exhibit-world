@@ -1,7 +1,24 @@
+// naming rules
+enum = > ImageType
+type => Image
+interface => ImageEntity
+
+// grid-helper
 https://sbcode.net/react-three-fiber/grid-helper/
+
+// react-three-fiber 예제
 https://docs.pmnd.rs/react-three-fiber/getting-started/examples
+
 // 테일위드 css
 https://devdojo.com/pines/docs/context-menu
+
+// 리액트 icons
+https://react-icons.github.io/react-icons/
+
+// fiber example
+- 신발 gltf , 클릭시 모달 color picker, 오버레이 텍스트 , 스냅샷 예제
+https://codesandbox.io/p/sandbox/shoe-configurator-qxjoj?file=%2Fsrc%2FApp.js%3A59%2C26
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

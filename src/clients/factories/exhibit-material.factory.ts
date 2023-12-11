@@ -1,4 +1,12 @@
-import {Color, Material, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial, TextureLoader} from "three";
+import {
+    Color,
+    FrontSide,
+    Material,
+    MeshBasicMaterial,
+    MeshLambertMaterial,
+    MeshPhongMaterial,
+    TextureLoader
+} from "three";
 import ExhibitMaterialEntity, {MaterialType} from "../entities/exhibit-material.entity";
 import ImageClient from "../image.client";
 
@@ -25,7 +33,7 @@ export default class ExhibitMaterialFactory {
         }
         switch (this.entity.type) {
             case MaterialType.MeshBasicMaterial:
-                material = new MeshBasicMaterial({ color, opacity: this.entity.opacity, map: texture });
+                material = new MeshBasicMaterial({ color, opacity: this.entity.opacity, map: texture, side: FrontSide });
                 break;
             case MaterialType.MeshLambertMaterial:
                 material = new MeshLambertMaterial({ color, opacity: this.entity.opacity, map: texture });

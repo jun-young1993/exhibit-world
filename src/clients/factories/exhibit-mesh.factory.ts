@@ -2,6 +2,8 @@ import ExhibitMeshEntity from "../entities/exhibit-mesh.entity";
 import {Mesh} from "three";
 import ExhibitGeometryFactory from "./exhibit-geometry.factory";
 import ExhibitMaterialFactory from "./exhibit-material.factory";
+import {useGLTF} from "@react-three/drei";
+import GltfClient from "../gltf.client";
 
 export default class ExhibitMeshFactory {
     constructor(
@@ -21,6 +23,9 @@ export default class ExhibitMeshFactory {
         mesh.quaternion.set(this.entity.quaternionX, this.entity.quaternionY, this.entity.quaternionZ, this.entity.quaternionW);
         mesh.rotation.set(this.entity.rotationX, this.entity.rotationY, this.entity.rotationZ);
         mesh.uuid = this.entity.id;
+        mesh.userData.gltf = this.entity.gltf;
+
+
 
         return mesh;
     }
