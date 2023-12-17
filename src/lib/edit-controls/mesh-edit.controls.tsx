@@ -179,9 +179,10 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
             ),
             element: (
                 <>
-                    {transformItems.map(({name, icon}) => {
+                    {transformItems.map(({name, icon},index) => {
                         return (
                             <Sidebar.Item
+                                key={index}
                                 icon={icon}
                                 onClick={()=>{
                                     if(transformControls){
@@ -202,9 +203,10 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
             name: MeshEditItemName.Geometry,
             icon: TbGeometry,
             element: (<>
-                {Object.values(GeometryType).map((geometryType) => {
+                {Object.values(GeometryType).map((geometryType,index) => {
                     return (
                         <Sidebar.Item
+                            key={index}
                             onClick={() => {
                                 const geometryFactory = new ExhibitGeometryFactory(new DefaultExhibitGeometryEntity({
                                     id: mesh.geometry.uuid,

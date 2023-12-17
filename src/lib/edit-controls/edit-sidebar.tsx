@@ -1,12 +1,13 @@
 import {Sidebar} from "flowbite-react";
 import { HiMinus, HiPlus, HiMenu } from "react-icons/hi";
-import {DefaultExhibitMeshEntity} from "../../clients/entities/exhibit-mesh.entity";
-import ExhibitMeshFactory from "../../clients/factories/exhibit-mesh.factory";
 import MeshesStore from "../../store/meshes.store";
-import {useState} from "react";
-import MeshClient from "../../clients/mesh.client";
-import CreateBulkMeshDto from "../../clients/dto/mesh/exhibit-create-bulk-mesh.dto";
-const meshClient = new MeshClient();
+import {useEffect, useState} from "react";
+import GroupClient from "../../clients/group.client";
+import {useRecoilState} from "recoil";
+import {groupsFindAllAtom} from "../../store/recoil/groups.recoil";
+import {GroupEntity} from "../../clients/entities/group.entity";
+import {isNull} from "lodash";
+
 
 
 const theme = {
@@ -87,14 +88,21 @@ const theme = {
         "img": "mr-3 h-6 sm:h-7"
     }
 };
+
+interface EditSideBarInterface {
+    onAdd: () => void
+}
+
 /**
  * url - https://www.flowbite-react.com/docs/components/sidebar#
  *
  * @constructor
  */
-export default function EditSidebar() {
-    const { set } = MeshesStore();
+export default function EditSidebar(props: EditSideBarInterface) {
+
     const [ open , setOpen ] = useState<boolean>(true);
+
+
     return (
         <Sidebar
             theme={theme}
@@ -115,16 +123,7 @@ export default function EditSidebar() {
                                 onClick={(e:any) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    const defaultExhibitMeshEntity = new DefaultExhibitMeshEntity();
-                                    const defaultExhibitMeshFactory = new ExhibitMeshFactory(defaultExhibitMeshEntity);
-                                    
-                                    meshClient.createBulk(
-                                        new CreateBulkMeshDto(defaultExhibitMeshFactory.getEntity())
-                                    )
-                                    .then(() => {
-                                        set(defaultExhibitMeshFactory.get());
-                                    })
-                                    
+                                    props.onAdd();
                                 }}
                                 icon={HiPlus}
                             />

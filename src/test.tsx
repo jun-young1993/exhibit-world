@@ -1,6 +1,6 @@
 import {useGLTF} from "@react-three/drei";
 import {useRef} from "react";
-import Surface from "./components/Surface";
+import Surface_backup from "./components/Surface_backup";
 
 
 export default function Test(){
@@ -16,7 +16,7 @@ export default function Test(){
 
 
         {/*<group>*/}
-        {/*    <Surface*/}
+        {/*    <Surface_backup*/}
         {/*        key={nodes['Object_2'].uuid}*/}
         {/*        {...nodes['Object_2']}*/}
         {/*    />*/}

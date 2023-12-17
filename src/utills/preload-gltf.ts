@@ -1,7 +1,7 @@
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {BackSide, FrontSide, Group, Mesh, TextureLoader} from "three";
 import GltfClient from "../clients/gltf.client";
-import {SurfaceProps} from "../components/Surface";
+import {SurfaceProps} from "../components/Surface_backup";
 import {getSingleMaterial} from "./mesh-info.utills";
 import {createMultiMaterialObject} from "three/examples/jsm/utils/SceneUtils";
 

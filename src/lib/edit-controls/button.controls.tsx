@@ -1,6 +1,6 @@
 import {button, useControls} from "leva";
 import MeshesStore, {MeshesStoreInterface} from "../../store/meshes.store";
-import Surface from "../../components/Surface";
+import Surface_backup from "../../components/Surface_backup";
 import {MutableRefObject, ReactNode, useRef, useState} from "react";
 import selectedMeshStore from "../../store/selected-mesh.store";
 import {Mesh} from "three";

@@ -6,6 +6,8 @@ import ExhibitGeometryEntity, {DefaultExhibitGeometryEntity} from "./exhibit-geo
 import { v4 as uuid } from 'uuid';
 import {GltfEntity} from "./gltf.entity";
 import {GroupEntity} from "./group.entity";
+import AssociationEntity from "./association.entity";
+import GeometryEntity from "./geometry.entity";
 export interface MeshPropsEntity {
     positionX: Vector3['x']
     positionY:  Vector3['y']
@@ -19,30 +21,12 @@ export interface MeshPropsEntity {
     rotationZ: Euler['z']
     gltf?: GltfEntity
 }
-export default interface ExhibitMeshEntity extends MeshPropsEntity{
+export default interface MeshEntity extends MeshPropsEntity{
     id: string
     type: string | 'Object3D'
-    material: ExhibitMaterialEntity | DefaultExhibitMaterialEntity<ExhibitMaterialEntity>
-    geometry: ExhibitGeometryEntity | DefaultExhibitGeometryEntity<ExhibitGeometryEntity>
+    association: AssociationEntity
+    geometry: GeometryEntity
 }
 
-export type ExhibitMeshEntities = ExhibitMeshEntity[] | [];
 
-export class DefaultExhibitMeshEntity <ExhibitMeshEntity> {
-
-    id= uuid();
-    positionX= 0;
-    positionY=  0;
-    positionZ=  0;
-    quaternionX= 0;
-    quaternionY= 0;
-    quaternionZ= 0;
-    quaternionW= 0;
-    rotationX= 0;
-    rotationY= 0;
-    rotationZ= 0;
-    type= "";
-    material= new DefaultExhibitMaterialEntity();
-    geometry= new DefaultExhibitGeometryEntity();
-}
 

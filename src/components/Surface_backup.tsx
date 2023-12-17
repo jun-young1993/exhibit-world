@@ -17,7 +17,7 @@ export interface SurfaceProps extends MeshProps{
     isGroup?: boolean
 }
 const imageClient = new ImageClient()
-export default function Surface(props: SurfaceProps) {
+export default function Surface_backup(props: SurfaceProps) {
 
     const { selected , select } = selectedMeshStore();
     const [material , setMaterial] = useState(props.material);

@@ -4,19 +4,24 @@ import ExhibitGeometryFactory from "./exhibit-geometry.factory";
 import ExhibitMaterialFactory from "./exhibit-material.factory";
 import {useGLTF} from "@react-three/drei";
 import GltfClient from "../gltf.client";
+import MeshEntity from "../entities/mesh.entity";
+import GeometryFactory from "./geometry.factory";
+import MaterialFactory from "./material.factory";
 
-export default class ExhibitMeshFactory {
+export default class MeshFactory {
     constructor(
-        private entity: ExhibitMeshEntity
+        private entity: MeshEntity
     ) {
     }
 
     create(){
-        const geometryFactory = new ExhibitGeometryFactory(this.entity.geometry);
-        const materialFactory = new ExhibitMaterialFactory(this.entity.material);
+        const geometry = new GeometryFactory(this.entity.geometry).get();
+        const materials = new MaterialFactory(this.entity.association.material).get();
+
+
         const mesh = new Mesh(
-            geometryFactory.create(),
-            materialFactory.create()
+            geometry,
+            materials
         );
 
         mesh.position.set(this.entity.positionX, this.entity.positionY, this.entity.positionZ);
@@ -26,7 +31,7 @@ export default class ExhibitMeshFactory {
         mesh.userData.gltf = this.entity.gltf;
 
 
-        console.log(mesh);
+
         return mesh;
     }
     
