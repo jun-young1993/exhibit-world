@@ -15,12 +15,14 @@ import {isArray, isNull} from "lodash";
 import GroupClient from "../clients/group.client";
 import {GroupEntity} from "../clients/entities/group.entity";
 import GroupSurface from "./group-surface";
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
-import {groupsFindAllAtom, groupsFindAllSelector} from "../store/recoil/groups.recoil";
+import {RecoilRoot, useRecoilCallback, useRecoilState, useRecoilValue} from "recoil";
+import {groupIdsAtom, useAddGroupHook} from "../store/recoil/groups.recoil";
 import {selectedGroupSelector} from "../store/recoil/select-group.recoil";
 import {useThree} from "@react-three/fiber";
 import {Mesh, Object3D} from "three";
-import useSelectedMeshHook from "../hook/selected-mesh.hook";
+
+import useSelectedGroupHook from "../hook/selected-group.hook";
+
 const meshClient = new MeshClient();
 const groupClient = new GroupClient();
 
@@ -29,19 +31,19 @@ export default function Editor() {
 
     // mesh 의 상태가 변경될때마다 업데이트 해줘야함
     // 새로고침 전에 다른곳 리랜더링되면 돌아감
-    const [groups,setGroups] = useRecoilState(groupsFindAllAtom);
+    const groupIds = useRecoilValue(groupIdsAtom);
+    const addGroup = useAddGroupHook();
+    const selected = useSelectedGroupHook();
 
-
-    const selected = useSelectedMeshHook();
-    console.log(groups);
-    const transformControls = useTransformControls();
+    console.log(groupIds);
 
 
     return (
         <>
-            {groups.map((group) => {
+            {groupIds.map((groupIds) => {
+
                 return (
-                    <GroupSurface key={group.id} object={group} />
+                    <GroupSurface key={groupIds} uuid={groupIds} />
                 )
             })}
             {
@@ -62,21 +64,21 @@ export default function Editor() {
                             onAdd={() => {
                                 groupClient.createDefault()
                                     .then((groupEntity) => {
-                                        setGroups([groupEntity]);
+                                        addGroup(groupEntity);
                                     })
                             }}
                         />
-                        {selected &&
-                            <Fragment
-                                key={selected.uuid}
-                            >
-                                <MeshEditControls
-                                    key={selected.uuid}
-                                    mesh={selected as Mesh}
-                                    transformControls={transformControls}
-                                />
-                            </Fragment>
-                        }
+                        {/*{selected &&*/}
+                        {/*    <Fragment*/}
+                        {/*        key={selected.uuid}*/}
+                        {/*    >*/}
+                        {/*        <MeshEditControls*/}
+                        {/*            key={selected.uuid}*/}
+                        {/*            mesh={selected as Mesh}*/}
+                        {/*            transformControls={transformControls}*/}
+                        {/*        />*/}
+                        {/*    </Fragment>*/}
+                        {/*}*/}
                     </span>
             </Html>
         </>

@@ -4,7 +4,7 @@ import MeshesStore from "../../store/meshes.store";
 import {useEffect, useState} from "react";
 import GroupClient from "../../clients/group.client";
 import {useRecoilState} from "recoil";
-import {groupsFindAllAtom} from "../../store/recoil/groups.recoil";
+
 import {GroupEntity} from "../../clients/entities/group.entity";
 import {isNull} from "lodash";
 

@@ -5,7 +5,7 @@ import {selectedGroupSelector} from "../store/recoil/select-group.recoil";
 
 
 
-export default function useSelectedMeshHook(): Object3D | undefined
+export default function useSelectedGroupHook(): Object3D | undefined
 {
     const selectedUUID = useRecoilValue(selectedGroupSelector);
     const {scene} = useThree();

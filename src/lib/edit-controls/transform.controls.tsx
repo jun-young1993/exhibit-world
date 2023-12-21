@@ -1,7 +1,10 @@
 import {forwardRef, Ref, useEffect, useMemo, useRef} from "react";
 import {TransformControls} from "@react-three/drei";
 import {TransformControlsProps} from "@react-three/drei/core/TransformControls";
-import {useTransformControls} from "../../context/transform-controls.context";
+import {
+    runTransformControls,
+    useTransformControls
+} from "../../context/transform-controls.context";
 import {TransformControl} from "../../types/transform";
 
 
@@ -10,13 +13,27 @@ const EditTransformControls = forwardRef((props: TransformControlsProps, ref: Re
 
     const transformControls = useTransformControls();
 
-    if(transformControls){
-       if('current' in transformControls){
-           transformControls.current?.addEventListener('mouseup',() => {
-               console.log('mouseup');
-           })
-       }
+    const handleMouseUp = () => {
+        console.log(props.object);
     }
+    useEffect(() => {
+        runTransformControls(
+            transformControls,
+            (transformControls) => {
+                transformControls?.addEventListener('mouseUp',handleMouseUp);
+            }
+        )
+
+        return () => {
+            runTransformControls(
+                transformControls,
+                (transformControls) => {
+                    transformControls?.removeEventListener('mouseUp',handleMouseUp);
+                }
+            )
+        }
+    },[transformControls])
+
 
 
     return (

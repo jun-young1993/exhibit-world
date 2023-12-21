@@ -17,3 +17,11 @@ export function TransformControlsProvider({children}: any) {
 export function useTransformControls(){
     return useContext(TransformControlsContext);
 }
+
+
+export function runTransformControls(transformControls: Ref<TransformControl>, callback?:(transformControls:TransformControl) => void): void
+{
+    if(transformControls && 'current' in transformControls && callback){
+        callback(transformControls.current as TransformControl);
+    }
+}

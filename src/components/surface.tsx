@@ -22,17 +22,17 @@ export default function Surface(props: SurfaceProps) {
     const meshFactory = new MeshFactory(mesh).get();
 
     const { scene } = useThree();
-    const [, select] = useRecoilState(selectGroupAtom);
+    // const [, select] = useRecoilState(selectGroupAtom);
 
-    const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.stopPropagation();
-        select(meshFactory.uuid);
-    }
+    // const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    //     event.stopPropagation();
+    //     select(meshFactory.uuid);
+    // }
 
     return (
         <mesh
             {...meshFactory}
-            onClick={handleClick}
+            // onClick={handleClick}
         >
 
         </mesh>

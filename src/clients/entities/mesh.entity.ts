@@ -8,7 +8,8 @@ import {GltfEntity} from "./gltf.entity";
 import {GroupEntity} from "./group.entity";
 import AssociationEntity from "./association.entity";
 import GeometryEntity from "./geometry.entity";
-export interface MeshPropsEntity {
+
+export interface MeshObjectProps {
     positionX: Vector3['x']
     positionY:  Vector3['y']
     positionZ:  Vector3['z']
@@ -19,6 +20,8 @@ export interface MeshPropsEntity {
     rotationX: Euler['x']
     rotationY: Euler['y']
     rotationZ: Euler['z']
+}
+export interface MeshPropsEntity extends MeshObjectProps{
     gltf?: GltfEntity
 }
 export default interface MeshEntity extends MeshPropsEntity{
