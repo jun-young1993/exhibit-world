@@ -8,20 +8,10 @@ import {GltfEntity} from "./gltf.entity";
 import {GroupEntity} from "./group.entity";
 import AssociationEntity from "./association.entity";
 import GeometryEntity from "./geometry.entity";
+import {Object3DEntity} from "./object3D.entity";
 
-export interface MeshObjectProps {
-    positionX: Vector3['x']
-    positionY:  Vector3['y']
-    positionZ:  Vector3['z']
-    quaternionX: Quaternion['x']
-    quaternionY: Quaternion['y']
-    quaternionZ: Quaternion['z']
-    quaternionW: Quaternion['w']
-    rotationX: Euler['x']
-    rotationY: Euler['y']
-    rotationZ: Euler['z']
-}
-export interface MeshPropsEntity extends MeshObjectProps{
+
+export interface MeshPropsEntity extends Object3DEntity{
     gltf?: GltfEntity
 }
 export default interface MeshEntity extends MeshPropsEntity{

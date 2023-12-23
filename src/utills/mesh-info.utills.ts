@@ -1,10 +1,12 @@
-import {Box3, Color, Material, Matrix4, Mesh, MeshBasicMaterial, Sphere} from "three";
+import {Box3, Color, Group, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Sphere} from "three";
 import {MeshPropsEntity} from "../clients/entities/exhibit-mesh.entity";
 import {MaterialProps} from "@react-three/fiber";
 import {MaterialPropsEntity} from "../clients/entities/exhibit-material.entity";
 import PropertyMissingError from "../Exception/PropertyMissingError";
 import {GeometryPropsEntity} from "../clients/entities/exhibit-geometry.entity";
 import {Vector3} from "three/src/math/Vector3";
+import { GroupEntity } from "../clients/entities/group.entity";
+import {Object3DEntity} from "../clients/entities/object3D.entity";
 
 export function getSingleMaterial(mesh: Mesh): Material
 {
@@ -20,21 +22,23 @@ export function getSingleMaterial(mesh: Mesh): Material
 
     throw new Error('Mesh does not contain a valid material');
 }
-
+export function getJsonFromObject3D(object3D: Object3D): Object3DEntity
+{
+    return {
+        "positionX": object3D.position.x,
+        "positionY": object3D.position.y,
+        "positionZ": object3D.position.z,
+        "rotationX": object3D.rotation.x,
+        "rotationY": object3D.rotation.y,
+        "rotationZ": object3D.rotation.z,
+        "quaternionX": object3D.quaternion.x,
+        "quaternionY": object3D.quaternion.y,
+        "quaternionZ": object3D.quaternion.z,
+        "quaternionW": object3D.quaternion.w,
+    }
+}
 export function getJsonFromMesh(mesh: Mesh): MeshPropsEntity
-{console.log({
-    "positionX": mesh.position.x,
-    "positionY": mesh.position.y,
-    "positionZ": mesh.position.z,
-    "rotationX": mesh.rotation.x,
-    "rotationY": mesh.rotation.y,
-    "rotationZ": mesh.rotation.z,
-    "quaternionX": mesh.quaternion.x,
-    "quaternionY": mesh.quaternion.y,
-    "quaternionZ": mesh.quaternion.z,
-    "quaternionW": mesh.quaternion.w,
-    "gltf": mesh.userData.gltf
-});
+{
     return {
             "positionX": mesh.position.x,
             "positionY": mesh.position.y,
