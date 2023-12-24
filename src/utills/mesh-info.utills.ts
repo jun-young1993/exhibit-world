@@ -22,21 +22,35 @@ export function getSingleMaterial(mesh: Mesh): Material
 
     throw new Error('Mesh does not contain a valid material');
 }
-export function getJsonFromObject3D(object3D: Object3D): Object3DEntity
+export function getJsonFromObject3D(group: Group): Object3DEntity
 {
+    const cloneObject = group.clone();
+    cloneObject.rotation.set(0,0,0);
+    cloneObject.quaternion.set(0,0,0,0);
+    const boundingBox = new Box3();
+    boundingBox.setFromObject(cloneObject);
+    const {x: scaleX, y: scaleY, z: scaleZ} = boundingBox.getSize(new Vector3());
+    console.log(        scaleX,
+        scaleY,
+        scaleZ);
     return {
-        "positionX": object3D.position.x,
-        "positionY": object3D.position.y,
-        "positionZ": object3D.position.z,
-        "rotationX": object3D.rotation.x,
-        "rotationY": object3D.rotation.y,
-        "rotationZ": object3D.rotation.z,
-        "quaternionX": object3D.quaternion.x,
-        "quaternionY": object3D.quaternion.y,
-        "quaternionZ": object3D.quaternion.z,
-        "quaternionW": object3D.quaternion.w,
+        "positionX": group.position.x,
+        "positionY": group.position.y,
+        "positionZ": group.position.z,
+        "rotationX": group.rotation.x,
+        "rotationY": group.rotation.y,
+        "rotationZ": group.rotation.z,
+        "quaternionX": group.quaternion.x,
+        "quaternionY": group.quaternion.y,
+        "quaternionZ": group.quaternion.z,
+        "quaternionW": group.quaternion.w,
+        scaleX,
+        scaleY,
+        scaleZ
     }
 }
+
+
 export function getJsonFromMesh(mesh: Mesh): MeshPropsEntity
 {
     return {
@@ -96,20 +110,24 @@ export function getJsonFromMaterial(mesh: Mesh): MaterialPropsEntity
 
 export function getJsonFromGeometry(mesh: Mesh): GeometryPropsEntity
 {
+    const cloneMesh = mesh.clone();
+    cloneMesh.rotation.set(0,0,0)
+    console.log('mesh.position, mesh.rotation',mesh.position, mesh.rotation);
     const geometry = mesh.geometry;
-
     const boundingBox = new Box3();
-    boundingBox.setFromObject(mesh);
+    boundingBox.setFromObject(cloneMesh);
     const size = new Vector3();
-    const {x: width , y: height, z: depth} = boundingBox.getSize(size);
+    const getSize = boundingBox.getSize(size);
+    const {x: width , y: height, z: depth} = size;
+    console.log(size, getSize);
 
     const sphereBoundingBox = new Box3();
     sphereBoundingBox.setFromObject(mesh)
     const center = new Vector3();
     sphereBoundingBox.getCenter(center);
     const sphere = sphereBoundingBox.getBoundingSphere(new Sphere(center));
-
-
+    geometry.computeBoundingSphere();
+    geometry.computeBoundingBox();
 
     return {
         width: width,
@@ -118,4 +136,11 @@ export function getJsonFromGeometry(mesh: Mesh): GeometryPropsEntity
         radius: sphere.radius,
         type: geometry.type
     }
+}
+
+export function getMeshesByGroup(group: Group)
+{
+    return group.children.filter((object) => {
+        return (object instanceof Mesh) ? true : false;
+    }) as Mesh[] | []
 }

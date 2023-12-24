@@ -7,14 +7,21 @@ import {ThreeEvent, useThree} from "@react-three/fiber";
 import {Group, Mesh} from "three";
 import GroupFactory from "../clients/factories/group.factory";
 import {groupAtom} from "../store/recoil/groups.recoil";
+import {Html} from "@react-three/drei";
+import {GrDocumentImage} from "react-icons/gr";
+import IconButton, {IconButtonType} from "./icon-button";
+import {HiCubeTransparent} from "react-icons/hi";
+import {useControls} from "leva";
 
 
 export interface GroupSurface {
     // object: GroupEntity
     uuid: GroupEntity['id']
+    selected?: boolean
 }
 export default function GroupSurface(props: GroupSurface){
     const [group, setGroup] = useRecoilState(groupAtom(props.uuid));
+    const selected = props.selected;
     const [, select] = useRecoilState(selectGroupAtom);
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
         event.stopPropagation();
@@ -31,6 +38,7 @@ export default function GroupSurface(props: GroupSurface){
             {meshes.map((mesh) => {
                 return <Surface object={mesh} key={mesh.id}/>
             })}
+
 
         </group>
     )

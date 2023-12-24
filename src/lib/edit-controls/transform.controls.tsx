@@ -1,53 +1,72 @@
-import {forwardRef, MutableRefObject, Ref, useEffect, useMemo, useRef} from "react";
+import {forwardRef, MutableRefObject, Ref, useEffect, useMemo, useRef, useState} from "react";
 import {TransformControls} from "@react-three/drei";
 import {TransformControlsProps} from "@react-three/drei/core/TransformControls";
 import {
     runTransformControls,
     useTransformControls
 } from "../../context/transform-controls.context";
-import {TransformControl} from "../../types/transform";
+import {TransformControl, TransformMode} from "../../types/transform";
 import {useRecoilState} from "recoil";
 import {groupAtom} from "../../store/recoil/groups.recoil";
-import {Object3D, Object3DEventMap} from "three";
-import {getJsonFromObject3D} from "../../utills/mesh-info.utills";
+import {Box3, Group, Mesh, Object3D, Object3DEventMap, Vector3} from "three";
+import {getJsonFromGeometry, getJsonFromObject3D} from "../../utills/mesh-info.utills";
 import GroupClient from "../../clients/group.client";
 import UpdateGroupDto from "../../clients/dto/group/update-group.dto";
+import {useControls} from "leva";
+import GroupService from "../../services/group.service";
+import GeometryService from "../../services/geometry.service";
+import {useThree} from "@react-three/fiber";
 
 const groupClient = new GroupClient();
 
 interface EditTransformControlsProps extends TransformControlsProps {
-    object:  Object3D
+    object:  Group
 }
 
+
+const groupService = new GroupService();
+const geometryService = new GeometryService();
 const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref) => {
 
     const object = props.object;
 
+    const {scene} = useThree();
+
+
+
     const [group, setGroup] = useRecoilState(groupAtom(object.uuid))
+
     const transformControls = useTransformControls();
-
     const handleMouseUp = () => {
-        const updateObject = {
-            ...group,
-            ...getJsonFromObject3D(object)
-        };
+        runTransformControls(transformControls,(transformControls) => {
+                groupService.update(object)
+                    .then((updatedGroup) => {
+                        setGroup(updatedGroup);
+                    })
+                    .catch((exception) => {
+                        console.log(exception);
+                    });
 
-        groupClient.update(
-            object.uuid,
-            new UpdateGroupDto(getJsonFromObject3D(object))
-        )
-            .then((response) => {
-            // 에러 발생시 원복
-                setGroup(updateObject);
-            })
-            .catch((exception) => {
-                // 에러 발생시 원복
-            });
-
-
-
+        })
 
     }
+
+    const {mode} = useControls("transform", {
+        mode: {
+            value: TransformMode.Translate,
+            options: Object.values(TransformMode),
+        }
+    });
+
+    useEffect(() => {
+        runTransformControls(
+            transformControls,
+            (transformControls) => {
+                transformControls?.setMode(mode);
+            }
+        )
+    },[mode])
+
     useEffect(() => {
         runTransformControls(
             transformControls,
@@ -69,10 +88,12 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
 
 
     return (
-        <TransformControls
-            ref={transformControls}
-            {...props}
-        />
+
+            <TransformControls
+                ref={transformControls}
+                {...props}
+            />
+
 
     );
 });

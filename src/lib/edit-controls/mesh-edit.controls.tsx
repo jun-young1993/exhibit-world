@@ -155,7 +155,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
 
     const meshService = new MeshService(mesh);
     const materialService = new MaterialService(mesh);
-    const geometryService = new GeometryService(mesh);
+    // const geometryService = new GeometryService(mesh);
 
     const transformItems: transformItemInterface[] = [{
         name: TransformMode.Translate,
@@ -213,7 +213,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
                                     type: geometryType
                                 }));
                                 mesh.geometry = geometryFactory.create();
-                                geometryService.update();
+                                // geometryService.update();
                             }}
                         >
                             {geometryType}
@@ -280,7 +280,7 @@ export default function MeshEditControls({ mesh, transformControls }: MeshEditCo
     ]
 
     const onTransformControlsMouseUp = () => {
-        geometryService.update();
+        // geometryService.update();
         meshService.update();
     }
     useEffect(() => {

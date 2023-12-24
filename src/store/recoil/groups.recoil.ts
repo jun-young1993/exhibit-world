@@ -1,6 +1,16 @@
-import {atom, atomFamily, selector, selectorFamily, useRecoilCallback, useRecoilValue, useSetRecoilState} from "recoil"
+import {
+    atom,
+    atomFamily,
+    selector,
+    selectorFamily,
+    useRecoilCallback,
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState
+} from "recoil"
 import GroupClient from "../../clients/group.client";
 import {GroupEntity} from "../../clients/entities/group.entity";
+import {selectGroupAtom} from "./select-group.recoil";
 
 const groupClient = new GroupClient();
 
@@ -67,5 +77,31 @@ export function useAddGroupHook(){
             },
         [],
     )
+}
 
+export function useRemoveGroupHook(){
+    const [,setSelectGroup] = useRecoilState(selectGroupAtom);
+
+    const removeGroupId = useRecoilCallback(
+        ({snapshot, set}) =>
+            (uuid: GroupEntity['id']) => {
+                const groupIds = snapshot.getLoadable(groupIdsAtom).getValue();
+                const removedGroupIds = groupIds.filter(group => group !== uuid);
+                setSelectGroup(null);
+                set(groupIdsAtom,[...removedGroupIds]);
+            }
+    )
+
+    return useRecoilCallback(
+        ({snapshot, set}) =>
+            (groupEntity: GroupEntity) => {
+                const groups = snapshot.getLoadable(groupsAllAtom).getValue();
+                const removedGroups = groups.filter((group) => group.id !== groupEntity.id);
+
+                set(groupsAllAtom,[...removedGroups]);
+                removeGroupId(groupEntity.id);
+
+            },
+    []
+    )
 }

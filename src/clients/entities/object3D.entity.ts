@@ -12,5 +12,8 @@ export interface Object3DEntity {
     quaternionW: Quaternion['w']
     rotationX: Euler['x']
     rotationY: Euler['y']
-    rotationZ: Euler['z']
+    rotationZ: Euler['z'],
+    scaleX: number,
+    scaleY: number,
+    scaleZ: number
 }

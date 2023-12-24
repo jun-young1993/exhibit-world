@@ -27,6 +27,7 @@ export default class MeshFactory {
         mesh.position.set(this.entity.positionX, this.entity.positionY, this.entity.positionZ);
         mesh.quaternion.set(this.entity.quaternionX, this.entity.quaternionY, this.entity.quaternionZ, this.entity.quaternionW);
         mesh.rotation.set(this.entity.rotationX, this.entity.rotationY, this.entity.rotationZ);
+        // mesh.scale.set(this.entity.scaleX, this.entity.scaleY, this.entity.scaleZ);
         mesh.uuid = this.entity.id;
         mesh.userData.gltf = this.entity.gltf;
 

@@ -5,35 +5,49 @@ import {
     getJsonFromGeometry,
     getJsonFromMaterial,
     getJsonFromMesh,
-    getMaterialId,
+    getMaterialId, getMeshesByGroup,
     getSingleMaterial
 } from "../utills/mesh-info.utills";
-import {Mesh} from "three";
+import {Group, Mesh} from "three";
 import MaterialClient from "../clients/material.client";
 import UpdateMaterialDto from "../clients/dto/material/update-material.dto";
 import GeometryClient from "../clients/geometry.client";
 import UpdateGeometryDto from "../clients/dto/geometry/update-geometry.dto";
+import UpdateResult from "../clients/entities/update-result";
+import GroupClient from "../clients/group.client";
+import {GroupEntity} from "../clients/entities/group.entity";
 
 
 export default class GeometryService {
-    private mesh: Mesh
-    private client: GeometryClient;
-    constructor(mesh: Mesh) {
-        this.mesh = mesh;
-        this.client = new GeometryClient();
-    }
-    update()
-    {
 
-        this.client.update(
-            getGeometryId(this.mesh),
-            new UpdateGeometryDto(getJsonFromGeometry(this.mesh)))
-            .then((response) => {
-                console.log(response);
+    private client: GeometryClient;
+    private groupClient: GroupClient;
+    constructor() {
+
+        this.client = new GeometryClient();
+        this.groupClient = new GroupClient();
+    }
+    update(group: Group)
+    {
+        return new Promise<UpdateResult[]>((resolve, reject) => {
+            const updateGeometryPromises: Promise<UpdateResult>[] = [];
+            getMeshesByGroup(group).forEach((mesh) => {
+                const updateGeometryPromise = this.client.update(
+                    getGeometryId(mesh),
+                    new UpdateGeometryDto(getJsonFromGeometry(mesh)))
+
+
+                updateGeometryPromises.push(updateGeometryPromise);
             })
-            .catch((exception) => {
-                console.log(exception);
-            })
+
+            Promise.all(updateGeometryPromises)
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch(reject)
+        })
+
+
 
     }
 }

@@ -87,6 +87,26 @@ export default class GroupClient extends Client {
     }
 
     /**
+     * Relative a Group
+     */
+    public find(uuid: GroupEntity['id']){
+        return new Promise<GroupEntity>((resolve, reject) => {
+            this.fetch(`/${uuid}`,{
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                },
+            })
+                .then((response) => response.json())
+                .then((group: GroupEntity) => {
+                    resolve(group);
+                })
+                .catch((exception) => reject(exception));
+        })
+    }
+
+    /**
      * group a update
      *
      * @param uuid
@@ -102,6 +122,22 @@ export default class GroupClient extends Client {
                     'accept': '*/*'
                 },
                 body: JSON.stringify(dto)
+            })
+                .then((response) => response.json())
+                .then((response) => resolve(response))
+                .catch((exception) => reject(exception));
+        })
+    }
+
+    public remove(uuid: GroupEntity['id']): Promise<GroupEntity>
+    {
+        return new Promise((resolve, reject) => {
+            this.fetch(`/${uuid}`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                }
             })
                 .then((response) => response.json())
                 .then((response) => resolve(response))

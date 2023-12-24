@@ -19,6 +19,9 @@ https://react-icons.github.io/react-icons/
 - 신발 gltf , 클릭시 모달 color picker, 오버레이 텍스트 , 스냅샷 예제
 https://codesandbox.io/p/sandbox/shoe-configurator-qxjoj?file=%2Fsrc%2FApp.js%3A59%2C26
 
+// leva control 사용설명서
+https://leva.pmnd.rs/?path=/story/inputs-button--disabled-button
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
