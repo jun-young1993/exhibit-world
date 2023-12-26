@@ -30,9 +30,7 @@ export function getJsonFromObject3D(group: Group): Object3DEntity
     const boundingBox = new Box3();
     boundingBox.setFromObject(cloneObject);
     const {x: scaleX, y: scaleY, z: scaleZ} = boundingBox.getSize(new Vector3());
-    console.log(        scaleX,
-        scaleY,
-        scaleZ);
+
     return {
         "positionX": group.position.x,
         "positionY": group.position.y,
