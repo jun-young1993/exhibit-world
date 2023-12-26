@@ -49,6 +49,7 @@ export default function Editor() {
             }
 
             <OrbitControls
+                target={selected ? selected.position : undefined}
                 makeDefault
                 minPolarAngle={0}
                 maxPolarAngle={Math.PI / 1.75}
