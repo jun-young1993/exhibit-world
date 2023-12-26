@@ -6,6 +6,8 @@ import {cameraFar} from "../config";
 import {TransformControlsProvider} from "../context/transform-controls.context";
 import {RecoilRoot, useRecoilState} from "recoil";
 import {selectGroupAtom} from "../store/recoil/select-group.recoil";
+import CanvasLoader from "./CanvasLoader";
+import { Suspense } from "react";
 
 
 export default function ExhibitCanvas() {
@@ -28,9 +30,11 @@ export default function ExhibitCanvas() {
                         <Sky sunPosition={[100, 20, 100]} />
                     {/*        /!*<Player />*!/*/}
                         <ambientLight intensity={5} />
-                            <TransformControlsProvider>
-                                <Editor />
-                            </TransformControlsProvider>
+                            <Suspense fallback={<CanvasLoader />}>
+                                <TransformControlsProvider>
+                                    <Editor />
+                                </TransformControlsProvider>
+                            </Suspense>
                     </Canvas>
                 </KeyboardControls>
         </>

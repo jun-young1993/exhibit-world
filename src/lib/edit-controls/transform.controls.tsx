@@ -97,5 +97,5 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
 
     );
 });
-
+EditTransformControls.displayName = "EditTransformControls";
 export default EditTransformControls;
