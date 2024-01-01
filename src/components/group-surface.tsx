@@ -1,26 +1,44 @@
 import {GroupEntity} from "../clients/entities/group.entity";
-import {useState} from "react";
-import Surface from "./surface";
 import {useRecoilState} from "recoil";
 import {selectGroupAtom} from "../store/recoil/select-group.recoil";
-import {ThreeEvent, useThree} from "@react-three/fiber";
-import {Group, Mesh} from "three";
+import {ThreeEvent} from "@react-three/fiber";
 import GroupFactory from "../clients/factories/group.factory";
 import {groupAtom} from "../store/recoil/groups.recoil";
-import {Html} from "@react-three/drei";
-import {GrDocumentImage} from "react-icons/gr";
-import IconButton, {IconButtonType} from "./icon-button";
-import {HiCubeTransparent} from "react-icons/hi";
-import {useControls} from "leva";
+import { useLoader } from '@react-three/fiber'
+
+import GithubStorageClient from "../clients/github-storage.client";
+import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {useEffect, useState} from "react";
 
 
 export interface GroupSurface {
-    // object: GroupEntity
     uuid: GroupEntity['id']
     selected?: boolean
 }
+
+const githubStorageClient = new GithubStorageClient();
+const gltfLoader = new GLTFLoader();
 export default function GroupSurface(props: GroupSurface){
+    const [object, setObject] = useState<GLTF | null>(null)
+
+
+
+
+
     const [group, setGroup] = useRecoilState(groupAtom(props.uuid));
+
+    useEffect(() => {
+        if(object === null){
+            githubStorageClient.findOne(group.githubStorage.id)
+                .then((content) => {
+                    console.log("=>(group-surface.tsx:35) content", content);
+                    gltfLoader.load(content.download_url,(gltf) => {
+                        console.log("=>(group-surface.tsx:27) gltf", gltf);
+                        setObject(gltf);
+                    })
+                })
+        }
+    },[object])
     const selected = props.selected;
     const [, select] = useRecoilState(selectGroupAtom);
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
@@ -29,18 +47,29 @@ export default function GroupSurface(props: GroupSurface){
     }
     const groupFactory = new GroupFactory(group).get();
     const meshes = group.mesh;
-    console.log("=>(group-surface.tsx:33) groupFactory", group);
+
     return (
-        <group
-            onPointerUp={handleClick}
-            {...groupFactory}
-
-        >
-            {meshes.map((mesh) => {
-                return <Surface object={mesh} key={mesh.id}/>
-            })}
-
-
-        </group>
+        <>
+            {object &&
+                <primitive
+                    uuid={group.id}
+                    onPointerUp={handleClick}
+                    object={object.scene}
+                    position={groupFactory.position}
+                    rotation={groupFactory.rotation}
+                    scale={groupFactory.scale}
+                />}
+        </>
+        // <group
+        //     onPointerUp={handleClick}
+        //     {...groupFactory}
+        //
+        // >
+        //     {meshes.map((mesh) => {
+        //         return <Surface object={mesh} key={mesh.id}/>
+        //     })}
+        //
+        //
+        // </group>
     )
 }

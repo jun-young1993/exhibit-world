@@ -36,13 +36,13 @@ export default class GeometryFactory {
                 throw Error(`${this.entity.type}: Geometry was not correctly generated`)
                 break;
         }
-        geometryClient.getAttribute(this.entity.id,'position')
-            .then((response) => {
-                console.log(response)
-            })
-            .catch((reject) => {
-                console.log(reject);
-            })
+        // geometryClient.getAttribute(this.entity.id,'position')
+        //     .then((response) => {
+        //         console.log(response)
+        //     })
+        //     .catch((reject) => {
+        //         console.log(reject);
+        //     })
 
         return geometry;
     }

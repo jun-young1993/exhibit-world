@@ -28,18 +28,18 @@ export default function Editor() {
 
     });
 
-    useEffect(() => {
-        const gltfLoader = new GLTFLoader();
-        const url = 'http://localhost:3000/api/v1/gltf/file/2f376b99-6198-4c96-b8d4-281f3da0e559';
-        gltfLoader.load(
-            url,
-            (gltf) => {
-                // gltf.scene
-                console.log(gltf);
-
-            }
-        )
-    },[])
+    // useEffect(() => {
+    //     const gltfLoader = new GLTFLoader();
+    //     const url = 'http://localhost:3000/api/v1/gltf/file/2f376b99-6198-4c96-b8d4-281f3da0e559';
+    //     gltfLoader.load(
+    //         url,
+    //         (gltf) => {
+    //             // gltf.scene
+    //             console.log(gltf);
+    //
+    //         }
+    //     )
+    // },[])
 
 
 
