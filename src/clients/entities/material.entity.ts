@@ -4,7 +4,8 @@ import TextureEntity from "./texture.entity";
 export enum MaterialType {
     MeshBasicMaterial = 'MeshBasicMaterial',
     MeshLambertMaterial = 'MeshLambertMaterial',
-    MeshPhongMaterial = 'MeshPhongMaterial'
+    MeshPhongMaterial = 'MeshPhongMaterial',
+    MeshStandardMaterial = 'MeshStandardMaterial'
 }
 
 export interface MaterialPropsEntity {

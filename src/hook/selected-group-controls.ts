@@ -1,5 +1,5 @@
 import {button, folder, useControls} from "leva";
-import {Group, Mesh} from "three";
+import {Group, Mesh, Object3D} from "three";
 import {runTransformControls, useTransformControls} from "../context/transform-controls.context";
 import {TransformMode} from "../types/transform";
 import {useEffect, useState} from "react";
@@ -7,21 +7,22 @@ import {useAddGroupHook, useRemoveGroupHook} from "../store/recoil/groups.recoil
 import GroupClient from "../clients/group.client";
 import useSelectedGroupHook from "../store/recoil/select-group.recoil";
 
+
 enum ControlsAddType  {
     DEFAULT = 'default',
     CANVAS = 'canvas'
 }
-interface SelectedControls {
+interface SelectedGroupControls {
 
 }
 const groupClient = new GroupClient();
-export default function useSelectedControls(props: SelectedControls)
+export default function useSelectedGroupControls(props: SelectedGroupControls)
 {
     const selected = useSelectedGroupHook();
-
     const transformControls = useTransformControls();
     const addGroup = useAddGroupHook();
     const removeGroup = useRemoveGroupHook();
+
     const handleRemoveObject = () => {
         if(selected){
             groupClient.remove(selected.uuid)
@@ -45,36 +46,10 @@ export default function useSelectedControls(props: SelectedControls)
         }
     });
 
-    const meshes = useControls('meshes', () => {
-        const meshes = folder<any>({
-           'meshes' : folder<any>({})
-        });
-
-
-        selected?.children.map((mesh, index) => {
-            meshes.schema.meshes.schema[`mesh-${index}`] = folder({
-                [`type-${index}`] : mesh.type
-            });
-            if(mesh instanceof Mesh){
-                if(mesh.material instanceof Array){
-                    mesh.material.forEach((material,index) => {
-                        // materialFolder[`material-${index}`] = folder({
-                        //     'type' : material.type
-                        // })
-
-                    })
-
-                }
-            }
-
-        })
-
-        return {
-            'meshes' : meshes
-        };
-    },[selected])
+    // useSelectedObjectControls();
 
     useEffect(() => {
+        console.log(selected);
         runTransformControls(
             transformControls,
             (transformControls) => {

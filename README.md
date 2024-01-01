@@ -3,6 +3,9 @@ enum = > ImageType
 type => Image
 interface => ImageEntity
 
+// drei apis doc threejs api 문서
+https://github.com/pmndrs/drei
+
 // grid-helper
 https://sbcode.net/react-three-fiber/grid-helper/
 

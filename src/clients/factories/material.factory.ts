@@ -4,7 +4,7 @@ import {
     Material,
     MeshBasicMaterial,
     MeshLambertMaterial,
-    MeshPhongMaterial,
+    MeshPhongMaterial, MeshStandardMaterial,
     TextureLoader
 } from "three";
 
@@ -48,6 +48,9 @@ export default class MaterialFactory {
                 break;
             case MaterialType.MeshPhongMaterial:
                 material = new MeshPhongMaterial({ color, opacity: entity.opacity, map: texture });
+                break;
+            case MaterialType.MeshStandardMaterial:
+                material = new MeshStandardMaterial({color, opacity: entity.opacity, map: texture});
                 break;
             default:
                 throw Error(`${entity.type}: Material was not correctly generated`);

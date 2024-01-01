@@ -8,8 +8,10 @@ import GroupSurface from "./group-surface";
 import {RecoilRoot, useRecoilCallback, useRecoilState, useRecoilValue} from "recoil";
 import {groupIdsAtom, useAddGroupHook} from "../store/recoil/groups.recoil";
 import {ThreeEvent, useFrame, useThree} from "@react-three/fiber";
-import useSelectedControls from "../hook/selected-controls";
+import useSelectedGroupControls from "../hook/selected-group-controls";
 import useSelectedGroupHook from "../store/recoil/select-group.recoil";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {useEffect, useState} from "react";
 
 
 const meshClient = new MeshClient();
@@ -21,11 +23,23 @@ export default function Editor() {
 
 
     const selected = useSelectedGroupHook();
-    console.log(groupIds);
-    const selectedControls = useSelectedControls({
+
+    const selectedControls = useSelectedGroupControls({
 
     });
 
+    useEffect(() => {
+        const gltfLoader = new GLTFLoader();
+        const url = 'http://localhost:3000/api/v1/gltf/file/2f376b99-6198-4c96-b8d4-281f3da0e559';
+        gltfLoader.load(
+            url,
+            (gltf) => {
+                // gltf.scene
+                console.log(gltf);
+
+            }
+        )
+    },[])
 
 
 

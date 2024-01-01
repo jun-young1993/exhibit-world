@@ -1,7 +1,8 @@
 import {BoxGeometry, BufferGeometry, ConeGeometry, CylinderGeometry, SphereGeometry, TorusGeometry} from "three";
 
 import GeometryEntity, {GeometryType} from "../entities/geometry.entity";
-
+import GeometryClient from "../geometry.client";
+const geometryClient = new GeometryClient();
 export default class GeometryFactory {
     constructor(private entity: GeometryEntity) {}
 
@@ -28,10 +29,21 @@ export default class GeometryFactory {
             case GeometryType.TorusGeometry:
                 geometry = new TorusGeometry(this.entity.radius, this.entity.width);
                 break;
+            case GeometryType.BufferGeometry:
+                geometry = new BufferGeometry();
+                break;
             default:
                 throw Error(`${this.entity.type}: Geometry was not correctly generated`)
                 break;
         }
+        geometryClient.getAttribute(this.entity.id,'position')
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((reject) => {
+                console.log(reject);
+            })
+
         return geometry;
     }
 

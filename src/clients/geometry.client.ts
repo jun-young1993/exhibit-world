@@ -39,4 +39,23 @@ export default class GeometryClient extends Client {
             .catch((exception) => reject(exception));
         })
     }
+
+    public getAttribute(uuid: string, attribute: string){
+        return new Promise((resolve, reject) => {
+            this.fetch(`/file/${uuid}/${attribute}`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                },
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch((exception) => reject(exception));
+        })
+    }
 }

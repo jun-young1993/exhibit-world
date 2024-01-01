@@ -29,6 +29,7 @@ export default function GroupSurface(props: GroupSurface){
     }
     const groupFactory = new GroupFactory(group).get();
     const meshes = group.mesh;
+    console.log("=>(group-surface.tsx:33) groupFactory", group);
     return (
         <group
             onPointerUp={handleClick}

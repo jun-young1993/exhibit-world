@@ -5,7 +5,8 @@ export enum GeometryType {
     SphereGeometry = 'SphereGeometry',
     ConeGeometry = 'ConeGeometry',
     CylinderGeometry = 'CylinderGeometry',
-    TorusGeometry = 'TorusGeometry'
+    TorusGeometry = 'TorusGeometry',
+    BufferGeometry = 'BufferGeometry'
 }
 
 export interface GeometryPropsEntity {
