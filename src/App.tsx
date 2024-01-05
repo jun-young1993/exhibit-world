@@ -1,12 +1,19 @@
 import ExhibitCanvas from "./components/ExhibitCanvas";
-import {RecoilRoot} from 'recoil';
+import {RecoilRoot, useRecoilValue} from 'recoil';
+import { MenuType, menuAtom } from "./store/recoil/menu.recoil";
+import Home from "./components/home/home";
 
 
 
 export default function App() {
+    const menu = useRecoilValue(menuAtom);
     return (
-
-            <ExhibitCanvas />
-
+        <>
+        {menu == MenuType.EDIT
+            ? <ExhibitCanvas />
+            : <Home />
+        }
+        </>
+            
     )
 }
