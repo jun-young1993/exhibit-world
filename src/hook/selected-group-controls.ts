@@ -20,24 +20,9 @@ export default function useSelectedGroupControls(props: SelectedGroupControls)
 {
     const selected = useSelectedGroupHook();
     const transformControls = useTransformControls();
-    const addGroup = useAddGroupHook();
-    const removeGroup = useRemoveGroupHook();
 
-    const handleRemoveObject = () => {
-        if(selected){
-            groupClient.remove(selected.uuid)
-                .then((groupEntity) => {
-                    removeGroup(groupEntity);
-                })
-        }
-    }
-    const [{add}, setAddControls] = useControls('controls', () => ({
-        add: {
-            value: 'none',
-            options: Object.values(ControlsAddType)
-        },
-        remove: button(handleRemoveObject)
-    }),[selected])
+
+
 
     const transform = useControls("transform", {
         mode: {
@@ -59,15 +44,15 @@ export default function useSelectedGroupControls(props: SelectedGroupControls)
     },[transform.mode])
 
 
-    useEffect(() => {
-        if(add === ControlsAddType.DEFAULT){
-            groupClient.createDefault()
-                .then((groupEntity) => {
-                    addGroup(groupEntity);
-                    setAddControls({add : 'none'})
-                })
-        }
-    },[add])
+    // useEffect(() => {
+    //     if(add === ControlsAddType.DEFAULT){
+    //         groupClient.createDefault()
+    //             .then((groupEntity) => {
+    //                 addGroup(groupEntity);
+    //                 setAddControls({add : 'none'})
+    //             })
+    //     }
+    // },[add])
     return {
         transform : transform
     }

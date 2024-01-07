@@ -12,6 +12,7 @@ import useSelectedGroupControls from "../hook/selected-group-controls";
 import useSelectedGroupHook from "../store/recoil/select-group.recoil";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {useEffect, useState} from "react";
+import useEditBaseControls from "../hook/edit-base-controls";
 
 
 const meshClient = new MeshClient();
@@ -23,9 +24,8 @@ export default function Editor() {
 
 
     const selected = useSelectedGroupHook();
-
+    useEditBaseControls();
     const selectedControls = useSelectedGroupControls({
-
     });
 
     // useEffect(() => {

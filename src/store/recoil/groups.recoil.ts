@@ -44,6 +44,7 @@ const groupSelector = selectorFamily<GroupEntity, GroupEntity['id']>({
     get: (uuid) => async ({get}) => {
         const groups = get(groupsAllAtom);
         const groupEntity = groups.find((group) => group.id === uuid);
+
         if (groupEntity === undefined) {
             throw new Error(`Group with id ${uuid} not found`);
         }

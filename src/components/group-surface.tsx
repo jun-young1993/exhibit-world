@@ -31,9 +31,7 @@ export default function GroupSurface(props: GroupSurface){
         if(object === null){
             githubStorageClient.findOne(group.githubStorage.id)
                 .then((content) => {
-                    console.log("=>(group-surface.tsx:35) content", content);
                     gltfLoader.load(content.download_url,(gltf) => {
-                        console.log("=>(group-surface.tsx:27) gltf", gltf);
                         setObject(gltf);
                     })
                 })

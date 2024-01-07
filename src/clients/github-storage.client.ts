@@ -1,11 +1,6 @@
 import Client from "./client";
-import CreateBulkMeshDto from "./dto/mesh/exhibit-create-bulk-mesh.dto";
 import {GroupEntity} from "./entities/group.entity";
-import UpdateGroupDto from "./dto/group/update-group.dto";
-import UpdateResult from "./entities/update-result";
 import {GithubStorageContentEntity, GithubStorageEntity} from "./entities/github-storage.entity";
-
-
 
 export default class GithubStorageClient extends Client {
     constructor() {
@@ -14,6 +9,11 @@ export default class GithubStorageClient extends Client {
         });
     }
 
+    /**
+     * Relative a GitHub Content
+     *
+     * @param uuid
+     */
     public findOne(uuid: string){
         return new Promise<GithubStorageContentEntity>((resolve, reject) => {
             this.fetch(`/${uuid}`,{
@@ -32,7 +32,7 @@ export default class GithubStorageClient extends Client {
     }
 
     /**
-     * Relative all Groups
+     * Relative all GitHub Content
      */
     public findAll(){
         return new Promise<GroupEntity[]>((resolve, reject) => {
@@ -48,6 +48,39 @@ export default class GithubStorageClient extends Client {
                     resolve(groups);
                 })
                 .catch((exception) => reject(exception));
+        })
+    }
+
+    public upload(file: File){
+
+
+        return new Promise<GroupEntity>((resolve, reject) => {
+            console.log("=>(github-storage.client.ts:62) file", file);
+            const formData = new FormData();
+            const reader = new FileReader();
+            formData.append('file',file, file.name);
+            console.log("=>(github-storage.client.ts:63) formDta", formData);
+
+            this.fetch('',{
+                method: 'POST',
+                headers: {
+                    // 'Content-Type': 'multipart/form-data',
+                    'accept': '*/*'
+                },
+                body: formData
+            })
+                .then((response) => response.json())
+                .then((groups: GroupEntity) => {
+                    console.log("=>(github-storage.client.ts:79) groups", groups);
+                    resolve(groups);
+                })
+                .catch((exception) => reject(exception));
+
+
+
+
+            console.log("=>(github-storage.client.ts:61) formData", formData);
+
         })
     }
 }
