@@ -1,6 +1,6 @@
 import Login from "./login";
-import {ThemeProvider} from "@material-tailwind/react";
-import Dashboard from "./Dashboard";
+
+import Dashboard from "./dashboard";
 
 
 /**
@@ -10,9 +10,9 @@ import Dashboard from "./Dashboard";
  */
 export default function Home(){
 	return (
-		<ThemeProvider>
+
 			<Dashboard />
-		</ThemeProvider>
+
 	)
 
 }
