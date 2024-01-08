@@ -3,6 +3,7 @@ import {ComponentProps, FC, ReactNode, useEffect, useState} from "react";
 import ExhibitCanvas from "../ExhibitCanvas";
 import {HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser} from "react-icons/hi";
 import {MdRebaseEdit} from "react-icons/md";
+import ObjectList from "./object-list";
 
 interface MenuComponent extends MenuItem {
     component?: ReactNode | JSX.Element
@@ -11,6 +12,9 @@ interface MenuComponent extends MenuItem {
 const menuItem: MenuComponent[] = [{
     name: 'Dashboard',
     icon: HiChartPie,
+},{
+    name: 'Objects',
+    component: <ObjectList />
 },{
     name: 'CollapseTest',
     icon: HiShoppingBag,
