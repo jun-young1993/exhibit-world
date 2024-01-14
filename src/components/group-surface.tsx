@@ -56,6 +56,8 @@ export default function GroupSurface(props: GroupSurface){
                     position={groupFactory.position}
                     rotation={groupFactory.rotation}
                     scale={groupFactory.scale}
+                    castShadow={true}
+                    receiveShadow={true}
                 />}
         </>
         // <group
