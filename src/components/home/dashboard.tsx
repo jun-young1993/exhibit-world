@@ -1,23 +1,22 @@
-import SideMenu, {MenuItem} from "./side-menu";
+import SideMenu from "./side-menu";
 import {ComponentProps, FC, ReactNode, useEffect, useState} from "react";
 import ExhibitCanvas from "../ExhibitCanvas";
 import {HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser} from "react-icons/hi";
 import {MdRebaseEdit} from "react-icons/md";
 import ObjectList from "./object-list";
 import Login from "./login";
+import { MenuComponent } from "types/menu-component";
 
 
 
-interface MenuComponent extends MenuItem {
-    component?: ReactNode | JSX.Element
-    children?: MenuComponent[]
-}
+
 const menuItem: MenuComponent[] = [{
     name: 'Dashboard',
     icon: HiChartPie,
+    component: <>dashboard</>
 },{
     name: 'Objects',
-    component: <ObjectList />
+    component: <ObjectList />,
 },{
     name: 'CollapseTest',
     icon: HiShoppingBag,
@@ -42,48 +41,45 @@ const menuItem: MenuComponent[] = [{
     icon: MdRebaseEdit,
     component: <ExhibitCanvas />
 }]
-
+export const findMenuItem = (name: string, menu: MenuComponent[][]): MenuComponent | undefined => {
+    
+	for (const child of menu) {
+	    for(const item of child){
+		if (item.name === name) {
+		    return item;
+		}
+		if (item.children) {
+		    const foundInChildren = findMenuItem(name, [item.children]);
+		    if (foundInChildren) {
+			return foundInChildren;
+		    }
+		}            
+	    }
+    
+	}
+	return undefined;
+    };
 const loginMenuItem: MenuComponent[] = [{
         name: 'Sign In',
         icon: HiArrowSmRight,
         component: <Login />
 }]
-// const objectsMenu: MenuComponent[] = [{
 
-// }]
-const findMenuItem = (name: string, menu: MenuComponent[][]): MenuComponent | undefined => {
-    
-    for (const child of menu) {
-        for(const item of child){
-            if (item.name === name) {
-                return item;
-            }
-            if (item.children) {
-                const foundInChildren = findMenuItem(name, [item.children]);
-                if (foundInChildren) {
-                    return foundInChildren;
-                }
-            }            
-        }
-
-    }
-    return undefined;
-};
 export default function Dashboard(){
     const [currentMenu, setCurrentMenu] = useState<string | null>(null);
     const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(<>dashboard</>);
-    const [menus, setMenus] = useState<MenuComponent[][]>([
+    const defalutMenu = [
         menuItem, 
         loginMenuItem
-    ]);
+    ];
+    const [menus, setMenus] = useState<MenuComponent[][]>(defalutMenu);
 
     useEffect(() => {
         if(currentMenu){
             const findMenu = findMenuItem(currentMenu,menus);
             if(findMenu?.component){
                 setCurrentNode(findMenu.component);
-            }
-            
+            }         
         }
     },[menus, currentMenu])
     return (

@@ -12,17 +12,15 @@ import {
 import { MdRebaseEdit, MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { twMerge } from 'tailwind-merge';
 import {ComponentProps, FC, useState} from "react";
+import { MenuItem } from 'types/menu-component';
 
 export interface SideMenuProps {
     onClick : (menu: string) => void,
     menuItems: MenuItem[][]
+    hideTopButton ?: boolean
 }
 
-export interface MenuItem {
-    name: string,
-    icon?: FC<ComponentProps<'svg'>>
-    children?: MenuItem[]
-}
+
 export default function SideMenu(props: SideMenuProps) {
     const menuItems = props.menuItems;
     const [isMenu, setIsMenu] = useState<boolean>(true);
@@ -48,13 +46,16 @@ export default function SideMenu(props: SideMenuProps) {
             collapsed={isMenu}
         >
             <Sidebar.Items>
-                <Sidebar.ItemGroup>
+                {props.hideTopButton
+                ? <></>
+                :<Sidebar.ItemGroup>
                     <Sidebar.Item
                         icon={isMenu ? MdKeyboardDoubleArrowRight : MdKeyboardDoubleArrowLeft}
                         onClick={handleHideMenuClick}
                     >
                     </Sidebar.Item>
                 </Sidebar.ItemGroup>                
+                }
                     {menuItems.map((menuItem, index) => {
                             return (
                                 <Sidebar.ItemGroup
