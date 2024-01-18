@@ -1,10 +1,15 @@
 
 import { ComponentProps, FC, ReactNode } from "react"
+export enum SideMenuType {
+	FILE = 'file'
+    }
 export interface MenuItem {
 	name: string,
 	icon?: FC<ComponentProps<'svg'>>
-	children?: MenuItem[]
-    }
+	children?: MenuItem[],
+	top ?: ReactNode,
+	bottom ?: ReactNode
+}
 export interface MenuComponent extends MenuItem {
 	component?: ReactNode | JSX.Element
 	children?: MenuComponent[]

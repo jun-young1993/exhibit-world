@@ -12,22 +12,22 @@ import {
 import { MdRebaseEdit, MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { twMerge } from 'tailwind-merge';
 import {ComponentProps, FC, useState} from "react";
-import { MenuItem } from 'types/menu-component';
+import { MenuItem, SideMenuType } from 'types/menu-component';
+
+
 
 export interface SideMenuProps {
     onClick : (menu: string) => void,
     menuItems: MenuItem[][]
     hideTopButton ?: boolean
+    
 }
 
 
 export default function SideMenu(props: SideMenuProps) {
     const menuItems = props.menuItems;
     const [isMenu, setIsMenu] = useState<boolean>(true);
-    const handleMenuClick  = () => {
-        console.log(event);
-        // props.onClick(menu);
-    }
+
     const handleHideMenuClick = () => {
         setIsMenu(!isMenu);
     }
@@ -39,7 +39,27 @@ export default function SideMenu(props: SideMenuProps) {
             {item.name}
         </Sidebar.Item>
     }
+    const menuNames = new Set<string>();
+    const createItemWrap = (item: MenuItem,index: number) => {
+        if(menuNames.has(item.name)){
+            throw new Error(`Duplicate menu item name found: ${item.name}`);
+        }
+        menuNames.add(item.name);
 
+        return (
+            <>
+                {item.top}
+            <div
+                key={`${item.name}-${index}`}
+                onClick={() => {
+                    props.onClick(item.name);}
+                }
+            >{createItem(item)}</div>
+                {item.bottom}
+            </>
+        )
+    }
+ 
     return (
         <Sidebar
             aria-label="Sidebar with multi-level dropdown example"
@@ -75,22 +95,14 @@ export default function SideMenu(props: SideMenuProps) {
                                                     }}
                                                 >
                                                     {item.children.map((childrenItem, index) => {
-                                                        return <div
-                                                            key={`${item.name}-${index}`}
-                                                            onClick={() => {
-                                                                props.onClick(childrenItem.name);}
-                                                            }
-                                                        >{createItem(childrenItem)}</div>;
+                                                        return createItemWrap(childrenItem,index);
                                                     })}
+                                                        
+                                                    
                                                 </Sidebar.Collapse>
                                             )
                                         }
-                                        return <div
-                                            key={`${item.name}-${index}`}
-                                            onClick={() => {
-                                                props.onClick(item.name);}
-                                            }
-                                        >{createItem(item)}</div>;
+                                        return createItemWrap(item,index);
                                     })}
                                 </Sidebar.ItemGroup>
                             )

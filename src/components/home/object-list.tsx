@@ -1,24 +1,40 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
 import { Radio, Table, TableRowProps } from "flowbite-react";
-import { useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useRecoilValue } from "recoil";
 import { groupsAllAtom } from "store/recoil/groups.recoil";
 import SideMenu from "./side-menu";
-import { MenuComponent, MenuItem } from "types/menu-component";
+import { MenuComponent, MenuItem, SideMenuType } from "types/menu-component";
+import { RefObject } from "react-resizable-panels/dist/declarations/src/vendor/react";
+import InstanceMismatchError from "Exception/instance-mismatch";
+enum MenuType {
+	ADD = 'add'
+}
 
-const menuItem: MenuItem[][] = [
-	[{
-		name: 'Add'
-	}]
-]
+const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
+	
+	if(!(event.target.files instanceof FileList)){
+		throw new InstanceMismatchError('handleAddFile',FileList);
+	}
+	
+	console.log(FileList.toString());
+	console.log(event.target.files.toString())
+}
 
 /**
  * url - https://www.npmjs.com/package/react-resizable-panels
  * @returns 
  */
 export default function ObjectList(){
+	const fileRef = useRef<HTMLInputElement>(null)
+	const menuItem: MenuItem[][] = [
+		[{
+			name: MenuType.ADD,
+			top: <input type='file' className="hidden" ref={fileRef} onChange={handleAddFile}/>
+		}]
+	]
 	const groups = useRecoilValue(groupsAllAtom);
 	const [selected, setSelected] = useState<string | null>(null);
 	const [panelDirection, setPanelDirection] = useState<'vertical' | 'horizontal'>("vertical");
@@ -41,11 +57,20 @@ export default function ObjectList(){
 		// <span key={'edit'} className="sr-only">Edit</span>
 	];
 	const handleClickMenu = (menu: string) => {
-		console.log(menu);
+		switch(menu){
+			case MenuType.ADD :
+				if(!(fileRef?.current instanceof HTMLInputElement)){
+					throw new Error('invalid add input button instance HTMLInputElement error');
+				};
+				fileRef?.current?.click();
+				break;
+			default :
+		}
 	}
+	
 	return (
 		<div className={"w-full min-w-0 h-full flex"}>
-			<div className={"flex-none h-full"}>
+			<div className={"flex-1 h-full"}>
 			{/* <div className={"flex-1 w-full h-full"}> */}
 				<SideMenu
 					menuItems={menuItem}
