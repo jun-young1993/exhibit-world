@@ -1,6 +1,6 @@
 export default class InstanceMismatchError extends Error {
-	constructor(varialble: string, instance: any) {
-		super(`The ${varialble} variable must be of type FileList. ${instance.toString()}`);
+	constructor(instance: any) {
+		super(`The variable must be of type ${instance}. `);
 		this.name = 'InstanceMismatchError';
 	}
 }

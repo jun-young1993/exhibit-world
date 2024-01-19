@@ -4,24 +4,19 @@ import { Radio, Table, TableRowProps } from "flowbite-react";
 import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useRecoilValue } from "recoil";
-import { groupsAllAtom } from "store/recoil/groups.recoil";
+import { groupsAllAtom, useAddGroupHook } from "store/recoil/groups.recoil";
 import SideMenu from "./side-menu";
 import { MenuComponent, MenuItem, SideMenuType } from "types/menu-component";
 import { RefObject } from "react-resizable-panels/dist/declarations/src/vendor/react";
 import InstanceMismatchError from "Exception/instance-mismatch";
+import GroupClient from "clients/group.client";
+import GithubStorageClient from "clients/github-storage.client";
 enum MenuType {
 	ADD = 'add'
 }
+const groupClient = new GroupClient();
+const githubStorageClient = new GithubStorageClient();
 
-const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
-	
-	if(!(event.target.files instanceof FileList)){
-		throw new InstanceMismatchError('handleAddFile',FileList);
-	}
-	
-	console.log(FileList.toString());
-	console.log(event.target.files.toString())
-}
 
 /**
  * url - https://www.npmjs.com/package/react-resizable-panels
@@ -29,6 +24,24 @@ const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
  */
 export default function ObjectList(){
 	const fileRef = useRef<HTMLInputElement>(null)
+	const addGroup = useAddGroupHook();
+	const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
+	
+		if(!(event.target.files instanceof FileList)){
+			throw new InstanceMismatchError(FileList);
+		}
+		event.target.files
+		Array.from(event.target.files).forEach((file) => {
+			githubStorageClient
+			.upload(file)
+			.then((groupEntity) => {
+				addGroup(groupEntity);
+			})
+			.catch((exception) => {
+			    new Error(exception.toString());
+			})
+		})
+	}
 	const menuItem: MenuItem[][] = [
 		[{
 			name: MenuType.ADD,
@@ -60,7 +73,7 @@ export default function ObjectList(){
 		switch(menu){
 			case MenuType.ADD :
 				if(!(fileRef?.current instanceof HTMLInputElement)){
-					throw new Error('invalid add input button instance HTMLInputElement error');
+					throw new InstanceMismatchError(HTMLInputElement);
 				};
 				fileRef?.current?.click();
 				break;
