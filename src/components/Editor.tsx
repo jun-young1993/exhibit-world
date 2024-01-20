@@ -1,51 +1,16 @@
-import selectedMeshStore from "../store/selected-mesh.store";
 import {OrbitControls, Html} from "@react-three/drei";
-import MeshClient from "../clients/mesh.client";
 import {floorSize} from "../config";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
-import GroupClient from "../clients/group.client";
 import GroupSurface from "./group-surface";
-import {RecoilRoot, useRecoilCallback, useRecoilState, useRecoilValue} from "recoil";
-import {groupIdsAtom, useAddGroupHook} from "../store/recoil/groups.recoil";
-import {ThreeEvent, useFrame, useThree} from "@react-three/fiber";
-import useSelectedGroupControls from "../hook/selected-group-controls";
+import { useRecoilValue } from "recoil";
+import { groupIdsAtom } from "../store/recoil/groups.recoil";
+import { ThreeEvent } from "@react-three/fiber";
 import useSelectedGroupHook from "../store/recoil/select-group.recoil";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {useEffect, useState} from "react";
-import useEditBaseControls from "../hook/edit-base-controls";
-
-
-const meshClient = new MeshClient();
-const groupClient = new GroupClient();
-
 
 export default function Editor() {
     const groupIds = useRecoilValue(groupIdsAtom);
 
-
     const selected = useSelectedGroupHook();
-    useEditBaseControls();
-    const selectedControls = useSelectedGroupControls({
-    });
-
-    // useEffect(() => {
-    //     const gltfLoader = new GLTFLoader();
-    //     const url = 'http://localhost:3000/api/v1/gltf/file/2f376b99-6198-4c96-b8d4-281f3da0e559';
-    //     gltfLoader.load(
-    //         url,
-    //         (gltf) => {
-    //             // gltf.scene
-    //             console.log(gltf);
-    //
-    //         }
-    //     )
-    // },[])
-
-
-
-
-
-
 
     return (
         <>

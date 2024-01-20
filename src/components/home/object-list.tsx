@@ -1,21 +1,13 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
-import { Radio, Table, TableRowProps } from "flowbite-react";
-import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { useRecoilValue } from "recoil";
-import { groupsAllAtom, useAddGroupHook } from "store/recoil/groups.recoil";
-import SideMenu from "./side-menu";
-import { MenuComponent, MenuItem, SideMenuType } from "types/menu-component";
-import { RefObject } from "react-resizable-panels/dist/declarations/src/vendor/react";
-import InstanceMismatchError from "Exception/instance-mismatch";
-import GroupClient from "clients/group.client";
-import GithubStorageClient from "clients/github-storage.client";
-enum MenuType {
-	ADD = 'add'
-}
-const groupClient = new GroupClient();
-const githubStorageClient = new GithubStorageClient();
+import { Radio, Table } from "flowbite-react";
+import {useEffect, useState} from "react";
+import { Panel, PanelGroup } from "react-resizable-panels";
+import {useRecoilState, useRecoilValue} from "recoil";
+import { groupsAllAtom } from "store/recoil/groups.recoil";
+import {selectGroupAtom} from "../../store/recoil/select-group.recoil";
+import ObjectListSideMenu from "./object-list/object-list-side-menu";
+
 
 
 /**
@@ -23,34 +15,13 @@ const githubStorageClient = new GithubStorageClient();
  * @returns 
  */
 export default function ObjectList(){
-	const fileRef = useRef<HTMLInputElement>(null)
-	const addGroup = useAddGroupHook();
-	const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
-	
-		if(!(event.target.files instanceof FileList)){
-			throw new InstanceMismatchError(FileList);
-		}
-		event.target.files
-		Array.from(event.target.files).forEach((file) => {
-			githubStorageClient
-			.upload(file)
-			.then((groupEntity) => {
-				addGroup(groupEntity);
-			})
-			.catch((exception) => {
-			    new Error(exception.toString());
-			})
-		})
-	}
-	const menuItem: MenuItem[][] = [
-		[{
-			name: MenuType.ADD,
-			top: <input type='file' className="hidden" ref={fileRef} onChange={handleAddFile}/>
-		}]
-	]
 	const groups = useRecoilValue(groupsAllAtom);
-	const [selected, setSelected] = useState<string | null>(null);
-	const [panelDirection, setPanelDirection] = useState<'vertical' | 'horizontal'>("vertical");
+
+	const [ panelDirection ] = useState<'vertical' | 'horizontal'>("vertical");
+	const [ selectedGroupId, setSelectedGroupId ] = useRecoilState<string | null>(selectGroupAtom);
+	useEffect(() => {
+
+	},[selectedGroupId])
 	const headers = [
 	
 		'positionX',
@@ -69,27 +40,11 @@ export default function ObjectList(){
 		'id',
 		// <span key={'edit'} className="sr-only">Edit</span>
 	];
-	const handleClickMenu = (menu: string) => {
-		switch(menu){
-			case MenuType.ADD :
-				if(!(fileRef?.current instanceof HTMLInputElement)){
-					throw new InstanceMismatchError(HTMLInputElement);
-				};
-				fileRef?.current?.click();
-				break;
-			default :
-		}
-	}
-	
 	return (
 		<div className={"w-full min-w-0 h-full flex"}>
 			<div className={"flex-1 h-full"}>
 			{/* <div className={"flex-1 w-full h-full"}> */}
-				<SideMenu
-					menuItems={menuItem}
-					onClick={handleClickMenu}
-					hideTopButton={true}
-				/>
+				<ObjectListSideMenu />
 			</div>
 			{/* <div className={"flex-none h-full"}> */}
 			<div className={"flex-1 w-full h-full"}>
@@ -129,12 +84,12 @@ export default function ObjectList(){
 													className="m-4" 
 													name="select-group" 
 													value={group.id}
-													checked={selected === group.id}
+													checked={selectedGroupId === group.id}
 													onClick={(event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-														if(selected === group.id){
-															setSelected(null);
+														if(selectedGroupId === group.id){
+															setSelectedGroupId(null);
 														}else{
-															setSelected(group.id);
+															setSelectedGroupId(group.id);
 														}
 													}}
 												/>

@@ -39,6 +39,7 @@ export default function SideMenu(props: SideMenuProps) {
             {item.name}
         </Sidebar.Item>
     }
+
     const menuNames = new Set<string>();
     const createItemWrap = (item: MenuItem,index: number) => {
         if(menuNames.has(item.name)){
@@ -52,8 +53,13 @@ export default function SideMenu(props: SideMenuProps) {
             <div
                 key={`${item.name}-${index}`}
                 onClick={() => {
-                    props.onClick(item.name);}
-                }
+                    if(item?.onClick){
+                        item.onClick();
+                    }else{
+                        props.onClick(item.name);
+                    }
+
+                }}
             >{createItem(item)}</div>
                 {item.bottom}
             </>
@@ -79,7 +85,7 @@ export default function SideMenu(props: SideMenuProps) {
                     {menuItems.map((menuItem, index) => {
                             return (
                                 <Sidebar.ItemGroup
-                                    key={index}
+                                    key={`${index}`}
                                 >
                                     {menuItem.map((item,index) => {
                                         if(item.children){
@@ -95,7 +101,9 @@ export default function SideMenu(props: SideMenuProps) {
                                                     }}
                                                 >
                                                     {item.children.map((childrenItem, index) => {
-                                                        return createItemWrap(childrenItem,index);
+                                                        return <>
+                                                            {createItemWrap(childrenItem,index)}
+                                                        </>;
                                                     })}
                                                         
                                                     
