@@ -1,9 +1,11 @@
 import {useEffect} from "react";
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {ExportSyncStatus, exportSyncStatusAtom} from "../store/recoil/export-sync-status.recoil";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import {useThree} from "@react-three/fiber";
 import ExhibitClient from "../clients/exhibit.client";
+import {gridHelperAtom} from "../store/recoil/grid-helper.recoil";
+import {GridHelper, Object3D} from "three";
 
 const exhibitClient = new ExhibitClient();
 /**
@@ -19,10 +21,20 @@ export default function useExportSync(){
     const [exportSyncStatus] = useRecoilState(exportSyncStatusAtom);
     const exporter = new GLTFExporter();
     const {scene} = useThree();
+
+
     useEffect(() => {
         if(exportSyncStatus === ExportSyncStatus.PENDING){
+            const cloneScene = scene.clone();
+            for(const object of cloneScene.children){
+                if(object instanceof GridHelper){
+                    cloneScene.remove(object);
+                }
+            }
+
+
             exporter.parse(
-                scene,
+                cloneScene,
                 (gltf) => {
 
                     exhibitClient.create(gltf as ArrayBuffer);
