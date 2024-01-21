@@ -24,11 +24,6 @@ export default function ObjectListSideMenu() {
     const removeGroup = useRemoveGroupHook();
     const [,setTransformMode] = useRecoilState(transformModeAtom);
     const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
-    // useEffect(() => {
-    //     if(exportSyncStatus === ExportSyncStatus.IDLE){
-    //         setExportSyncStatus(ExportSyncStatus.PENDING);
-    //     }
-    // },[])
 
     const [selectedGroupId] = useRecoilState<string | null>(selectGroupAtom);
 
@@ -38,8 +33,8 @@ export default function ObjectListSideMenu() {
             throw new InstanceMismatchError(FileList);
         }
         Array.from(event.target.files).forEach((file) => {
-            githubStorageClient
-                .upload(file)
+            groupClient
+                .create(file)
                 .then((groupEntity) => {
                     addGroup(groupEntity);
                 })

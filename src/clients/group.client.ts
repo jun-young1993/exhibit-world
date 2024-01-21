@@ -3,6 +3,7 @@ import CreateBulkMeshDto from "./dto/mesh/exhibit-create-bulk-mesh.dto";
 import {GroupEntity} from "./entities/group.entity";
 import UpdateGroupDto from "./dto/group/update-group.dto";
 import UpdateResult from "./entities/update-result";
+import {v4} from "uuid";
 
 
 
@@ -18,18 +19,17 @@ export default class GroupClient extends Client {
      *
      * @return GroupEntity
      */
-    public create(mesh: CreateBulkMeshDto): Promise<GroupEntity>
+    public create(file: File): Promise<GroupEntity>
     {
         return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file',file, file.name);
             this.fetch('/',{
                 method: 'post',
                 headers: {
-                    'Content-Type': 'application/json',
                     'accept': '*/*'
                 },
-                body: JSON.stringify({
-                    mesh: mesh
-                })
+                body: formData
             })
             .then((response) => {
                 return response.json();
@@ -38,31 +38,6 @@ export default class GroupClient extends Client {
                 resolve(group)
             })
             .catch((response) => reject(response));
-        })
-    }
-
-    /**
-     * Create Default Mesh Group
-     *
-     * @return GroupEntity
-     */
-    public createDefault(): Promise<GroupEntity>
-    {
-        return new Promise((resolve, reject) => {
-            this.fetch('/default',{
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'accept': '*/*'
-                },
-            })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((group: GroupEntity) => {
-                    resolve(group)
-                })
-                .catch((response) => reject(response));
         })
     }
 
@@ -109,19 +84,23 @@ export default class GroupClient extends Client {
     /**
      * group a update
      *
-     * @param uuid
-     * @param dto
+     * @param uuid string
+     * @param gltf ArrayBuffer
      */
-    public update(uuid: GroupEntity['id'], dto: UpdateGroupDto): Promise<UpdateResult>
+    public update(uuid: GroupEntity['id'], gltf: ArrayBuffer)
     {
         return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            const file = new Blob([gltf]);
+            const filename = `${v4()}.glb`;
+            formData.append('file',file,filename);
+
             this.fetch(`/${uuid}`,{
-                method: 'PATCH',
+                method: 'post',
                 headers: {
-                    'Content-Type': 'application/json',
                     'accept': '*/*'
                 },
-                body: JSON.stringify(dto)
+                body: formData
             })
                 .then((response) => response.json())
                 .then((response) => resolve(response))

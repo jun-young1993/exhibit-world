@@ -24,7 +24,7 @@ export default function Editor() {
             })}
             {
                 (selected
-                        ? <EditTransformControls object={selected} />
+                        ? <EditTransformControls object={selected}/>
                         : <></>
                 )
             }

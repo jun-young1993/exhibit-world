@@ -1,7 +1,7 @@
 import {GroupEntity} from "../clients/entities/group.entity";
 import {useRecoilState} from "recoil";
 import {selectGroupAtom} from "../store/recoil/select-group.recoil";
-import {ThreeEvent} from "@react-three/fiber";
+import {ThreeEvent, useThree} from "@react-three/fiber";
 import GroupFactory from "../clients/factories/group.factory";
 import {groupAtom} from "../store/recoil/groups.recoil";
 import { useLoader } from '@react-three/fiber'
@@ -9,6 +9,7 @@ import { useLoader } from '@react-three/fiber'
 import GithubStorageClient from "../clients/github-storage.client";
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {useEffect, useState} from "react";
+import {Group} from "three";
 
 
 export interface GroupSurface {
@@ -19,12 +20,12 @@ export interface GroupSurface {
 const githubStorageClient = new GithubStorageClient();
 const gltfLoader = new GLTFLoader();
 export default function GroupSurface(props: GroupSurface){
-    const [object, setObject] = useState<GLTF | null>(null)
+    const [object, setObject] = useState<Group | null>(null)
 
 
 
 
-
+    const {scene} = useThree()
     const [group, setGroup] = useRecoilState(groupAtom(props.uuid));
 
     useEffect(() => {
@@ -32,7 +33,14 @@ export default function GroupSurface(props: GroupSurface){
             githubStorageClient.findOne(group.githubStorage.id)
                 .then((content) => {
                     gltfLoader.load(content.download_url,(gltf) => {
-                        setObject(gltf);
+                        //@ts-ignore
+                        if(gltf.scene !== "Scene"){
+                            //@ts-ignore
+                            setObject(gltf.scene.children[0]);
+                        }else{
+                            setObject(gltf.scene);
+                        }
+
                     })
                 })
         }
@@ -43,8 +51,7 @@ export default function GroupSurface(props: GroupSurface){
         event.stopPropagation();
         select(group.id);
     }
-    const groupFactory = new GroupFactory(group).get();
-    const meshes = group.mesh;
+
 
     return (
         <>
@@ -52,10 +59,7 @@ export default function GroupSurface(props: GroupSurface){
                 <primitive
                     uuid={group.id}
                     onPointerUp={handleClick}
-                    object={object.scene}
-                    position={groupFactory.position}
-                    rotation={groupFactory.rotation}
-                    scale={groupFactory.scale}
+                    object={object}
                     castShadow={true}
                     receiveShadow={true}
                 />}

@@ -19,12 +19,13 @@ export default class ExhibitClient extends Client {
      */
     public create(gltf: ArrayBuffer): Promise<ExhibitEntity>
     {
-        const formData = new FormData();
-        const file = new Blob([gltf]);
-        const filename = `${v4()}.glb`;
 
-        formData.append('file',file,filename);
         return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            const file = new Blob([gltf]);
+            const filename = `${v4()}.glb`;
+            formData.append('file',file,filename);
+
             this.fetch('/',{
                 method: 'post',
                 headers: {

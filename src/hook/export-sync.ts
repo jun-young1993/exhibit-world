@@ -8,6 +8,7 @@ import {gridHelperAtom} from "../store/recoil/grid-helper.recoil";
 import {GridHelper, Object3D} from "three";
 
 const exhibitClient = new ExhibitClient();
+const exporter = new GLTFExporter();
 /**
  * trs - 부울. 노드당 행렬 대신 위치, 회전 및 크기를 내보냅니다. 기본값은 거짓입니다
  * onlyVisible - 부울. 보이는 개체만 내보냅니다. 기본값은 true입니다.
@@ -19,7 +20,7 @@ const exhibitClient = new ExhibitClient();
 export default function useExportSync(){
 
     const [exportSyncStatus] = useRecoilState(exportSyncStatusAtom);
-    const exporter = new GLTFExporter();
+
     const {scene} = useThree();
 
 

@@ -22,25 +22,4 @@ export default class GroupService {
         })
     }
 
-
-    /**
-     * update transform
-     */
-    update(group: Group)
-    {
-        return new Promise<GroupEntity>((resolve, reject ) => {
-            this.groupClient.update(
-                group.uuid,
-                getJsonFromObject3D(group)
-            )
-                .then((response) => {
-                    this.groupClient.find(group.uuid)
-                        .then((group) => {
-                            resolve(group);
-                        })
-                        .catch(reject);
-                })
-                .catch(reject)
-        })
-    }
 }
