@@ -85,7 +85,7 @@ export default function ObjectList(){
 													name="select-group" 
 													value={group.id}
 													checked={selectedGroupId === group.id}
-													onClick={(event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+													onChange={() => {
 														if(selectedGroupId === group.id){
 															setSelectedGroupId(null);
 														}else{

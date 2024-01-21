@@ -9,6 +9,7 @@ import {useRecoilState} from "recoil";
 import GroupClient from "../../../clients/group.client";
 import {TransformMode} from "../../../types/transform";
 import {transformModeAtom} from "../../../store/recoil/transform-mode.recoil";
+import {ExportSyncStatus, exportSyncStatusAtom} from "../../../store/recoil/export-sync-status.recoil";
 
 
 enum MenuType {
@@ -22,6 +23,12 @@ export default function ObjectListSideMenu() {
     const addGroup = useAddGroupHook();
     const removeGroup = useRemoveGroupHook();
     const [,setTransformMode] = useRecoilState(transformModeAtom);
+    const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
+    // useEffect(() => {
+    //     if(exportSyncStatus === ExportSyncStatus.IDLE){
+    //         setExportSyncStatus(ExportSyncStatus.PENDING);
+    //     }
+    // },[])
 
     const [selectedGroupId] = useRecoilState<string | null>(selectGroupAtom);
 
@@ -79,7 +86,9 @@ export default function ObjectListSideMenu() {
     const defaultBottomMenu: MenuItem[] = [{
         name: 'export sync',
         onClick: () => {
-
+            if(exportSyncStatus === ExportSyncStatus.IDLE){
+                setExportSyncStatus(ExportSyncStatus.PENDING);
+            }
         }
     }]
     const initMenuItem: MenuItem[][] = [
