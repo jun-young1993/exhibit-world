@@ -23,7 +23,6 @@ export default function ObjectList(){
 
 	},[selectedGroupId])
 	const headers = [
-	
 		'positionX',
 		'positionY',
 		'positionZ',

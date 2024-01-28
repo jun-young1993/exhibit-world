@@ -1,24 +1,47 @@
 import {useParams} from "react-router-dom";
 import {Canvas, ThreeEvent} from "@react-three/fiber";
 import {cameraFar} from "../config";
-import {Suspense, useEffect, useState} from "react";
+import {Suspense, useEffect, useMemo, useState} from "react";
 import CanvasLoader from "./CanvasLoader";
 import {TransformControlsProvider} from "../context/transform-controls.context";
 import Editor from "./Editor";
 import GithubStorageClient from "../clients/github-storage.client";
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {OrbitControls, Sky} from "@react-three/drei";
-const githubStorageClient = new GithubStorageClient();
+import {KeyboardControls, KeyboardControlsEntry, OrbitControls, Sky} from "@react-three/drei";
+import ExhibitClient from "../clients/exhibit.client";
+import {isEmpty} from "lodash";
+import {Physics} from "@react-three/rapier";
+import {KeyboardControlsMap} from "../types/keyboard-controls-map";
+import {ExhibitPlayer} from "./exhibit-player";
+import {ExhibitGround} from "./exhibit-ground";
+const exhibitClient = new ExhibitClient();
 const gltfLoader = new GLTFLoader();
-export default function Exhibit() {
-    const { uuid }= useParams();
+export interface ExhibitProps {
+    uuid?: string
+}
+
+export default function Exhibit(props: ExhibitProps) {
+    let { uuid }= useParams();
+    if(isEmpty(uuid)){
+        if(props.uuid){
+            uuid = props.uuid;
+        }else{
+            throw new Error('not found exhibit uuid');
+        }
+    }
     const [object, setObject] = useState<GLTF | null>(null)
-    console.log("=>(exhibit.tsx:17) object", object);
+    const map = useMemo<KeyboardControlsEntry<KeyboardControlsMap>[]>(()=>[
+        { name: KeyboardControlsMap.forward, keys: ['ArrowUp', 'KeyW'] },
+        { name: KeyboardControlsMap.back, keys: ['ArrowDown', 'KeyS'] },
+        { name: KeyboardControlsMap.left, keys: ['ArrowLeft', 'KeyA'] },
+        { name: KeyboardControlsMap.right, keys: ['ArrowRight', 'KeyD'] },
+        { name: KeyboardControlsMap.jump, keys: ['Space'] },
+    ], [])
     useEffect(() => {
         if (typeof uuid === "string") {
-            githubStorageClient.findOne(uuid)
-                .then((content) => {
-                    gltfLoader.load(content.download_url,(gltf) => {
+            exhibitClient.findOne(uuid)
+                .then((exhibit) => {
+                    gltfLoader.load(exhibit.download_url,(gltf) => {
                         setObject(gltf);
                     })
                 })
@@ -27,30 +50,38 @@ export default function Exhibit() {
     },[])
 
     return <>
-        <Canvas
-            dpr={[1, 2]}
-            shadows camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
+        <KeyboardControls
+            map={map}
         >
-            <Sky sunPosition={[100, 20, 100]} />
-            <ambientLight intensity={5} />
-            <Suspense fallback={<CanvasLoader />}>
-                <OrbitControls
-                    makeDefault
-                    minPolarAngle={0}
-                    maxPolarAngle={Math.PI / 1.75}
-                />
-                {object &&
-                    <primitive
-                        object={object.scene}
-                        castShadow={true}
-                        position={[0,0,0]}
-                        rotation={[0,0,0]}
-                        scale={[2,2,2]}
-                        receiveShadow={true}
-                    />
-                }
-
-            </Suspense>
-        </Canvas>
+            <Canvas
+                dpr={[1, 2]}
+                shadows camera={{ fov: 45 }}
+            >
+                <Sky sunPosition={[100, 20, 100]} />
+                <ambientLight intensity={0.3} />
+                <pointLight castShadow intensity={0.8} position={[100, 100, 100]} />
+                <Physics gravity={[0, -30, 0]}>
+                    <Suspense fallback={<CanvasLoader />}>
+                        {/*<OrbitControls*/}
+                        {/*    makeDefault*/}
+                        {/*    minPolarAngle={0}*/}
+                        {/*    maxPolarAngle={Math.PI / 1.75}*/}
+                        {/*/>*/}
+                        {object &&
+                            <primitive
+                                object={object.scene}
+                                castShadow={true}
+                                position={[0,0,0]}
+                                rotation={[0,0,0]}
+                                scale={[2,2,2]}
+                                receiveShadow={true}
+                            />
+                        }
+                        <ExhibitGround />
+                        <ExhibitPlayer />
+                    </Suspense>
+                </Physics>
+            </Canvas>
+        </KeyboardControls>
     </>
 }

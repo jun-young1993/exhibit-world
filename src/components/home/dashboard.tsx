@@ -6,6 +6,7 @@ import {MdRebaseEdit} from "react-icons/md";
 import ObjectList from "./object-list";
 import Login from "./login";
 import { MenuComponent } from "types/menu-component";
+import ExhibitList from "./exhibit-list";
 
 
 
@@ -17,6 +18,9 @@ const menuItem: MenuComponent[] = [{
 },{
     name: 'Objects',
     component: <ObjectList />,
+},{
+    name: 'Exhibits',
+    component: <ExhibitList />,
 },{
     name: 'CollapseTest',
     icon: HiShoppingBag,

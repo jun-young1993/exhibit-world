@@ -58,7 +58,10 @@ export default function ObjectListSideMenu() {
         onClick: () => {
             if(selectedGroupId){
                 groupClient.remove(selectedGroupId)
-                    .then((groupEntity) => removeGroup(groupEntity));
+                    .then((groupEntity) => {
+                        console.log("=>(object-list-side-menu.tsx:63) groupENtity", groupEntity);
+                        removeGroup(groupEntity)
+                    });
             }
         }
     }];
@@ -79,7 +82,7 @@ export default function ObjectListSideMenu() {
         }
     }];
     const defaultBottomMenu: MenuItem[] = [{
-        name: 'export sync',
+        name: 'Export Exhibit',
         onClick: () => {
             if(exportSyncStatus === ExportSyncStatus.IDLE){
                 setExportSyncStatus(ExportSyncStatus.PENDING);

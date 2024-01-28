@@ -43,10 +43,18 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
             // object.userData = {
             //     position : object.position
             // }
+            console.log("=>(transform.controls.tsx:47) updateObject", updateObject);
+
+
+             // updateObject.position
             exporter.parse(
                 updateObject,
                 (gltf) => {
-                    groupClient.update(object.uuid, gltf as ArrayBuffer);
+                    console.log("=>(transform.controls.tsx:50) gltf", gltf);
+                    groupClient.update(object.uuid, gltf as ArrayBuffer)
+                        .then((update) => {
+
+                        });
                 },
                 (error) => {
                     console.log("=>(transform.controls.tsx:45) error", error);
@@ -54,8 +62,8 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
                 {
                     trs: true,
                     binary: true,
-                    onlyVisible: false,
-                    includeCustomExtensions: true
+                    onlyVisible: true,
+                    includeCustomExtensions: false
                 }
             )
         }

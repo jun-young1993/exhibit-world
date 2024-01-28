@@ -15,6 +15,7 @@ export default class GithubStorageClient extends Client {
      * @param uuid
      */
     public findOne(uuid: string){
+        const currentDate = new Date();
         return new Promise<GithubStorageContentEntity>((resolve, reject) => {
             this.fetch(`/${uuid}`,{
                 method: 'get',

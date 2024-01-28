@@ -65,6 +65,7 @@ export default class GroupClient extends Client {
      * Relative a Group
      */
     public find(uuid: GroupEntity['id']){
+
         return new Promise<GroupEntity>((resolve, reject) => {
             this.fetch(`/${uuid}`,{
                 method: 'get',

@@ -33,7 +33,13 @@ export default function GroupSurface(props: GroupSurface){
             githubStorageClient.findOne(group.githubStorage.id)
                 .then((content) => {
                     gltfLoader.load(content.download_url,(gltf) => {
+                        if(gltf.scene.name == "AuxScene"){
+                            // @ts-ignore
+                            setObject(gltf.scene.children[0]);
+                        }else{
                             setObject(gltf.scene);
+                        }
+
                     })
                 })
         }
