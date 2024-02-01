@@ -34,6 +34,7 @@ export default class AuthClient extends Client {
                 body: JSON.stringify(loginDto)
             })
                 .then((response) => {
+                    
                     return response.json();
                 })
                 .then((response: UserEntity) => {

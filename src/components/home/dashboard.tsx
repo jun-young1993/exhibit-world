@@ -12,6 +12,7 @@ import { useRecoilValue } from "recoil";
 import { userAtom } from "store/recoil/user.recoil";
 import { FaUser } from "react-icons/fa";
 import Logined from "./logined";
+import { getCookie } from "utills/cookie";
 
 
 
@@ -81,6 +82,7 @@ const loginedMenuItem: MenuComponent[] = [{
 }]
 
 export default function Dashboard(){
+    
     const [currentMenu, setCurrentMenu] = useState<string | null>(null);
     const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(<>dashboard</>);
     const user = useRecoilValue(userAtom);
@@ -116,4 +118,5 @@ export default function Dashboard(){
         </div>
     )
 }
+
 
