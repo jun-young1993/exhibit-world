@@ -4,7 +4,6 @@ import {GroupEntity} from "./entities/group.entity";
 import {ExhibitEntity} from "./entities/exhibit.entity";
 import {v4} from "uuid";
 import {GithubStorageContentEntity} from "./entities/github-storage.entity";
-import {FindManyOptions} from "typeorm";
 
 export default class ExhibitClient extends Client {
     constructor() {

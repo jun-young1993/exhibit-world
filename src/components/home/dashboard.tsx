@@ -1,13 +1,17 @@
 import SideMenu from "./side-menu";
-import {ComponentProps, FC, ReactNode, useEffect, useState} from "react";
-import ExhibitCanvas from "../ExhibitCanvas";
-import {HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser} from "react-icons/hi";
+import { ReactNode, useEffect, useState } from "react";
+import {HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiLibrary , HiUser} from "react-icons/hi";
 import {MdRebaseEdit} from "react-icons/md";
+import { BiSolidObjectsHorizontalLeft } from "react-icons/bi";
+import ExhibitCanvas from "../ExhibitCanvas";
 import ObjectList from "./object-list";
 import Login from "./login";
 import { MenuComponent } from "types/menu-component";
 import ExhibitList from "./exhibit-list";
-
+import { useRecoilValue } from "recoil";
+import { userAtom } from "store/recoil/user.recoil";
+import { FaUser } from "react-icons/fa";
+import Logined from "./logined";
 
 
 
@@ -17,9 +21,11 @@ const menuItem: MenuComponent[] = [{
     component: <>dashboard</>
 },{
     name: 'Objects',
+    icon: BiSolidObjectsHorizontalLeft,
     component: <ObjectList />,
 },{
     name: 'Exhibits',
+    icon: HiLibrary ,
     component: <ExhibitList />,
 },{
     name: 'CollapseTest',
@@ -68,16 +74,26 @@ const loginMenuItem: MenuComponent[] = [{
         icon: HiArrowSmRight,
         component: <Login />
 }]
+const loginedMenuItem: MenuComponent[] = [{
+    name: 'User',
+    icon: FaUser,
+    component: <Logined />
+}]
 
 export default function Dashboard(){
     const [currentMenu, setCurrentMenu] = useState<string | null>(null);
     const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(<>dashboard</>);
+    const user = useRecoilValue(userAtom);
     const defalutMenu = [
         menuItem, 
         loginMenuItem
     ];
     const [menus, setMenus] = useState<MenuComponent[][]>(defalutMenu);
-
+    useEffect(() => {
+        if(user !== null){
+            setMenus([menuItem, loginedMenuItem]);
+        }
+    },[user])
     useEffect(() => {
         if(currentMenu){
             const findMenu = findMenuItem(currentMenu,menus);
