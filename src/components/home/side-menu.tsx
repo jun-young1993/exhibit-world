@@ -48,7 +48,9 @@ export default function SideMenu(props: SideMenuProps) {
         menuNames.add(item.name);
 
         return (
-            <>
+            <div
+                key={`${item.name}-${index}`}
+            >
                 {item.top}
             <div
                 key={`${item.name}-${index}`}
@@ -62,7 +64,7 @@ export default function SideMenu(props: SideMenuProps) {
                 }}
             >{createItem(item)}</div>
                 {item.bottom}
-            </>
+            </div>
         )
     }
  

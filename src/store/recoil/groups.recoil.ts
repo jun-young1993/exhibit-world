@@ -17,7 +17,7 @@ const groupClient = new GroupClient();
 export const groupsSelector = selector<GroupEntity[]>({
     key: 'groupsSelector',
     get: async (): Promise<GroupEntity[]> => {
-        return await groupClient.findAll();
+            return await groupClient.findAll();
     },
 })
 
