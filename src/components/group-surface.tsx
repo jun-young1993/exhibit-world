@@ -8,8 +8,10 @@ import { useLoader } from '@react-three/fiber'
 
 import GithubStorageClient from "../clients/github-storage.client";
 import {GLTF, GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {useEffect, useState} from "react";
-import {Group} from "three";
+import {useEffect, useRef, useState} from "react";
+import {Group, Object3D, SpotLight, SpotLightHelper} from "three";
+import {useHelper} from "@react-three/drei";
+import {ObjectThreeType} from "../types/object-three-type";
 
 
 export interface GroupSurface {
@@ -20,12 +22,13 @@ export interface GroupSurface {
 const githubStorageClient = new GithubStorageClient();
 const gltfLoader = new GLTFLoader();
 export default function GroupSurface(props: GroupSurface){
-    const [object, setObject] = useState<Group | null>(null)
+    const [object, setObject] = useState<Group | SpotLight | null>(null)
 
 
-
+    // useHelper(spotLight, SpotLightHelper, "teal");
 
     const {scene} = useThree()
+
     const [group, setGroup] = useRecoilState(groupAtom(props.uuid));
 
     useEffect(() => {
@@ -42,26 +45,51 @@ export default function GroupSurface(props: GroupSurface){
 
                     })
                 })
+        }else{
+            if(object instanceof SpotLight){
+                object.castShadow = true;
+                object.angle = 0.5;
+                object.distance = 30;
+                object.intensity = 1000;
+                object.shadow.mapSize.width = 1024;
+                object.shadow.mapSize.height = 1024;
+
+                object.shadow.camera.near = 500;
+                object.shadow.camera.far = 4000;
+                object.shadow.camera.fov = 30;
+                const spotLightHelper = new SpotLightHelper(object, "teal");
+
+                scene.add(spotLightHelper);
+            }
         }
     },[object])
-    const selected = props.selected;
     const [, select] = useRecoilState(selectGroupAtom);
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
         event.stopPropagation();
         select(group.id);
+
     }
+
 
 
     return (
         <>
-            {object &&
-                <primitive
-                    uuid={group.id}
-                    onPointerUp={handleClick}
-                    object={object}
-                    castShadow={true}
-                    receiveShadow={true}
-                />}
+            {object && object instanceof SpotLight &&
+                // @ts-ignore
+                <spotLight castShadow />
+            }
+            {object && object instanceof Object3D &&
+                    <primitive
+                        uuid={group.id}
+                        onPointerUp={handleClick}
+                        object={object}
+                        castShadow={true}
+                        receiveShadow={true}
+                    />
+
+            }
+
+
         </>
         // <group
         //     onPointerUp={handleClick}

@@ -10,14 +10,18 @@ import GroupClient from "../../../clients/group.client";
 import {TransformMode} from "../../../types/transform";
 import {transformModeAtom} from "../../../store/recoil/transform-mode.recoil";
 import {ExportSyncStatus, exportSyncStatusAtom} from "../../../store/recoil/export-sync-status.recoil";
+import {SpotLight} from "three";
+import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 
 
 enum MenuType {
     ADD = 'add',
+    SPOT_LIGHT_ADD = 'spot_light_add',
     REMOVE = 'remove'
 }
 const groupClient = new GroupClient();
 const githubStorageClient = new GithubStorageClient();
+const exporter = new GLTFExporter();
 export default function ObjectListSideMenu() {
     const fileRef = useRef<HTMLInputElement>(null);
     const addGroup = useAddGroupHook();
@@ -51,6 +55,34 @@ export default function ObjectListSideMenu() {
                 throw new InstanceMismatchError(HTMLInputElement);
             };
             fileRef?.current?.click();
+        }
+    },{
+        name: MenuType.SPOT_LIGHT_ADD,
+        onClick: () => {
+            const spotLight = new SpotLight("0xffffff");
+            exporter.parse(
+                spotLight,
+                (gltf) => {
+                    console.log("=>(object-list-side-menu.tsx:67) gltf", gltf);
+                    const blob  = new Blob([gltf as ArrayBuffer],{ type: "application/octet-stream" });
+                    const file = new File([blob],spotLight.uuid ,{ type: "application/octet-stream" });
+                    groupClient
+                        .create(file)
+                        .then((groupEntity) => {
+                            addGroup(groupEntity);
+                        })
+                        .catch((exception) => {
+                            new Error(exception.toString());
+                        })
+                },
+                (error) => {
+
+                },
+                {
+                    binary: true
+                }
+            );
+
         }
     }];
     const selectedMenu: MenuItem[] = [{

@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Canvas, ThreeEvent} from "@react-three/fiber";
+import {Canvas, ThreeEvent, useThree} from "@react-three/fiber";
 import {cameraFar} from "../config";
 import {Suspense, useEffect, useMemo, useState} from "react";
 import CanvasLoader from "./CanvasLoader";
@@ -14,10 +14,17 @@ import {Physics} from "@react-three/rapier";
 import {KeyboardControlsMap} from "../types/keyboard-controls-map";
 import {ExhibitPlayer} from "./exhibit-player";
 import {ExhibitGround} from "./exhibit-ground";
+import {Group, SpotLight, SpotLightHelper} from "three";
 const exhibitClient = new ExhibitClient();
 const gltfLoader = new GLTFLoader();
 export interface ExhibitProps {
     uuid?: string
+}
+
+export function ExhibitWrap(){
+    return (
+        <></>
+    )
 }
 
 export default function Exhibit(props: ExhibitProps) {
@@ -29,6 +36,8 @@ export default function Exhibit(props: ExhibitProps) {
             throw new Error('not found exhibit uuid');
         }
     }
+
+
     const [object, setObject] = useState<GLTF | null>(null)
     const map = useMemo<KeyboardControlsEntry<KeyboardControlsMap>[]>(()=>[
         { name: KeyboardControlsMap.forward, keys: ['ArrowUp', 'KeyW'] },
@@ -42,12 +51,16 @@ export default function Exhibit(props: ExhibitProps) {
             exhibitClient.findOne(uuid)
                 .then((exhibit) => {
                     gltfLoader.load(exhibit.download_url,(gltf) => {
+                        console.log("=>(exhibit.tsx:46) gltf", gltf);
                         setObject(gltf);
                     })
                 })
 
         }
     },[])
+
+
+
 
     return <>
         <KeyboardControls
@@ -60,13 +73,10 @@ export default function Exhibit(props: ExhibitProps) {
                 <Sky sunPosition={[100, 20, 100]} />
                 <ambientLight intensity={0.3} />
                 <pointLight castShadow intensity={0.8} position={[100, 100, 100]} />
-                <Physics gravity={[0, -30, 0]}>
+                <Physics gravity={[0, 0, 0]}>
                     <Suspense fallback={<CanvasLoader />}>
-                        {/*<OrbitControls*/}
-                        {/*    makeDefault*/}
-                        {/*    minPolarAngle={0}*/}
-                        {/*    maxPolarAngle={Math.PI / 1.75}*/}
-                        {/*/>*/}
+
+
                         {object &&
                             <primitive
                                 object={object.scene}

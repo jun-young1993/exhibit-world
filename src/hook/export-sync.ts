@@ -5,7 +5,7 @@ import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import {useThree} from "@react-three/fiber";
 import ExhibitClient from "../clients/exhibit.client";
 import {gridHelperAtom} from "../store/recoil/grid-helper.recoil";
-import {GridHelper, Object3D} from "three";
+import {GridHelper, Object3D, SpotLightHelper} from "three";
 
 const exhibitClient = new ExhibitClient();
 const exporter = new GLTFExporter();
@@ -26,6 +26,11 @@ export default function useExportSync(){
 
     useEffect(() => {
         if(exportSyncStatus === ExportSyncStatus.PENDING){
+            for(const object of scene.children){
+                if(object instanceof SpotLightHelper){
+                    scene.remove(object);
+                }
+            }
             const cloneScene = scene.clone();
             for(const object of cloneScene.children){
                 if(object instanceof GridHelper){

@@ -8,19 +8,14 @@ import {RecoilRoot, useRecoilState} from "recoil";
 import {selectGroupAtom} from "../store/recoil/select-group.recoil";
 import CanvasLoader from "./CanvasLoader";
 import { Suspense } from "react";
+import {ExhibitPlayer} from "./exhibit-player";
+import {Physics} from "@react-three/rapier";
 
 
 export default function ExhibitCanvas() {
     const [,set] = useRecoilState(selectGroupAtom);
     return (
         <>
-                <KeyboardControls map={[
-                    { name: "forward", keys: ["ArrowUp", "w", "W"] },
-                    { name: "backward", keys: ["ArrowDown", "s", "S"] },
-                    { name: "left", keys: ["ArrowLeft", "a", "A"] },
-                    { name: "right", keys: ["ArrowRight", "d", "D"] },
-                    { name: "jump", keys: ["Space"] },
-                ]}>
                     <Canvas
                         dpr={[1, 2]}
                         shadows camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
@@ -28,15 +23,17 @@ export default function ExhibitCanvas() {
                     >
 
                         <Sky sunPosition={[100, 20, 100]} />
-                    {/*        /!*<Player />*!/*/}
-                        <ambientLight intensity={5} />
+                        <ambientLight intensity={0.3} />
+                        <pointLight castShadow intensity={0.8} position={[100, 100, 100]} />
+
                             <Suspense fallback={<CanvasLoader />}>
                                 <TransformControlsProvider>
                                     <Editor />
+                                    <axesHelper args={[1000]} />
                                 </TransformControlsProvider>
                             </Suspense>
+
                     </Canvas>
-                </KeyboardControls>
         </>
 
     )
