@@ -18,46 +18,56 @@ export function ExhibitPlayer() {
     const axe = useRef<Group>(null!);
     const [, get] = useKeyboardControls();
     const rapier = useRapier();
+    const world = rapier.world;
+    const characterController = world.createCharacterController(0.01);
+    characterController.setUp({ x: 0.0, y: 0.0, z: 1.0 });
+    // useFrame((state) => {
+    //     const { forward, backward, left, right, jump } = get() as unknown as {
+    //         forward: number,
+    //         backward: number,
+    //         left: number,
+    //         right: number,
+    //         jump: number
+    //     };
 
-    useFrame((state) => {
-        const { forward, backward, left, right, jump } = get() as unknown as {
-            forward: number,
-            backward: number,
-            left: number,
-            right: number,
-            jump: number
-        };
+    //     // const velocity = ref.current.linvel();
 
-        const velocity = ref.current.linvel();
+    //     // Update camera position to match player position
 
-        // Update camera position to match player position
-        const bodyCurrentTranslation = ref.current.translation();
+    //     if(ref.current){
+    //         console.log(ref.current,forward, backward, left, right);
+    //         const bodyCurrentTranslation = ref.current.translation();
 
-        state.camera.position.set(
-            bodyCurrentTranslation.x,
-            bodyCurrentTranslation.y,
-            bodyCurrentTranslation.z
-        );
+    //         state.camera.position.set(
+    //             bodyCurrentTranslation.x,
+    //             bodyCurrentTranslation.y,
+    //             bodyCurrentTranslation.z
+    //         );
+    
+    //         axe.current.rotation.copy(state.camera.rotation)
+    //         axe.current.position.copy(state.camera.position).add(state.camera.getWorldDirection(rotation).multiplyScalar(1))
+    
+    //         // console.log(            bodyCurrentTranslation.x,
+    //         //     bodyCurrentTranslation.y,
+    //         //     bodyCurrentTranslation.z)
+    //         // Movement
+    //         frontVector.set(0,0, backward - forward);
+    //         sideVector.set(left - right, 0,0);
+    //         direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(SPEED).applyEuler(state.camera.rotation)
+    
+    //         // ref.current.setLinvel(new Vector({ x: direction.x, y: velocity.y, z: direction.z }),false)
+    
+    //         // Set linear velocity of the player
+    //         ref.current.setLinvel({ x: direction.x, y: 0, z: direction.z }, false);
+    
+    //         // Jumping
+    //         // const world = rapier.world;
+    //         // const ray = world.castRay(bodyCurrentTranslationVector3 as any, direction,false);
+    //         // const grounded = ray && ray.collider && Math.abs(ray.toi) <= 1.75;
+    //         // if (jump) ref.current.setLinvel({ x: 0, y: 5.5, z: 0 }, false);
+    //     }
 
-        axe.current.rotation.copy(state.camera.rotation)
-        axe.current.position.copy(state.camera.position).add(state.camera.getWorldDirection(rotation).multiplyScalar(1))
-
-        // Movement
-        frontVector.set(0,0, backward - forward);
-        sideVector.set(left - right, 0,0);
-        direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(SPEED).applyEuler(state.camera.rotation)
-
-        // ref.current.setLinvel(new Vector({ x: direction.x, y: velocity.y, z: direction.z }),false)
-
-        // Set linear velocity of the player
-        ref.current.setLinvel({ x: direction.x, y: 0, z: direction.z }, false);
-
-        // Jumping
-        // const world = rapier.world;
-        // const ray = world.castRay(bodyCurrentTranslationVector3 as any, direction,false);
-        // const grounded = ray && ray.collider && Math.abs(ray.toi) <= 1.75;
-        // if (jump) ref.current.setLinvel({ x: 0, y: 5.5, z: 0 }, false);
-    });
+    // });
 
     return (
         <>
@@ -73,4 +83,11 @@ export function ExhibitPlayer() {
             </group>
         </>
     );
+}
+function characterController(){
+    
+}
+
+export default function AvatarController() {
+    return <></>
 }
