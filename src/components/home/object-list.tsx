@@ -41,7 +41,7 @@ export default function ObjectList(){
 	];
 	return (
 		<div className={"w-full min-w-0 h-full flex"}>
-			<div className={"flex-1 h-full"}>
+			<div className={"flex-none h-full"}>
 			{/* <div className={"flex-1 w-full h-full"}> */}
 				<ObjectListSideMenu />
 			</div>
