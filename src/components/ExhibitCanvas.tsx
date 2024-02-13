@@ -18,13 +18,14 @@ export default function ExhibitCanvas() {
         <>
                     <Canvas
                         dpr={[1, 2]}
-                        shadows camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
+                        shadows 
+                        camera={{ fov: 45, position: [15, 10, 0], near:0.1, far: cameraFar}}
                         onPointerMissed={(event:MouseEvent) => set(null)}
                     >
 
                         <Sky sunPosition={[100, 20, 100]} />
                         <ambientLight intensity={0.3} />
-                        <pointLight castShadow intensity={0.8} position={[100, 100, 100]} />
+                        {/* <pointLight castShadow intensity={0.8} position={[100, 100, 100]} /> */}
 
                             <Suspense fallback={<CanvasLoader />}>
                                 <TransformControlsProvider>

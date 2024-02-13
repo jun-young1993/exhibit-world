@@ -23,19 +23,19 @@ export default function ObjectList(){
 
 	},[selectedGroupId])
 	const headers = [
-		'positionX',
-		'positionY',
-		'positionZ',
-		'quaternionX',
-		'quaternionY',
-		'quaternionZ',
-		'quaternionW',
-		'rotationX',
-		'rotationY',
-		'rotationZ',
-		'scaleX',
-		'scaleY',
-		'scaleZ',
+		// 'positionX',
+		// 'positionY',
+		// 'positionZ',
+		// 'quaternionX',
+		// 'quaternionY',
+		// 'quaternionZ',
+		// 'quaternionW',
+		// 'rotationX',
+		// 'rotationY',
+		// 'rotationZ',
+		// 'scaleX',
+		// 'scaleY',
+		// 'scaleZ',
 		'id',
 		// <span key={'edit'} className="sr-only">Edit</span>
 	];
@@ -92,7 +92,7 @@ export default function ObjectList(){
 														}
 													}}
 												/>
-												<Table.Cell>{group.positionX}</Table.Cell>
+												{/* <Table.Cell>{group.positionX}</Table.Cell>
 												<Table.Cell>{group.positionY}</Table.Cell>
 												<Table.Cell>{group.positionZ}</Table.Cell>
 												<Table.Cell>{group.quaternionX}</Table.Cell>
@@ -104,7 +104,7 @@ export default function ObjectList(){
 												<Table.Cell>{group.rotationZ}</Table.Cell>
 												<Table.Cell>{group.scaleX}</Table.Cell>
 												<Table.Cell>{group.scaleY}</Table.Cell>
-												<Table.Cell>{group.scaleZ}</Table.Cell>
+												<Table.Cell>{group.scaleZ}</Table.Cell> */}
 												<Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
 													{group.id}
 												</Table.Cell>
