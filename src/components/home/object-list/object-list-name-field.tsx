@@ -1,7 +1,7 @@
-interface ObjectListNameFiledInterface {
+interface ObjectListNameFieldInterface {
 	default: string
 }
-export default function ObjectListNameFiled(props: ObjectListNameFiledInterface) {
+export default function ObjectListNameField(props: ObjectListNameFieldInterface) {
 	return (
 		<div className="relative">
 			<input  className="block w-full p-1 ps-5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={props.default} />
