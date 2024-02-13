@@ -8,5 +8,6 @@ import {GithubStorageEntity} from "./github-storage.entity";
 export interface GroupEntity extends Object3DEntity{
     id: string
     githubStorage: GithubStorageEntity
+    name: string
     mesh: MeshEntity[]
 }
