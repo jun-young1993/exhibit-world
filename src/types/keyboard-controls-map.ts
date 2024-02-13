@@ -1,7 +1,9 @@
 export enum KeyboardControlsMap {
     forward = 'forward',
-    back = 'backward',
-    left = 'left',
-    right = 'right',
+    backward = 'backward',
+    leftward = 'leftward',
+    rightward = 'rightward',
     jump = 'jump',
+    run = 'run',
+
 }

@@ -10,7 +10,6 @@ import {Physics} from "@react-three/rapier";
 import {KeyboardControlsMap} from "../types/keyboard-controls-map";
 import {ExhibitPlayer} from "./exhibit-player";
 import {ExhibitGround} from "./exhibit-ground";
-import {Group, SpotLight, SpotLightHelper} from "three";
 import Primitive from "./primitive";
 const exhibitClient = new ExhibitClient();
 const gltfLoader = new GLTFLoader();
@@ -18,27 +17,7 @@ export interface ExhibitProps {
     uuid?: string
 }
 
-export function ExhibitWrap({children} : {children: ReactNode}){
-    const map = useMemo<KeyboardControlsEntry<KeyboardControlsMap>[]>(()=>[
-        { name: KeyboardControlsMap.forward, keys: ['ArrowUp', 'KeyW'] },
-        { name: KeyboardControlsMap.back, keys: ['ArrowDown', 'KeyS'] },
-        { name: KeyboardControlsMap.left, keys: ['ArrowLeft', 'KeyA'] },
-        { name: KeyboardControlsMap.right, keys: ['ArrowRight', 'KeyD'] },
-        { name: KeyboardControlsMap.jump, keys: ['Space'] },
-    ], [])
-    return (
-        <KeyboardControls
-        map={map}
-        >
-                <Canvas
-                    dpr={[1, 2]}
-                    shadows camera={{ fov: 45 }}
-                >
-                    {children}
-                </Canvas>
-        </KeyboardControls>
-    )
-}
+
 
 export default function Exhibit(props: ExhibitProps) {
     let { uuid }= useParams();
@@ -70,10 +49,11 @@ export default function Exhibit(props: ExhibitProps) {
 
     const map = useMemo<KeyboardControlsEntry<KeyboardControlsMap>[]>(()=>[
         { name: KeyboardControlsMap.forward, keys: ['ArrowUp', 'KeyW'] },
-        { name: KeyboardControlsMap.back, keys: ['ArrowDown', 'KeyS'] },
-        { name: KeyboardControlsMap.left, keys: ['ArrowLeft', 'KeyA'] },
-        { name: KeyboardControlsMap.right, keys: ['ArrowRight', 'KeyD'] },
+        { name: KeyboardControlsMap.backward, keys: ['ArrowDown', 'KeyS'] },
+        { name: KeyboardControlsMap.leftward, keys: ['ArrowLeft', 'KeyA'] },
+        { name: KeyboardControlsMap.rightward, keys: ['ArrowRight', 'KeyD'] },
         { name: KeyboardControlsMap.jump, keys: ['Space'] },
+        { name: KeyboardControlsMap.run, keys: ['Shift'] },
     ], [])
     return <>
         <KeyboardControls

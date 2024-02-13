@@ -5,6 +5,9 @@ enum = > ImageType
 type => Image
 interface => ImageEntity
 
+// character controls
+https://github.com/ErdongChen-Andrew/CharacterControl?ref=reactjsexample.com
+
 // drei apis doc threejs api 문서
 https://github.com/pmndrs/drei
 
