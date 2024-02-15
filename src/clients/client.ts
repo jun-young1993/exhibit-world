@@ -2,6 +2,12 @@ import { getCookie } from "utills/cookie";
 import {serverDomain} from "../config";
 import {Cookies} from 'react-cookie';
 
+import {
+    StatusCodes,
+} from 'http-status-codes';
+
+
+
 const cookies = new Cookies();
 // const cookies = new Cookies();
 interface ClientInterface {
@@ -22,13 +28,19 @@ export default class Client {
         return this.domain+this.prefix+endpoint;
     }
 
-    fetch(endpoint: string, init?:  RequestInit){
+    async fetch(endpoint: string, init?: RequestInit) {
         const url = this.getUrl(endpoint);
 
         // this.options(init);
-        return fetch(url, {...init, ...{
-            credentials: "include", 
-        }});
+        const response = await fetch(url, {
+            ...init, ...{
+                credentials: "include",
+            }
+        });
+
+        const {status} = response;
+
+        return response;
     }
 }
 

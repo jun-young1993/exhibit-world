@@ -1,13 +1,14 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
 import { Radio, Table } from "flowbite-react";
-import {useEffect, useState} from "react";
+import {ChangeEvent, ChangeEventHandler, useEffect, useState} from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
 import {useRecoilState, useRecoilValue} from "recoil";
-import { groupsAllAtom } from "store/recoil/groups.recoil";
+import {groupsAllAtom, usePatchGroupHook} from "store/recoil/groups.recoil";
 import {selectGroupAtom} from "../../store/recoil/select-group.recoil";
 import ObjectListSideMenu from "./object-list/object-list-side-menu";
-
+import { TbEditCircle, TbEdit } from "react-icons/tb";
+import {isNull, isString} from "lodash";
 
 
 /**
@@ -19,25 +20,19 @@ export default function ObjectList(){
 
 	const [ panelDirection ] = useState<'vertical' | 'horizontal'>("vertical");
 	const [ selectedGroupId, setSelectedGroupId ] = useRecoilState<string | null>(selectGroupAtom);
+	const [ edit, setEdit ] = useState<string | null>(null);
+	const patchGroup = usePatchGroupHook();
+	const [ name, setName ] = useState<string>("");
+
 	useEffect(() => {
 
 	},[selectedGroupId])
+
+
+
 	const headers = [
-		// 'positionX',
-		// 'positionY',
-		// 'positionZ',
-		// 'quaternionX',
-		// 'quaternionY',
-		// 'quaternionZ',
-		// 'quaternionW',
-		// 'rotationX',
-		// 'rotationY',
-		// 'rotationZ',
-		// 'scaleX',
-		// 'scaleY',
-		// 'scaleZ',
 		'name',
-		// <span key={'edit'} className="sr-only">Edit</span>
+		'edit',
 	];
 	return (
 		<div className={"w-full min-w-0 h-full flex"}>
@@ -60,16 +55,18 @@ export default function ObjectList(){
 							overflow: 'scroll'
 						}}
 					>
-						<div className="w-full h-full">
+						<div className="overflow-x-auto">
 							<Table hoverable>
 								<Table.Head>
-									<Table.HeadCell className="">
-										
+									<Table.HeadCell key={"select-header"} className={"p-4"}>
+
 									</Table.HeadCell>
 								{headers.map((header,index) => {
 									return <Table.HeadCell
 									key={`${header}-${index}`}
-									>{header}</Table.HeadCell>
+									>
+										{header}
+									</Table.HeadCell>
 								})}
 								</Table.Head>
 								<Table.Body className="divide-y">
@@ -79,8 +76,9 @@ export default function ObjectList(){
 												key={group.id}
 												className="bg-white dark:border-gray-700 dark:bg-gray-800"
 											>
+												<Table.Cell>
 												<Radio 
-													className="m-4" 
+													className="p-3"
 													name="select-group" 
 													value={group.id}
 													checked={selectedGroupId === group.id}
@@ -92,31 +90,48 @@ export default function ObjectList(){
 														}
 													}}
 												/>
-												{/* <Table.Cell>{group.positionX}</Table.Cell>
-												<Table.Cell>{group.positionY}</Table.Cell>
-												<Table.Cell>{group.positionZ}</Table.Cell>
-												<Table.Cell>{group.quaternionX}</Table.Cell>
-												<Table.Cell>{group.quaternionY}</Table.Cell>
-												<Table.Cell>{group.quaternionZ}</Table.Cell>
-												<Table.Cell>{group.quaternionW}</Table.Cell>
-												<Table.Cell>{group.rotationX}</Table.Cell>
-												<Table.Cell>{group.rotationY}</Table.Cell>
-												<Table.Cell>{group.rotationZ}</Table.Cell>
-												<Table.Cell>{group.scaleX}</Table.Cell>
-												<Table.Cell>{group.scaleY}</Table.Cell>
-												<Table.Cell>{group.scaleZ}</Table.Cell> */}
+												</Table.Cell>
 												<Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
 													<div className="relative">
-														<input  className="block w-full p-1 ps-5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={group.name} />
-														<button className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+														<input
+															className={`block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+															${group.id !== edit ? "" : "border-blue-500"} `}
+															onFocus={event => setName(event.target.value)}
+															onChange={event => setName(event.target.value)}
+															defaultValue={group.name}
+															value={group.id !== edit ? group.name : name}
+															readOnly={group.id !== edit}
+															disabled={group.id !== edit}
+
+														/>
 													</div>
 												</Table.Cell>
-												
-												{/* <Table.Cell>
-												<a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-													Edit
-												</a>
-												</Table.Cell> */}
+												<Table.Cell>
+													<button type="button"
+															className={
+																group.id === edit
+																? "px-2 py-2 text-sm font-medium text-center inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800"
+																	: "px-2 py-2 text-sm font-medium text-center inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
+															}
+
+															onClick={() => {
+																if(group.id === edit){
+																	setEdit(null);
+																	patchGroup(group.id,{
+																		name: name
+																	});
+																}else{
+																	setName(group.name);
+																	setEdit(group.id);
+																}
+
+															}}
+													>
+														{group.id === edit
+														? <TbEditCircle />
+														: <TbEdit />}
+													</button>
+												</Table.Cell>
 											</Table.Row>
 										)
 									})}

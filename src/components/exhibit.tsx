@@ -72,14 +72,6 @@ export default function Exhibit(props: ExhibitProps) {
 
                         {object &&
                         <Primitive object={object.scene} />
-                            // <primitive
-                            //     object={object.scene}
-                            //     castShadow={true}
-                            //     position={[0,0,0]}
-                            //     rotation={[0,0,0]}
-                            //     scale={[2,2,2]}
-                            //     receiveShadow={true}
-                            // />
                         }
                         <ExhibitGround />
                         <ExhibitPlayer />

@@ -11,17 +11,21 @@ import {
 import GroupClient from "../../clients/group.client";
 import {GroupEntity} from "../../clients/entities/group.entity";
 import {selectGroupAtom} from "./select-group.recoil";
+import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
 
 const groupClient = new GroupClient();
 
-export const groupsSelector = selector<GroupEntity[]>({
+export const groupsSelector = selector<GroupEntity[] | []>({
     key: 'groupsSelector',
-    get: async (): Promise<GroupEntity[]> => {
-            return await groupClient.findAll();
+    get: async (): Promise<GroupEntity[] | []> => {
+        const groups = await groupClient.findAll();
+        console.log("=>(groups.recoil.ts:22) groups", groups);
+        return groups;
+
     },
 })
 
-export const groupsAllAtom = atom<GroupEntity[]>({
+export const groupsAllAtom = atom<GroupEntity[] | []>({
     key: 'groupsAllAtom',
     default: groupsSelector
 })
@@ -58,7 +62,36 @@ export const groupAtom = atomFamily<GroupEntity, GroupEntity['id']>({
 })
 
 
+export function usePatchGroupHook(){
+    return useRecoilCallback(
+        ({snapshot, set}) =>
+            (uuid: GroupEntity['id'], patchGroup: PatchGroupInterface) => {
+                const groups = snapshot.getLoadable(groupsAllAtom).getValue();
+                groupClient.patch(uuid,patchGroup)
+                    .then((resultUpdate) => {
+                        const patchGroups = groups.map((group) => {
+                            if(group.id === uuid){
 
+                                const patchedGroup = { ...group, name: patchGroup.name };
+                                return patchedGroup;
+                            }
+                            return group;
+                        });
+                        set(groupsAllAtom,[...patchGroups]);
+
+                    })
+                    .catch((error) => {
+                        console.log("=>(groups.recoil.ts:80) error", error);
+                    })
+
+
+
+
+
+            },
+        []
+    )
+}
 
 export function useAddGroupHook(){
     const addGroup = useRecoilCallback(

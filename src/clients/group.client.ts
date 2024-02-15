@@ -4,6 +4,7 @@ import {GroupEntity} from "./entities/group.entity";
 import UpdateGroupDto from "./dto/group/update-group.dto";
 import UpdateResult from "./entities/update-result";
 import {v4} from "uuid";
+import PatchGroupDto, {PatchGroupInterface} from "./dto/group/patch-group.dto";
 
 
 
@@ -118,6 +119,23 @@ export default class GroupClient extends Client {
                     'Content-Type': 'application/json',
                     'accept': '*/*'
                 }
+            })
+                .then((response) => response.json())
+                .then((response) => resolve(response))
+                .catch((exception) => reject(exception));
+        })
+    }
+
+    public patch(uuid: GroupEntity['id'], patchGroupDto: PatchGroupInterface)
+    {
+        return new Promise((resolve, reject) => {
+            this.fetch(`/${uuid}`,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                },
+                body: JSON.stringify(patchGroupDto)
             })
                 .then((response) => response.json())
                 .then((response) => resolve(response))

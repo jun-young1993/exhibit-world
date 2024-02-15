@@ -1,5 +1,4 @@
 import {OrbitControls, Html} from "@react-three/drei";
-import {floorSize} from "../config";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import GroupSurface from "./group-surface";
 import { useRecoilValue } from "recoil";
@@ -13,7 +12,6 @@ export default function Editor() {
     const groupIds = useRecoilValue(groupIdsAtom);
     const selected = useSelectedGroupHook();
     useExportSync();
-
     return (
         <>
             {groupIds.map((groupIds) => {
@@ -46,44 +44,7 @@ export default function Editor() {
                 }}
             />
 
-            <gridHelper args={[floorSize, floorSize]}/>
-                {/*<IconButton*/}
-                {/*    icon={<HiCubeTransparent />}*/}
-                {/*    description={"front texture image upload"}*/}
-                {/*    onChangeFile={(event) => {*/}
-                {/*        if(event.target.files instanceof FileList){*/}
-                {/*            // console.log(selected);*/}
-                {/*            // console.log(event.target.files[0]);*/}
-                {/*        }*/}
-                {/*    }}*/}
-                {/*/>*/}
 
-            {/*<Html*/}
-            {/*    zIndexRange={[90000000,90000001]}*/}
-            {/*    fullscreen={true}*/}
-            {/*>*/}
-            {/*        <span className={"flex justify-between w-full h-full"}>*/}
-            {/*            <EditSidebar*/}
-            {/*                onAdd={() => {*/}
-            {/*                    groupClient.createDefault()*/}
-            {/*                        .then((groupEntity) => {*/}
-            {/*                            addGroup(groupEntity);*/}
-            {/*                        })*/}
-            {/*                }}*/}
-            {/*            />*/}
-            {/*            /!*{selected &&*!/*/}
-            {/*            /!*    <Fragment*!/*/}
-            {/*            /!*        key={selected.uuid}*!/*/}
-            {/*            /!*    >*!/*/}
-            {/*            /!*        <MeshEditControls*!/*/}
-            {/*            /!*            key={selected.uuid}*!/*/}
-            {/*            /!*            mesh={selected as Mesh}*!/*/}
-            {/*            /!*            transformControls={transformControls}*!/*/}
-            {/*            /!*        />*!/*/}
-            {/*            /!*    </Fragment>*!/*/}
-            {/*            /!*}*!/*/}
-            {/*        </span>*/}
-            {/*</Html>*/}
         </>
     )
 }

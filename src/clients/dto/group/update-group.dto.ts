@@ -8,3 +8,4 @@ export default class UpdateGroupDto {
         Object.assign(this, property)
     }
 }
+
