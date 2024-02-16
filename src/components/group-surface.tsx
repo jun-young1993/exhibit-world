@@ -12,6 +12,8 @@ import {useEffect, useRef, useState} from "react";
 import {Group, Object3D, SpotLight, SpotLightHelper} from "three";
 import {useHelper} from "@react-three/drei";
 import {ObjectThreeType} from "../types/object-three-type";
+import ExhibitSpotLight from "./objects/exhibit-spot-light";
+
 
 
 export interface GroupSurface {
@@ -50,14 +52,14 @@ export default function GroupSurface(props: GroupSurface){
                 object.castShadow = true;
                 object.angle = 0.5;
                 object.distance = 30;
-                object.intensity = 1000;
+                object.intensity = 500;
                 object.shadow.mapSize.width = 1024;
                 object.shadow.mapSize.height = 1024;
 
                 object.shadow.camera.near = 500;
                 object.shadow.camera.far = 4000;
                 object.shadow.camera.fov = 30;
-                const spotLightHelper = new SpotLightHelper(object, "teal");
+                const spotLightHelper = new SpotLightHelper(object, 0xff0000);
 
                 scene.add(spotLightHelper);
             }
@@ -75,8 +77,7 @@ export default function GroupSurface(props: GroupSurface){
     return (
         <>
             {object && object instanceof SpotLight &&
-                // @ts-ignore
-                <spotLight castShadow />
+                <ExhibitSpotLight object={object} />
             }
             {object && object instanceof Object3D &&
                     <primitive

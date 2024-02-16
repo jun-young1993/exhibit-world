@@ -12,11 +12,12 @@ import {transformModeAtom} from "../../../store/recoil/transform-mode.recoil";
 import {ExportSyncStatus, exportSyncStatusAtom} from "../../../store/recoil/export-sync-status.recoil";
 import {SpotLight} from "three";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
+import { objectDefalutValues } from "config";
 
 
 enum MenuType {
     ADD = 'add',
-    SPOT_LIGHT_ADD = 'spot_light_add',
+    SPOT_LIGHT_ADD = 'SpotLight',
     REMOVE = 'remove'
 }
 const groupClient = new GroupClient();
@@ -60,6 +61,8 @@ export default function ObjectListSideMenu() {
         name: MenuType.SPOT_LIGHT_ADD,
         onClick: () => {
             const spotLight = new SpotLight("0xffffff");
+            
+            spotLight.userData = objectDefalutValues.spotLight;
             exporter.parse(
                 spotLight,
                 (gltf) => {
@@ -76,7 +79,7 @@ export default function ObjectListSideMenu() {
                         })
                 },
                 (error) => {
-
+                    console.log('error',error);
                 },
                 {
                     binary: true

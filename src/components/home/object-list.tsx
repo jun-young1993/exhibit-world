@@ -1,14 +1,16 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
-import { Radio, Table } from "flowbite-react";
-import {ChangeEvent, ChangeEventHandler, useEffect, useState} from "react";
+import { Button, Label, Radio, RangeSlider, Table } from "flowbite-react";
+import {useState} from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {groupsAllAtom, usePatchGroupHook} from "store/recoil/groups.recoil";
 import {selectGroupAtom} from "../../store/recoil/select-group.recoil";
 import ObjectListSideMenu from "./object-list/object-list-side-menu";
 import { TbEditCircle, TbEdit } from "react-icons/tb";
-import {isNull, isString} from "lodash";
+import { useModal } from "store/recoil/modal.recoild";
+import { ExhibitModal } from "components/exhibit-modal";
+import { MdOutlineSettings } from "react-icons/md";
 
 
 /**
@@ -23,18 +25,22 @@ export default function ObjectList(){
 	const [ edit, setEdit ] = useState<string | null>(null);
 	const patchGroup = usePatchGroupHook();
 	const [ name, setName ] = useState<string>("");
-
-	useEffect(() => {
-
-	},[selectedGroupId])
+	const { openModal, closeModal } = useModal();
+	// openModal({
+	// 	content: (
+	// 		<>div</>
+	// 	)
+	// })
 
 
 
 	const headers = [
 		'name',
 		'edit',
+		'setting'
 	];
 	return (
+		<>
 		<div className={"w-full min-w-0 h-full flex"}>
 			<div className={"flex-none h-full"}>
 			{/* <div className={"flex-1 w-full h-full"}> */}
@@ -132,6 +138,37 @@ export default function ObjectList(){
 														: <TbEdit />}
 													</button>
 												</Table.Cell>
+												<Table.Cell>
+													<Button 
+														pill
+														// outline
+														gradientDuoTone="purpleToBlue"
+														onClick={()=>{
+															openModal({
+																content: (
+																	<div className="flex max-w-md flex-col gap-4">
+																		<div>
+																			<div className="mb-1 block">
+																				<Label htmlFor="default-range" value="Default" />
+																			</div>
+																			<RangeSlider 
+																				id="default-range" 
+																				min={0}
+																				max={10000}
+																				value={5000}
+																				onChange={(event) => {
+																					console.log(event.target);
+																				}}
+																			/>
+																		</div>
+																	</div>
+																)
+															})
+														}}
+													>
+														<MdOutlineSettings />
+													</Button>
+												</Table.Cell>
 											</Table.Row>
 										)
 									})}
@@ -142,5 +179,7 @@ export default function ObjectList(){
 				</PanelGroup>
 			</div>
 		</div>
+		<ExhibitModal />
+		</>
 	)
 }

@@ -18,7 +18,7 @@ interface ModalOptions {
 }
 export const useModal = () => {
     const [modalState, setModalState] = useRecoilState(modalAtom);
-
+    
     const closeModal = useCallback(
         () => setModalState(() => {
             return {

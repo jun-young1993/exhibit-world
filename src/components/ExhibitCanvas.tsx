@@ -32,11 +32,11 @@ export default function ExhibitCanvas() {
                                 <TransformControlsProvider>
                                     <Editor />
                                     <ExhibitGround
-                                        position={[0,-2,0]}
+                                        position={[0,-6,0]}
                                         color={"white"}
                                     />
                                     <axesHelper args={[floorSize]} />
-                                    <gridHelper args={[floorSize, floorSize]}/>
+                                    <gridHelper args={[floorSize, floorSize]} />
                                 </TransformControlsProvider>
                             </Suspense>
                         </Physics>
