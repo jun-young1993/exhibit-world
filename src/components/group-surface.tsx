@@ -47,22 +47,6 @@ export default function GroupSurface(props: GroupSurface){
 
                     })
                 })
-        }else{
-            if(object instanceof SpotLight){
-                object.castShadow = true;
-                object.angle = 0.5;
-                object.distance = 30;
-                object.intensity = 500;
-                object.shadow.mapSize.width = 1024;
-                object.shadow.mapSize.height = 1024;
-
-                object.shadow.camera.near = 500;
-                object.shadow.camera.far = 4000;
-                object.shadow.camera.fov = 30;
-                const spotLightHelper = new SpotLightHelper(object, 0xff0000);
-
-                scene.add(spotLightHelper);
-            }
         }
     },[object])
     const [, select] = useRecoilState(selectGroupAtom);

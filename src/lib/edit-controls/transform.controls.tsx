@@ -15,6 +15,7 @@ import ExhibitClient from "../../clients/exhibit.client";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import {useThree} from "@react-three/fiber";
 import GroupClient from "../../clients/group.client";
+import {updateUserDataStatusAtom} from "../../store/recoil/update-user-data.recoil";
 
 interface EditTransformControlsProps extends TransformControlsProps {
     object:  Group
@@ -32,41 +33,42 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
     const [, setGroup] = useRecoilState(groupAtom(object.uuid));
     const [transformMode] = useRecoilState(transformModeAtom);
     const transformControls = useTransformControls();
+    const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);
     const {scene} = useThree();
 
 
     const handleMouseUp = () => {
+        setUpdateUserDataStatusAtom(object.uuid);
+        // const updateObject = scene.getObjectById(object.id)
 
-        const updateObject = scene.getObjectById(object.id)
-
-        if(updateObject instanceof Object3D){
-            // object.userData = {
-            //     position : object.position
-            // }
-            console.log("=>(transform.controls.tsx:47) updateObject", updateObject);
-
-
-             // updateObject.position
-            exporter.parse(
-                updateObject,
-                (gltf) => {
-                    console.log("=>(transform.controls.tsx:50) gltf", gltf);
-                    groupClient.update(object.uuid, gltf as ArrayBuffer)
-                        .then((update) => {
-
-                        });
-                },
-                (error) => {
-                    console.log("=>(transform.controls.tsx:45) error", error);
-                },
-                {
-                    trs: true,
-                    binary: true,
-                    onlyVisible: true,
-                    includeCustomExtensions: false
-                }
-            )
-        }
+        // if(updateObject instanceof Object3D){
+        //     // object.userData = {
+        //     //     position : object.position
+        //     // }
+        //     console.log("=>(transform.controls.tsx:47) updateObject", updateObject);
+        //
+        //
+        //      // updateObject.position
+        //     exporter.parse(
+        //         updateObject,
+        //         (gltf) => {
+        //             console.log("=>(transform.controls.tsx:50) gltf", gltf);
+        //             groupClient.update(object.uuid, gltf as ArrayBuffer)
+        //                 .then((update) => {
+        //
+        //                 });
+        //         },
+        //         (error) => {
+        //             console.log("=>(transform.controls.tsx:45) error", error);
+        //         },
+        //         {
+        //             trs: true,
+        //             binary: true,
+        //             onlyVisible: true,
+        //             includeCustomExtensions: false
+        //         }
+        //     )
+        // }
 
     }
 

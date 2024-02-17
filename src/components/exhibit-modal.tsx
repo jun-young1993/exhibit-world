@@ -8,13 +8,22 @@ const customTheme: CustomFlowbiteTheme['modal'] = {
         }
     }
 }
-export const ExhibitModal = () => {
+
+interface ExhibitModalProps {
+    onClose ?: () => void
+}
+export const ExhibitModal = (props: ExhibitModalProps) => {
     const {modalState, closeModal} = useModal();
     return (
         <Modal
             theme={customTheme}
             show={modalState.isOpen}
-            onClose={() => closeModal()}
+            onClose={() => {
+                if(props.onClose){
+                    props.onClose();
+                }
+                closeModal();
+            }}
             size={"lg"}
             // content={"inner"}
             // popup

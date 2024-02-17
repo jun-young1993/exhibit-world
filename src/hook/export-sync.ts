@@ -26,12 +26,18 @@ export default function useExportSync(){
 
     useEffect(() => {
         if(exportSyncStatus === ExportSyncStatus.PENDING){
+
             for(const object of scene.children){
                 if(object instanceof SpotLightHelper){
                     scene.remove(object);
                 }
             }
+            scene.children = scene.children.filter((object) => {
+                return !(object instanceof SpotLightHelper)
+            })
+
             const cloneScene = scene.clone();
+            console.log("=>(export-sync.ts:36) scene", scene);
             for(const object of cloneScene.children){
                 if(object instanceof GridHelper){
                     cloneScene.remove(object);

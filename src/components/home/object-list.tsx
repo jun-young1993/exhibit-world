@@ -1,17 +1,68 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
 import { Button, Label, Radio, RangeSlider, Table } from "flowbite-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {groupsAllAtom, usePatchGroupHook} from "store/recoil/groups.recoil";
 import {selectGroupAtom} from "../../store/recoil/select-group.recoil";
 import ObjectListSideMenu from "./object-list/object-list-side-menu";
 import { TbEditCircle, TbEdit } from "react-icons/tb";
-import { useModal } from "store/recoil/modal.recoild";
+import {modalAtom, useModal} from "store/recoil/modal.recoild";
 import { ExhibitModal } from "components/exhibit-modal";
 import { MdOutlineSettings } from "react-icons/md";
+import {spotLightUserDataAtom} from "../../store/recoil/spot-light-user-datas.recoil";
+import {SpotLight} from "three";
+import {useThree} from "@react-three/fiber";
+import {UserDataSpotLight} from "../../types/user-data";
+import {updateUserDataStatusAtom} from "../../store/recoil/update-user-data.recoil";
 
+interface SpotLightUserDataModalProps {
+	data: UserDataSpotLight
+}
+function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
+
+	const [spotLightUserData, setSpotLightUserData] = useRecoilState(spotLightUserDataAtom(props.data.uuid));
+	const {modalState} = useModal();
+
+	console.log("=>(object-list.tsx:27) modalState.isOpen", modalState.isOpen);
+	return (
+		<>
+		{spotLightUserData &&
+			<div className="flex max-w-md flex-col gap-4">
+				<div>
+					<div className="mb-1 block">
+						<Label htmlFor="intensity-range" value="intensity" />
+					</div>
+					<RangeSlider
+						id="intensity-range"
+						min={0}
+						max={10000}
+						defaultValue={spotLightUserData.intensity}
+						onChange={(event) => {
+							setSpotLightUserData({
+								...spotLightUserData,
+								intensity: Number(event.target.value)
+							});
+						}}
+					/>
+				</div>
+			</div>
+		}
+		</>
+	)
+}
+
+function ContentModal(props: {uuid: string}){
+
+	const [spotLightUserData] = useRecoilState(spotLightUserDataAtom(props.uuid));
+	return (
+		<>
+			{spotLightUserData && <SpotLightUserDataModal data={spotLightUserData} />}
+			{!spotLightUserData && "No editable data available"}
+		</>
+	)
+}
 
 /**
  * url - https://www.npmjs.com/package/react-resizable-panels
@@ -25,12 +76,11 @@ export default function ObjectList(){
 	const [ edit, setEdit ] = useState<string | null>(null);
 	const patchGroup = usePatchGroupHook();
 	const [ name, setName ] = useState<string>("");
-	const { openModal, closeModal } = useModal();
-	// openModal({
-	// 	content: (
-	// 		<>div</>
-	// 	)
-	// })
+	const { openModal, closeModal, modalState } = useModal();
+
+
+
+	const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);
 
 
 
@@ -146,24 +196,10 @@ export default function ObjectList(){
 														onClick={()=>{
 															openModal({
 																content: (
-																	<div className="flex max-w-md flex-col gap-4">
-																		<div>
-																			<div className="mb-1 block">
-																				<Label htmlFor="default-range" value="Default" />
-																			</div>
-																			<RangeSlider 
-																				id="default-range" 
-																				min={0}
-																				max={10000}
-																				value={5000}
-																				onChange={(event) => {
-																					console.log(event.target);
-																				}}
-																			/>
-																		</div>
-																	</div>
-																)
+																	<ContentModal uuid={group.id} />
+																),
 															})
+															setSelectedGroupId(group.id);
 														}}
 													>
 														<MdOutlineSettings />
@@ -179,7 +215,14 @@ export default function ObjectList(){
 				</PanelGroup>
 			</div>
 		</div>
-		<ExhibitModal />
+		<ExhibitModal
+			onClose = {() => {
+				if(selectedGroupId){
+					setUpdateUserDataStatusAtom(selectedGroupId);
+				}
+
+			}}
+		/>
 		</>
 	)
 }

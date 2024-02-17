@@ -11,19 +11,17 @@ export const spotLightUserDatasAtom = atom<UserDataSpotLight[] | []>({
 	default: spotLightUserDatasSelector
 });
 
-export const spotLightUserDataSelector = selectorFamily<UserDataSpotLight, UserDataSpotLight['uuid']>({
+export const spotLightUserDataSelector = selectorFamily<UserDataSpotLight | undefined, UserDataSpotLight['uuid']>({
 	key: 'spotLightUserDataSelector',
 	get: (uuid) => ({get}) => {
 		const spotLightUserDatas = get(spotLightUserDatasAtom);
 		const spotLightUserData = spotLightUserDatas.find((spotLightUserData) => spotLightUserData.uuid === uuid);
-		if(spotLightUserData === undefined){
-			return objectDefalutValues.spotLight;
-		}
+
 		return spotLightUserData;
 	}
 });
 
-export const spotLightUserDataAtom = atomFamily<UserDataSpotLight, UserDataSpotLight['uuid']>({
+export const spotLightUserDataAtom = atomFamily<UserDataSpotLight | undefined, UserDataSpotLight['uuid']>({
 	key: 'spotLightUserDataAtom',
 	default: spotLightUserDataSelector
 });
@@ -34,6 +32,7 @@ export function useAddSpotLightUserDatasHook(){
 			(userDataSpotLight: UserDataSpotLight) => {
 				const spotLightUserDatas = snapshot.getLoadable(spotLightUserDatasAtom).getValue();
 				set(spotLightUserDatasAtom, [...spotLightUserDatas,userDataSpotLight]);
+				console.log("=>(spot-light-user-datas.recoil.ts:36) add spot light");
 			},
 		[]
 	)

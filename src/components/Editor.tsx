@@ -6,12 +6,14 @@ import { groupIdsAtom } from "../store/recoil/groups.recoil";
 import { ThreeEvent } from "@react-three/fiber";
 import useSelectedGroupHook from "../store/recoil/select-group.recoil";
 import useExportSync from "../hook/export-sync";
+import {useUpdateUserData} from "../store/recoil/update-user-data.recoil";
 
 export default function Editor() {
 
     const groupIds = useRecoilValue(groupIdsAtom);
     const selected = useSelectedGroupHook();
     useExportSync();
+    useUpdateUserData();
     return (
         <>
             {groupIds.map((groupIds) => {

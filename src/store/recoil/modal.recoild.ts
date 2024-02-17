@@ -4,34 +4,42 @@ import {ReactNode, useCallback} from "react";
 interface ModalAtomOptions {
     isOpen: boolean;
     content?: ReactNode | string
+    onClose?: () => void
 }
 export const modalAtom = atom<ModalAtomOptions>({
     key: 'modalAtom',
     default: {
         isOpen: false,
-        content: undefined
+        content: undefined,
+        onClose : undefined
     }
 });
 
 interface ModalOptions {
-    content?: ReactNode | string
+    content?: ReactNode | string,
+    onClose?: () => void
 }
 export const useModal = () => {
     const [modalState, setModalState] = useRecoilState(modalAtom);
-    
+
     const closeModal = useCallback(
         () => setModalState(() => {
-            return {
-                isOpen: false,
-                content: undefined
-            };
+                if(modalState.onClose){
+                    modalState.onClose();
+                }
+                return {
+                    isOpen: false,
+                    content: undefined,
+                    onClose: undefined
+                }
         }),
     [modalState]);
 
     const openModal = useCallback(
-        ({content}: ModalOptions) => setModalState({
+        ({content, onClose}: ModalOptions) => setModalState({
         isOpen: true,
-        content: content
+        content: content,
+        onClose: onClose
     }),[modalState]);
 
     return {modalState, openModal, closeModal};

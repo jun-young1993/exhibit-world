@@ -13,6 +13,7 @@ import {ExportSyncStatus, exportSyncStatusAtom} from "../../../store/recoil/expo
 import {SpotLight} from "three";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { objectDefalutValues } from "config";
+import {useThree} from "@react-three/fiber";
 
 
 enum MenuType {
