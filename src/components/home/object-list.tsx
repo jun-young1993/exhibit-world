@@ -1,6 +1,6 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
-import { Button, Label, Radio, RangeSlider, Table } from "flowbite-react";
+import {Button, Label, Radio, RangeSlider, Table, ToggleSwitch} from "flowbite-react";
 import {useEffect, useState} from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
 import {useRecoilState, useRecoilValue} from "recoil";
@@ -23,16 +23,26 @@ interface SpotLightUserDataModalProps {
 function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 
 	const [spotLightUserData, setSpotLightUserData] = useRecoilState(spotLightUserDataAtom(props.data.uuid));
-	const {modalState} = useModal();
 
-	console.log("=>(object-list.tsx:27) modalState.isOpen", modalState.isOpen);
 	return (
 		<>
 		{spotLightUserData &&
 			<div className="flex max-w-md flex-col gap-4">
 				<div>
+					<ToggleSwitch
+						checked={spotLightUserData.castShadow}
+						label="cast shadow"
+						onChange={(checked) => {
+							setSpotLightUserData({
+								...spotLightUserData,
+								castShadow: checked
+							});
+						}}
+					/>
+				</div>
+				<div>
 					<div className="mb-1 block">
-						<Label htmlFor="intensity-range" value="intensity" />
+						<Label htmlFor="intensity-range" value={`intensity (${spotLightUserData.intensity})`} />
 					</div>
 					<RangeSlider
 						id="intensity-range"
@@ -43,6 +53,41 @@ function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 							setSpotLightUserData({
 								...spotLightUserData,
 								intensity: Number(event.target.value)
+							});
+						}}
+					/>
+				</div>
+				<div>
+					<div className="mb-1 block">
+						<Label htmlFor="intensity-range" value={`angle (${spotLightUserData.angle})`} />
+					</div>
+					<RangeSlider
+						id="intensity-range"
+						min={0}
+						step={0.1}
+						max={10}
+						defaultValue={spotLightUserData.angle}
+						onChange={(event) => {
+							setSpotLightUserData({
+								...spotLightUserData,
+								angle: Number(event.target.value)
+							});
+						}}
+					/>
+				</div>
+				<div>
+					<div className="mb-1 block">
+						<Label htmlFor="intensity-range" value={`distance (${spotLightUserData.distance})`} />
+					</div>
+					<RangeSlider
+						id="intensity-range"
+						min={0}
+						max={100}
+						defaultValue={spotLightUserData.distance}
+						onChange={(event) => {
+							setSpotLightUserData({
+								...spotLightUserData,
+								distance: Number(event.target.value)
 							});
 						}}
 					/>

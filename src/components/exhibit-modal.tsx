@@ -24,6 +24,7 @@ export const ExhibitModal = (props: ExhibitModalProps) => {
                 }
                 closeModal();
             }}
+            popup
             size={"lg"}
             // content={"inner"}
             // popup
