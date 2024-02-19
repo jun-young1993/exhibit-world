@@ -12,16 +12,16 @@ import GroupClient from "../../clients/group.client";
 import {GroupEntity} from "../../clients/entities/group.entity";
 import {selectGroupAtom} from "./select-group.recoil";
 import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
+import UnauthrizedException from "Exception/unauthrized.exception";
 
 const groupClient = new GroupClient();
 
 export const groupsSelector = selector<GroupEntity[] | []>({
     key: 'groupsSelector',
     get: async (): Promise<GroupEntity[] | []> => {
-        const groups = await groupClient.findAll();
-        console.log("=>(groups.recoil.ts:22) groups", groups);
-        return groups;
-
+                const groups = await groupClient.findAll();
+        
+                return groups;
     },
 })
 

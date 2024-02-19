@@ -4,12 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {RecoilRoot} from "recoil";
-import { globalErrorAtom } from 'store/recoil/global-exception.recoil';
 import { ErrorBoundary } from 'react-error-boundary';
-import Login from 'components/home/login';
+import { FallbackComponent } from 'fallback';
 
 
 
+
+  
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -21,13 +22,13 @@ function AppRoot(){
             //     set(globalErrorAtom, null);
             // }}
         >
-            {/* <ErrorBoundary fallback={<Login />}> */}
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
                 <Suspense fallback={<div>loading...</div>}>
                     <React.StrictMode>
                         <App />
                     </React.StrictMode>
                 </Suspense>
-            {/* </ErrorBoundary> */}
+            </ErrorBoundary>
         </RecoilRoot>
     )
 }

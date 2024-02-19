@@ -5,6 +5,7 @@ import {Cookies} from 'react-cookie';
 import {
     StatusCodes,
 } from 'http-status-codes';
+import UnauthrizedException from "Exception/unauthrized.exception";
 
 
 
@@ -14,6 +15,7 @@ interface ClientInterface {
     domain?: string,
     prefix?: string
 }
+
 
 export default class Client {
     protected domain: string = serverDomain
@@ -29,18 +31,25 @@ export default class Client {
     }
 
     async fetch(endpoint: string, init?: RequestInit) {
-        const url = this.getUrl(endpoint);
+        
+            const url = this.getUrl(endpoint);
 
-        // this.options(init);
-        const response = await fetch(url, {
-            ...init, ...{
-                credentials: "include",
+            // this.options(init);
+            const response = await fetch(url, {
+                ...init, ...{
+                    credentials: "include",
+                }
+            });
+    
+            const {status, body} = response;
+
+            if(status === 401){
+                throw new UnauthrizedException();
             }
-        });
+    
+            return response;
 
-        const {status} = response;
 
-        return response;
     }
 }
 

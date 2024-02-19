@@ -81,10 +81,13 @@ const loginedMenuItem: MenuComponent[] = [{
     component: <Logined />
 }]
 
-export default function Dashboard(){
+interface DashboardProps {
+    defaultMenuItem ?: ReactNode | JSX.Element
+}
+export default function Dashboard(props: DashboardProps){
     
     const [currentMenu, setCurrentMenu] = useState<string | null>(null);
-    const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(<>dashboard</>);
+    const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(props.defaultMenuItem ?? <>dashboard</>);
     const user = useRecoilValue(userAtom);
     const defalutMenu = [
         menuItem, 
