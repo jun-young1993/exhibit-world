@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start:dev": "set PORT=3001 && react-scripts start",
+    "start:prd" : "pm2 start ./server.sh --name exhibit-world",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
