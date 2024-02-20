@@ -34,6 +34,9 @@ https://leva.pmnd.rs/?path=/story/inputs-button--disabled-button
 // react -fiber admin tailwind templete
 https://github.com/themesberg/flowbite-admin-dashboard
 
+// 메모리 부족 에러 
+https://choo.oopy.io/c2a4a27e-fe64-4642-8672-0b9f1e543548
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
