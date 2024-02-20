@@ -1,7 +1,7 @@
 import { UserDataSpotLight } from "types/user-data";
 
 // export const serverDomain = 'http://158.180.82.177:80';
-export const serverDomain = 'http://127.0.0.1:3000';
+export const serverDomain = process.env.APP_HOST ?? 'http://127.0.0.1:3001';
 
 
 // THREE
