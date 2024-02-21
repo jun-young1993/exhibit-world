@@ -25,5 +25,5 @@ jobs:
             git pull origin main
             export NODE_OPTIONS=--max_old_space_size=4096
             npm run build
-            npm run start:prd
-            pm2 save
+            pm2 restart exhibit-world
+            
