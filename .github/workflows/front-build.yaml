@@ -24,7 +24,7 @@ jobs:
             cd /app/exhibit-world
             sudo git config --global --add safe.directory /app/exhibit-world
             sudo git pull origin main
-            sudo export NODE_OPTIONS=--max_old_space_size=4096
-            sudo npm run build
-            sudo pm2 restart exhibit-world
+            export NODE_OPTIONS=--max_old_space_size=4096
+            npm run build
+            pm2 restart exhibit-world
             
