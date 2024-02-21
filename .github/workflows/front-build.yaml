@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
+      - name: Github Actions...
         uses: actions/checkout@v3
     
-      - name: Deploy with ssh
-        uses: sebastianjnuwu/ssh-action-deploy@v3
+      - name: Execute Remote SSH...
+        uses: appleboy/ssh-action@master
         with:
-          IP: ${{ secrets.ORACLE_FREE_MAIN_SSH_HOST }}
-          USER: ${{ secrets.ORACLE_FREE_MAIN_SSH_USER }}
-          KEY: ${{ secrets.ORACLE_FREE_MAIN_SSH_PRIVATE_KEY }}
-          FOLDER: "/"
-          RUN: "ls -a; pwd"
+          host: ${{ secrets.ORACLE_FREE_MAIN_SSH_HOST }}
+          username: ${{ secrets.ORACLE_FREE_MAIN_SSH_USER }}
+          key: ${{ secrets.ORACLE_FREE_MAIN_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.ORACLE_FREE_MAIN_SSH_PORT }}
+          script: whoami
