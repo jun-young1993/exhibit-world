@@ -1,7 +1,7 @@
 name: Front Deployment
 
 on:
-  pull:
+  pull_request:
     branches: [ main ]
 
 jobs:
