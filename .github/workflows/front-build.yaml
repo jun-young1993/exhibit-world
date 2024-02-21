@@ -19,4 +19,9 @@ jobs:
           username: ${{ secrets.ORACLE_FREE_MAIN_SSH_USER }}
           key: ${{ secrets.ORACLE_FREE_MAIN_SSH_PRIVATE_KEY }}
           port: ${{ secrets.ORACLE_FREE_MAIN_SSH_PORT }}
-          script: whoami
+          script: |
+            sudo su -
+            whoami
+            ls -al
+            cd /app/exhibit-world
+            ls -al
