@@ -9,7 +9,7 @@ jobs:
     runs-on: [liunx,windows]
     
     steps:
-    - users: jun-young1993
+    - uses: actions/checkout@v2
     - name: Front Deployment
       run: echo Hello, world!
 
