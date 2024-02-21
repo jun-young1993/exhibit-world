@@ -6,16 +6,17 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: centos-latest
     
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Front Deployment
-        run: echo Hello, world!
-
-      - name: Front Deployment2
-        run: |
-          echo one line,
-          echo two line
+      - name: Github Actions...
+      - uses: actions/checkout@v3
+    
+      - name: Deploy with ssh...
+        uses: sebastianjnuwu/ssh-action-deploy@v3
+        with:
+          IP: ${{ secrets.ORACLE_FREE_MAIN_SSH_HOST }}
+          USER: ${{ secrets.ORACLE_FREE_MAIN_SSH_USER }}
+          KEY: ${{ secrets.ORACLE_FREE_MAIN_SSH_PRIVATE_KEY }}
+          FOLDER: "/"
+          RUN: "ls -a; pwd"
