@@ -13,10 +13,10 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Front Deployment
-      run: echo Hello, world!
+    - run: echo Hello, world!
 
     - name: Front Deplyment2
-      run: |
+    - run: |
         echo one line,
         echo tow line
 
