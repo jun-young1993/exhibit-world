@@ -1,0 +1,21 @@
+name: Front Deployment
+
+on:
+  pull:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: [liunx,windows]
+    
+    steps:
+    - users: jun-young1993
+    - name: Front Deployment
+      run: echo Hello, world!
+
+    - name: Front Deplyment2
+      run: |
+        echo one line,
+        echo tow line
+
+      
