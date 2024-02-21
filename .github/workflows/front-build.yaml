@@ -9,15 +9,13 @@ jobs:
     runs-on: [liunx,windows]
     
     steps:
-    - name: Checkout Code
-    - uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-    - name: Front Deployment
-    - run: echo Hello, world!
+      - name: Front Deployment
+        run: echo Hello, world!
 
-    - name: Front Deplyment2
-    - run: |
-        echo one line,
-        echo tow line
-
-      
+      - name: Front Deployment2
+        run: |
+          echo one line,
+          echo two line
