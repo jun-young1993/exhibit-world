@@ -1,7 +1,7 @@
 name: Front Deployment
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
@@ -9,7 +9,9 @@ jobs:
     runs-on: [liunx,windows]
     
     steps:
+    - name: Checkout Code
     - uses: actions/checkout@v2
+
     - name: Front Deployment
       run: echo Hello, world!
 
