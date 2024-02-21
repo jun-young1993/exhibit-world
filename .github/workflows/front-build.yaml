@@ -20,10 +20,8 @@ jobs:
           key: ${{ secrets.ORACLE_FREE_MAIN_SSH_PRIVATE_KEY }}
           port: ${{ secrets.ORACLE_FREE_MAIN_SSH_PORT }}
           script: |
-            sudo su -
             cd /app/exhibit-world
-            sudo git config --global --add safe.directory /app/exhibit-world
-            sudo git pull origin main
+            git pull origin main
             export NODE_OPTIONS=--max_old_space_size=4096
             npm run build
             pm2 restart exhibit-world
