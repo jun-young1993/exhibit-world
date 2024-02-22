@@ -33,11 +33,12 @@ module.exports = (env, argv) => {
             rules: [
                 {
                     test: /\.tsx?$/,
+                    exclude:'/node_modules/',
                     use: ["babel-loader", "ts-loader"],
                 },
                 {
                     test: /.css?$/,
-                    exclude: [],
+                    exclude:'/node_modules/',
                     use: ["style-loader", "css-loader", "postcss-loader"],
                 },
             ],
