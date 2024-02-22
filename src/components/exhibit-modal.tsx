@@ -29,7 +29,7 @@ export const ExhibitModal = (props: ExhibitModalProps) => {
             // content={"inner"}
             // popup
         >
-            <Modal.Header/>
+            <Modal.Header>{modalState.title}</Modal.Header>
             <Modal.Body>
                 {modalState.content}
             </Modal.Body>

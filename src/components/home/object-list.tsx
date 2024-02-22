@@ -101,6 +101,13 @@ function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 function ContentModal(props: {uuid: string}){
 
 	const [spotLightUserData] = useRecoilState(spotLightUserDataAtom(props.uuid));
+	const { setTitle, modalState } = useModal();
+	const modalTitle: string = "SETTING";
+	useEffect(() => {
+		if(modalState.title !== modalTitle){
+			setTitle(modalTitle);
+		}
+	},[modalState]);
 	return (
 		<>
 			{spotLightUserData && <SpotLightUserDataModal data={spotLightUserData} />}
@@ -121,7 +128,7 @@ export default function ObjectList(){
 	const [ edit, setEdit ] = useState<string | null>(null);
 	const patchGroup = usePatchGroupHook();
 	const [ name, setName ] = useState<string>("");
-	const { openModal, closeModal, modalState } = useModal();
+	const { openModal } = useModal();
 
 
 

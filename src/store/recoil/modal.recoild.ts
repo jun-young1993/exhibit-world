@@ -3,12 +3,14 @@ import {ReactNode, useCallback} from "react";
 
 interface ModalAtomOptions {
     isOpen: boolean;
-    content?: ReactNode | string
-    onClose?: () => void
+    content?: ReactNode | string;
+    title?: string;
+    onClose?: () => void;
 }
 export const modalAtom = atom<ModalAtomOptions>({
     key: 'modalAtom',
     default: {
+        title: "",
         isOpen: false,
         content: undefined,
         onClose : undefined
@@ -17,6 +19,7 @@ export const modalAtom = atom<ModalAtomOptions>({
 
 interface ModalOptions {
     content?: ReactNode | string,
+    title?: string
     onClose?: () => void
 }
 export const useModal = () => {
@@ -30,17 +33,26 @@ export const useModal = () => {
                 return {
                     isOpen: false,
                     content: undefined,
-                    onClose: undefined
+                    onClose: undefined,
+                    title: ""
                 }
         }),
     [modalState]);
 
     const openModal = useCallback(
-        ({content, onClose}: ModalOptions) => setModalState({
+        ({content, onClose, title }: ModalOptions) => setModalState({
         isOpen: true,
         content: content,
-        onClose: onClose
+        onClose: onClose,
+        title: title ?? ""
     }),[modalState]);
 
-    return {modalState, openModal, closeModal};
+    const setTitle = useCallback(
+        (title: string) => setModalState({
+            ...modalState,
+            title: title
+        }),[modalState]
+    );
+
+    return {modalState, openModal, closeModal, setTitle};
 }
