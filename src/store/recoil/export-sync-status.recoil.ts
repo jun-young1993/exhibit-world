@@ -1,4 +1,3 @@
-import {bool} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 import {atom} from "recoil";
 
 export enum ExportSyncStatus {
