@@ -2,7 +2,6 @@ import SideMenu from "../side-menu";
 import {MenuItem} from "../../../types/menu-component";
 import InstanceMismatchError from "../../../Exception/instance-mismatch";
 import {ChangeEvent, useEffect, useRef, useState} from "react";
-import GithubStorageClient from "../../../clients/github-storage.client";
 import {useAddGroupHook, useRemoveGroupHook} from "../../../store/recoil/groups.recoil";
 import {selectGroupAtom} from "../../../store/recoil/select-group.recoil";
 import {useRecoilState} from "recoil";
@@ -13,17 +12,19 @@ import {ExportSyncStatus, exportSyncStatusAtom} from "../../../store/recoil/expo
 import {SpotLight} from "three";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { objectDefalutValues } from "config";
-import {useThree} from "@react-three/fiber";
 import { ExhibitModal } from "components/exhibit-modal";
 import { useModal } from "store/recoil/modal.recoild";
-
+import { GrDocumentConfig } from "react-icons/gr";
+import { TbTableExport } from "react-icons/tb";
+import { ImUpload } from "react-icons/im";
+import { GiFlashlight } from "react-icons/gi";
 
 enum MenuType {
-    ADD = 'add',
+    UPLOAD = 'Upload',
     SPOT_LIGHT_ADD = 'SpotLight',
-    REMOVE = 'remove',
-    CONFIG = 'config',
-    EXPORT = 'export'
+    REMOVE = 'Remove',
+    CONFIG = 'Config',
+    EXPORT = 'Export'
 }
 const groupClient = new GroupClient();
 const exporter = new GLTFExporter();
@@ -56,7 +57,8 @@ export default function ObjectListSideMenu() {
         })
     }
     const defaultMenu: MenuItem[] = [{
-        name: MenuType.ADD,
+        name: MenuType.UPLOAD,
+        icon: ImUpload,
         top: <input type='file' className="hidden" ref={fileRef} onChange={handleAddFile}/>,
         onClick: () => {
             if(!(fileRef?.current instanceof HTMLInputElement)){
@@ -66,6 +68,7 @@ export default function ObjectListSideMenu() {
         }
     },{
         name: MenuType.SPOT_LIGHT_ADD,
+        icon: GiFlashlight,
         onClick: () => {
             const spotLight = new SpotLight("0xffffff");
             
@@ -125,6 +128,7 @@ export default function ObjectListSideMenu() {
     }];
     const defaultBottomMenu: MenuItem[] = [{
         name: MenuType.EXPORT,
+        icon: TbTableExport,
         onClick: () => {
             if(exportSyncStatus === ExportSyncStatus.IDLE){
                 setExportSyncStatus(ExportSyncStatus.PENDING);
@@ -132,6 +136,7 @@ export default function ObjectListSideMenu() {
         }
     },{
         name: MenuType.CONFIG,
+        icon: GrDocumentConfig,
         onClick: () => {
             openModal({
                 title: MenuType.CONFIG,

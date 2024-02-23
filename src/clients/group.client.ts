@@ -45,9 +45,12 @@ export default class GroupClient extends Client {
     /**
      * Relative all Groups
      */
-    public findAll(){
+    public findAll(groupMappingUUID: string){
         return new Promise<GroupEntity[]>((resolve, reject) => {
-            this.fetch('/',{
+            const url = '?'+new URLSearchParams({
+                uuid: groupMappingUUID
+            }).toString();
+            this.fetch(url,{
                 method: 'get',
                 headers: {
                     'Content-Type': 'application/json',
