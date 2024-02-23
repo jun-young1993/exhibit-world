@@ -247,6 +247,7 @@ export default function ObjectList(){
 														gradientDuoTone="purpleToBlue"
 														onClick={()=>{
 															openModal({
+																title: 'SETTING',
 																content: (
 																	<ContentModal uuid={group.id} />
 																),

@@ -1,16 +1,5 @@
-import { getCookie } from "utills/cookie";
 import {serverDomain} from "../config";
-import {Cookies} from 'react-cookie';
-
-import {
-    StatusCodes,
-} from 'http-status-codes';
 import UnauthrizedException from "Exception/unauthrized.exception";
-
-
-
-const cookies = new Cookies();
-// const cookies = new Cookies();
 interface ClientInterface {
     domain?: string,
     prefix?: string

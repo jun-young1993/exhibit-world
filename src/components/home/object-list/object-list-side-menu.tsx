@@ -14,24 +14,30 @@ import {SpotLight} from "three";
 import {GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { objectDefalutValues } from "config";
 import {useThree} from "@react-three/fiber";
+import { ExhibitModal } from "components/exhibit-modal";
+import { useModal } from "store/recoil/modal.recoild";
 
 
 enum MenuType {
     ADD = 'add',
     SPOT_LIGHT_ADD = 'SpotLight',
-    REMOVE = 'remove'
+    REMOVE = 'remove',
+    CONFIG = 'config',
+    EXPORT = 'export'
 }
 const groupClient = new GroupClient();
-const githubStorageClient = new GithubStorageClient();
 const exporter = new GLTFExporter();
+function ConfigModalContent(){
+    return <>hi</>;
+}
 export default function ObjectListSideMenu() {
     const fileRef = useRef<HTMLInputElement>(null);
     const addGroup = useAddGroupHook();
     const removeGroup = useRemoveGroupHook();
     const [,setTransformMode] = useRecoilState(transformModeAtom);
     const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
-
     const [selectedGroupId] = useRecoilState<string | null>(selectGroupAtom);
+    const { openModal } = useModal();
 
     const handleAddFile = (event: ChangeEvent<HTMLInputElement>) => {
 
@@ -118,11 +124,19 @@ export default function ObjectListSideMenu() {
         }
     }];
     const defaultBottomMenu: MenuItem[] = [{
-        name: 'Export Exhibit',
+        name: MenuType.EXPORT,
         onClick: () => {
             if(exportSyncStatus === ExportSyncStatus.IDLE){
                 setExportSyncStatus(ExportSyncStatus.PENDING);
             }
+        }
+    },{
+        name: MenuType.CONFIG,
+        onClick: () => {
+            openModal({
+                title: MenuType.CONFIG,
+                content: <ConfigModalContent />
+            })
         }
     }]
     const initMenuItem: MenuItem[][] = [
@@ -145,9 +159,14 @@ export default function ObjectListSideMenu() {
 
     },[selectedGroupId])
 
-    return <SideMenu
-        menuItems={menuItem}
-        onClick={() => {}}
-        hideTopButton={true}
-    />
+    return (
+    <>
+        <SideMenu
+            menuItems={menuItem}
+            onClick={() => {}}
+            hideTopButton={true}
+        />
+        <ExhibitModal />
+    </>
+    )
 }
