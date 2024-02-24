@@ -15,6 +15,8 @@ import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-
 import UnauthrizedException from "Exception/unauthrized.exception";
 import GroupMappingClient from "clients/group-mapping.client";
 import { GroupMappingEntity } from "clients/entities/group-mapping.entity";
+import {isEmpty} from "lodash";
+import {CreateGroupMappingDtoInterface} from "../../clients/dto/group-mapping/create-group-mapping.dto";
 
 const groupMappingClient = new GroupMappingClient();
 
@@ -31,5 +33,39 @@ export const groupMappingAllAtom = atom<GroupMappingEntity[] | []>({
     key: 'groupMappingAllAtom',
     default: groupMappingSelector
 })
+
+export const selectedGroupMappingSelector = selector<string | null>({
+    key: 'selectedGroupMappingSelector',
+    get: ({get}) => {
+        const groupMapping = get(groupMappingAllAtom);
+        if(isEmpty(groupMapping)){
+            return null;
+        }
+
+        return groupMapping[0].id;
+    }
+})
+
+export const selectedGroupMappingAtom = atom<string | null>({
+    key: 'selectedGroupMappingAtom',
+    default: selectedGroupMappingSelector
+})
+
+export function useAddGroupMappingHook(){
+    return useRecoilCallback(
+        ({snapshot, set}) =>
+            (createGroupMappingDto: CreateGroupMappingDtoInterface) => {
+                const groupMappingList = snapshot.getLoadable(groupMappingAllAtom).getValue();
+                groupMappingClient.create(createGroupMappingDto)
+                    .then((groupMapping) => {
+                        set(groupMappingAllAtom,[...groupMappingList,groupMapping])
+                    })
+                    .catch((error) => {
+                        console.log("=>(groups-mapping.recoil.ts:64) error", error);
+                    });
+                // set(groupMappingAllAtom,)
+            }
+    )
+}
 
 

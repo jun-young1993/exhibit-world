@@ -13,7 +13,7 @@ import {GroupEntity} from "../../clients/entities/group.entity";
 import {selectGroupAtom} from "./select-group.recoil";
 import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
 import UnauthrizedException from "Exception/unauthrized.exception";
-import { groupMappingAllAtom } from "./groups-mapping.recoil";
+import {groupMappingAllAtom, selectedGroupMappingAtom} from "./groups-mapping.recoil";
 import { isEmpty } from "lodash";
 
 const groupClient = new GroupClient();
@@ -21,11 +21,11 @@ const groupClient = new GroupClient();
 export const groupsSelector = selector<GroupEntity[] | []>({
     key: 'groupsSelector',
     get: async ({get}): Promise<GroupEntity[] | []> => {
-                const groupMapping = get(groupMappingAllAtom);
-                if(isEmpty(groupMapping)){
+                const selectedGroupMappingId = get(selectedGroupMappingAtom);
+                if(selectedGroupMappingId === null){
                     return [];
                 }
-                const groups = await groupClient.findAll(groupMapping[0].id);
+                const groups = await groupClient.findAll(selectedGroupMappingId);
                 
                 return groups;
     },
