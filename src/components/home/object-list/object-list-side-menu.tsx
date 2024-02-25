@@ -45,16 +45,7 @@ export default function ObjectListSideMenu() {
         if(!(event.target.files instanceof FileList)){
             throw new InstanceMismatchError(FileList);
         }
-        Array.from(event.target.files).forEach((file) => {
-            groupClient
-                .create(file)
-                .then((groupEntity) => {
-                    addGroup(groupEntity);
-                })
-                .catch((exception) => {
-                    new Error(exception.toString());
-                })
-        })
+        addGroup(Array.from(event.target.files))
     }
     const defaultMenu: MenuItem[] = [{
         name: MenuType.UPLOAD,
@@ -76,17 +67,11 @@ export default function ObjectListSideMenu() {
             exporter.parse(
                 spotLight,
                 (gltf) => {
-                    console.log("=>(object-list-side-menu.tsx:67) gltf", gltf);
+
                     const blob  = new Blob([gltf as ArrayBuffer],{ type: "application/octet-stream" });
                     const file = new File([blob],spotLight.uuid ,{ type: "application/octet-stream" });
-                    groupClient
-                        .create(file)
-                        .then((groupEntity) => {
-                            addGroup(groupEntity);
-                        })
-                        .catch((exception) => {
-                            new Error(exception.toString());
-                        })
+                    const fileList = [file];
+                    addGroup(fileList);
                 },
                 (error) => {
                     console.log('error',error);

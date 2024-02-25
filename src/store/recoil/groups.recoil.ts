@@ -12,16 +12,17 @@ import GroupClient from "../../clients/group.client";
 import {GroupEntity} from "../../clients/entities/group.entity";
 import {selectGroupAtom} from "./select-group.recoil";
 import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
-import UnauthrizedException from "Exception/unauthrized.exception";
-import {groupMappingAllAtom, selectedGroupMappingAtom} from "./groups-mapping.recoil";
+
+import {groupMappingAllAtom, selectedGroupMappingIdAtom} from "./groups-mapping.recoil";
 import { isEmpty } from "lodash";
+import InstanceMismatchError from "../../Exception/instance-mismatch";
 
 const groupClient = new GroupClient();
 
 export const groupsSelector = selector<GroupEntity[] | []>({
     key: 'groupsSelector',
     get: async ({get}): Promise<GroupEntity[] | []> => {
-                const selectedGroupMappingId = get(selectedGroupMappingAtom);
+                const selectedGroupMappingId = get(selectedGroupMappingIdAtom);
                 if(selectedGroupMappingId === null){
                     return [];
                 }
@@ -56,7 +57,7 @@ const groupSelector = selectorFamily<GroupEntity, GroupEntity['id']>({
         const groupEntity = groups.find((group) => group.id === uuid);
 
         if (groupEntity === undefined) {
-            throw new Error(`Group with id ${uuid} not found`);
+            throw new Error(`Group with uuid ${uuid} not found`);
         }
         return groupEntity;
     }
@@ -75,7 +76,7 @@ export function usePatchGroupHook(){
                 const groups = snapshot.getLoadable(groupsAllAtom).getValue();
                 groupClient.patch(uuid,patchGroup)
                     .then((resultUpdate) => {
-                        const patchGroups = groups.map((group) => {
+                        const patchGroupList = groups.map((group) => {
                             if(group.id === uuid){
 
                                 const patchedGroup = { ...group, name: patchGroup.name };
@@ -83,7 +84,7 @@ export function usePatchGroupHook(){
                             }
                             return group;
                         });
-                        set(groupsAllAtom,[...patchGroups]);
+                        set(groupsAllAtom,[...patchGroupList]);
 
                     })
                     .catch((error) => {
@@ -110,10 +111,20 @@ export function useAddGroupHook(){
     );
     return useRecoilCallback(
         ({ snapshot, set }) =>
-            (groupEntity:GroupEntity) => {
-                const group = snapshot.getLoadable(groupsAllAtom).getValue();
-                set(groupsAllAtom, [...group,groupEntity]);
-                addGroup(groupEntity.id);
+            (files: File[]) => {
+
+                const selectedGroupMappingId = snapshot.getLoadable(selectedGroupMappingIdAtom).getValue();
+
+                files.forEach((file) => {
+                        groupClient
+                            .create(selectedGroupMappingId,file)
+                            .then((groupEntity) => {
+                                const group = snapshot.getLoadable(groupsAllAtom).getValue();
+                                set(groupsAllAtom, [...group,groupEntity]);
+                                addGroup(groupEntity.id);
+                            })
+                })
+
             },
         [],
     )
