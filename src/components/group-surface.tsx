@@ -29,9 +29,9 @@ export default function GroupSurface(props: GroupSurface){
 
     // useHelper(spotLight, SpotLightHelper, "teal");
 
-    const {scene} = useThree()
 
-    const [group, setGroup] = useRecoilState(groupAtom(props.uuid));
+
+    const [group] = useRecoilState(groupAtom(props.uuid));
 
     useEffect(() => {
         if(object === null){

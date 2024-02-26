@@ -5,6 +5,7 @@ import UpdateGroupDto from "./dto/group/update-group.dto";
 import UpdateResult from "./entities/update-result";
 import {v4} from "uuid";
 import PatchGroupDto, {PatchGroupInterface} from "./dto/group/patch-group.dto";
+import {GroupMappingEntity} from "./entities/group-mapping.entity";
 
 
 
@@ -20,12 +21,12 @@ export default class GroupClient extends Client {
      *
      * @return GroupEntity
      */
-    public create(file: File): Promise<GroupEntity>
+    public create(groupMappingId: GroupMappingEntity['id'], file: File): Promise<GroupEntity>
     {
         return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('file',file, file.name);
-            this.fetch('/',{
+            this.fetch(`/mapping/${groupMappingId}`,{
                 method: 'post',
                 headers: {
                     'accept': '*/*'

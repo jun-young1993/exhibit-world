@@ -17,6 +17,9 @@ import GroupMappingClient from "clients/group-mapping.client";
 import { GroupMappingEntity } from "clients/entities/group-mapping.entity";
 import {isEmpty} from "lodash";
 import {CreateGroupMappingDtoInterface} from "../../clients/dto/group-mapping/create-group-mapping.dto";
+import PatchGroupMappingDto, {
+    PatchGroupMappingDtoInterface
+} from "../../clients/dto/group-mapping/patch-group-mapping.dto";
 
 const groupMappingClient = new GroupMappingClient();
 
@@ -34,21 +37,51 @@ export const groupMappingAllAtom = atom<GroupMappingEntity[] | []>({
     default: groupMappingSelector
 })
 
-export const selectedGroupMappingSelector = selector<string | null>({
-    key: 'selectedGroupMappingSelector',
+export const selectedGroupMappingIdSelector = selector<string>({
+    key: 'selectedGroupMappingIdSelector',
     get: ({get}) => {
         const groupMapping = get(groupMappingAllAtom);
         if(isEmpty(groupMapping)){
-            return null;
+            throw new Error('The group mapping data is empty.')
         }
 
         return groupMapping[0].id;
     }
 })
 
-export const selectedGroupMappingAtom = atom<string | null>({
+export const selectedGroupMappingIdAtom = atom<string>({
+    key: 'selectedGroupMappingIdAtom',
+    default: selectedGroupMappingIdSelector
+})
+
+export const selectedGroupMappingSelector = selector<GroupMappingEntity | null>({
+    key: 'selectedGroupMappingSelector',
+    get: ({get}) => {
+        const groupMapping = get(groupMappingAllAtom);
+        const selectedGroupMappingId = get(selectedGroupMappingIdAtom);
+        const groupMappingEntity = groupMapping.find((mapping) => mapping.id === selectedGroupMappingId);
+        if(groupMappingEntity === undefined){
+            throw new Error(`Group Mapping with uuid ${selectedGroupMappingId} not found`);
+        }
+        return groupMappingEntity;
+    }
+});
+
+export const selectedGroupMappingAtom = atom<GroupMappingEntity | null>({
     key: 'selectedGroupMappingAtom',
     default: selectedGroupMappingSelector
+});
+
+export const groupMappingSelectorFamily = selectorFamily<GroupMappingEntity, GroupMappingEntity['id']>({
+    key: 'groupMappingSelector',
+    get: (uuid: GroupMappingEntity['id']) => ({get}) =>  {
+        const groupMapping = get(groupMappingAllAtom);
+        const groupMappingEntity = groupMapping.find((mapping) => mapping.id === uuid);
+        if(isEmpty(groupMappingEntity)){
+            throw new Error(`Group Mapping with uuid ${uuid} not found`);
+        }
+        return groupMappingEntity;
+    }
 })
 
 export function useAddGroupMappingHook(){
@@ -68,4 +101,30 @@ export function useAddGroupMappingHook(){
     )
 }
 
+export function usePatchGroupMappingHook(){
+    return useRecoilCallback(
+        ({snapshot, set}) =>
+            (uuid: GroupMappingEntity['id'], patchGroupMapping: PatchGroupMappingDtoInterface) => {
+                const groupMapping = snapshot.getLoadable(groupMappingAllAtom).getValue();
+                groupMappingClient.patch(uuid, patchGroupMapping)
+                    .then((resultUpdate) => {
+                        const patchGroupMappingList = groupMapping.map((mapping) => {
+                            if(mapping.id === uuid){
+                                const patchedGroupMapping: GroupMappingEntity = {
+                                    ...mapping,
+                                    name: patchGroupMapping.name ?? ""
+                                }
+                                return patchedGroupMapping;
+                            }
+                            return mapping;
+                        })
+
+                        set(groupMappingAllAtom,[...patchGroupMappingList]);
+                    })
+                    .catch((error) => {
+                        console.log("=>(groups-mapping.recoil.ts:103) error");
+                    })
+            }
+    )
+}
 
