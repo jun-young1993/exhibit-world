@@ -1,4 +1,4 @@
-import {OrbitControls, Html} from "@react-three/drei";
+import {OrbitControls, Html, useGizmoContext, GizmoHelper, GizmoViewport, GizmoViewcube} from "@react-three/drei";
 import EditTransformControls from "../lib/edit-controls/transform.controls";
 import GroupSurface from "./group-surface";
 import { useRecoilValue } from "recoil";
@@ -12,6 +12,7 @@ export default function Editor() {
 
     const groupIds = useRecoilValue(groupIdsAtom);
     const selected = useSelectedGroupHook();
+    
     useExportSync();
     useUpdateUserData();
     return (
@@ -30,7 +31,7 @@ export default function Editor() {
             }
 
             <OrbitControls
-                target={selected ? selected.position : undefined}
+                // target={selected ? selected.position : undefined}
                 makeDefault
                 minPolarAngle={0}
                 maxPolarAngle={Math.PI / 1.75}
@@ -45,6 +46,17 @@ export default function Editor() {
                   console.log(event);
                 }}
             />
+            <GizmoHelper
+                alignment="bottom-right"
+                margin={[80,80]}
+                // onTarget={}
+            >
+                <GizmoViewport 
+                    axisColors={['red','green','blue']} 
+                    labelColor="black" 
+                />
+                {/* <GizmoViewcube /> */}
+            </GizmoHelper>
 
 
         </>
