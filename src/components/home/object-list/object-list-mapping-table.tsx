@@ -5,17 +5,19 @@ import {useEffect, useState} from "react";
 import ObjectListTable from "./object-list-table";
 import {
 	groupMappingAllAtom, groupMappingSelectorFamily, selectedGroupMappingAtom, selectedGroupMappingIdAtom,
-	useAddGroupMappingHook, usePatchGroupMappingHook
+	useAddGroupMappingHook, useDeleteGroupMappingHook, usePatchGroupMappingHook
 } from "store/recoil/groups-mapping.recoil";
 import IconButton from "../../icon-button";
 import { RiMenuAddFill } from "react-icons/ri";
 import {ExhibitModal} from "../../exhibit-modal";
 import {useModal} from "../../../store/recoil/modal.recoild";
-import { MdCreate, MdOutlineCancel } from "react-icons/md";
+import { MdCreate, MdDelete, MdOutlineCancel } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 import {GroupEntity} from "../../../clients/entities/group.entity";
 import {GroupMappingEntity} from "../../../clients/entities/group-mapping.entity";
-import {isEmpty} from "lodash";
+import DeleteContentModal from "components/modal/delete.content";
+
+
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const selectedGroupMapping = useRecoilValue<GroupMappingEntity>(groupMappingSelectorFamily(uuid));
 
@@ -99,9 +101,13 @@ export default function ObjectListMappingTable(){
 	const [groupMapping] = useRecoilState(groupMappingAllAtom);
 	const [mappingTableNode, setMappingTableNode] = useState<boolean>(true);
 	const [selectedGroupMappingId, setSelectedGroupMappingId] = useRecoilState<GroupMappingEntity['id']>(selectedGroupMappingIdAtom);
-	const { openModal } = useModal();
+	const delteGroupMapping = useDeleteGroupMappingHook();
+	const { openModal, closeModal } = useModal();
 	const headers = [
-		'name'
+		'name',
+		'edit',
+		'delete',
+		'list'
 	];
 	return (
 		<>
@@ -133,8 +139,7 @@ export default function ObjectListMappingTable(){
 									{header}
 								</Table.HeadCell>
 							})}
-							<Table.HeadCell key={"select-object-edit"} className={"p-1"}></Table.HeadCell>
-							<Table.HeadCell key={"select-object-list"} className={"p-1"}></Table.HeadCell>
+							
 						</Table.Head>
 						<Table.Body className="divide-y">
 							{groupMapping.map((groupMapping) => {
@@ -170,7 +175,7 @@ export default function ObjectListMappingTable(){
 										</Table.Cell>
 										<Table.Cell>
 											<Button
-												pill
+												outline
 												// outline
 												gradientDuoTone="purpleToBlue"
 												onClick={()=>{
@@ -186,8 +191,26 @@ export default function ObjectListMappingTable(){
 										<Table.Cell>
 											<Button
 												pill
-												// outline
-												gradientDuoTone="purpleToBlue"
+												gradientDuoTone="pinkToOrange"
+												onClick={()=>{
+													openModal({
+														content: <DeleteContentModal 
+															title={"Are you sure you want to delete this group?"}
+															onClick={()=>{
+																delteGroupMapping(groupMapping.id);
+																closeModal();
+															}}
+														/>
+													})
+												}}
+											>
+												     <MdDelete />
+											</Button>
+										</Table.Cell>
+										<Table.Cell>
+											<Button
+												outline
+												gradientDuoTone="tealToLime"
 												onClick={()=>{
 													setSelectedGroupMappingId(groupMapping.id);
 													setMappingTableNode(false);

@@ -13,9 +13,7 @@ import {GroupEntity} from "../../clients/entities/group.entity";
 import {selectGroupAtom} from "./select-group.recoil";
 import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
 
-import {groupMappingAllAtom, selectedGroupMappingIdAtom} from "./groups-mapping.recoil";
-import { isEmpty } from "lodash";
-import InstanceMismatchError from "../../Exception/instance-mismatch";
+import { selectedGroupMappingIdAtom } from "./groups-mapping.recoil";
 
 const groupClient = new GroupClient();
 

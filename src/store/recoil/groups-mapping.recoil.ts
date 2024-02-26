@@ -1,23 +1,15 @@
 import {
     atom,
-    atomFamily,
     selector,
     selectorFamily,
     useRecoilCallback,
     useRecoilState,
-    useRecoilValue,
-    useSetRecoilState
 } from "recoil"
-import GroupClient from "../../clients/group.client";
-import {GroupEntity} from "../../clients/entities/group.entity";
-import {selectGroupAtom} from "./select-group.recoil";
-import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
-import UnauthrizedException from "Exception/unauthrized.exception";
 import GroupMappingClient from "clients/group-mapping.client";
 import { GroupMappingEntity } from "clients/entities/group-mapping.entity";
 import {isEmpty} from "lodash";
 import {CreateGroupMappingDtoInterface} from "../../clients/dto/group-mapping/create-group-mapping.dto";
-import PatchGroupMappingDto, {
+import {
     PatchGroupMappingDtoInterface
 } from "../../clients/dto/group-mapping/patch-group-mapping.dto";
 
@@ -124,6 +116,21 @@ export function usePatchGroupMappingHook(){
                     .catch((error) => {
                         console.log("=>(groups-mapping.recoil.ts:103) error");
                     })
+            }
+    )
+}
+
+export function useDeleteGroupMappingHook(){
+    
+    return useRecoilCallback(
+        ({snapshot, set}) => 
+            (uuid: GroupMappingEntity['id']) => {
+                const groupMapping = snapshot.getLoadable(groupMappingAllAtom).getValue();
+                const removeGroupMapping = groupMapping.filter((mapping) => mapping.id !== uuid);
+                groupMappingClient.delete(uuid)
+                .then((result) => {
+                    set(groupMappingAllAtom,[...removeGroupMapping]);
+                })
             }
     )
 }

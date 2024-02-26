@@ -65,4 +65,20 @@ export default class GroupMappingClient extends Client {
                 .catch((exception) => reject(exception));
         })
     }
+
+    public delete(uuid: GroupMappingEntity['id'])
+    {
+        return new Promise((resolve, reject) => {
+            this.fetch(`/${uuid}`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                },
+            })
+                .then((response) => response.json())
+                .then((response) => resolve(response))
+                .catch((exception) => reject(exception));
+        })
+    }
 }
