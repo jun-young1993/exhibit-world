@@ -14,6 +14,9 @@ import IconButton from "components/icon-button";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { GroupEntity } from "clients/entities/group.entity";
 import { MdCreate, MdDelete, MdOutlineCancel } from "react-icons/md";
+import { transformModeAtom } from "store/recoil/transform-mode.recoil";
+import { TransformMode } from "types/transform";
+import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
 const ObjectListTableNavBarTheme: NavbarComponentProps['theme'] = {
 	root: {
 		inner: {
@@ -172,6 +175,7 @@ export default function ObjectListTable(props: ObjectListTableProps)
 {
 	const [groups] = useRecoilState(groupsAllAtom);
 	const [ selectedGroupId, setSelectedGroupId ] = useRecoilState<string | null>(selectGroupAtom);
+	const [transformMode,setTransformMode] = useRecoilState(transformModeAtom);
 	const { openModal } = useModal();
 	
 	
@@ -182,11 +186,35 @@ export default function ObjectListTable(props: ObjectListTableProps)
 	return (
 		<>
 		<Navbar fluid rounded theme={ObjectListTableNavBarTheme}>
+			<Navbar.Collapse>
 			<IconButton 
 				icon={<FaArrowLeftLong />}
 				tooltip={"exhibition venue list."}
 				onClick={props.onBackClick}
 			/>
+			</Navbar.Collapse>
+			<div>|</div>
+			<Navbar.Collapse>
+			<IconButton
+				icon={transformMode === TransformMode.Translate
+					? <HiCubeTransparent />
+					: transformMode === TransformMode.Rotate
+					? <HiOutlineRefresh />
+					: <HiArrowsExpand />}
+				tooltip={`transfrom`}
+				onClick={() => {
+					if(transformMode === TransformMode.Translate){
+						setTransformMode(TransformMode.Rotate);
+					}
+					if(transformMode === TransformMode.Rotate){
+						setTransformMode(TransformMode.Scale);
+					}
+					if(transformMode === TransformMode.Scale){
+						setTransformMode(TransformMode.Translate);
+					}
+				}}
+			/>
+			</Navbar.Collapse>
 			{/* <IconButton icon={<TbEditCircle />}/>
 			<IconButton icon={<TbEditCircle />}/> */}
 			

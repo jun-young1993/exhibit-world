@@ -1,10 +1,10 @@
-import {Button, FloatingLabel, Navbar, Radio, Table} from "flowbite-react";
+import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Table} from "flowbite-react";
 import {useRecoilState, useRecoilValue} from "recoil"
 import { FaArrowRightLong } from "react-icons/fa6";
 import {useEffect, useState} from "react";
 import ObjectListTable from "./object-list-table";
 import {
-	groupMappingAllAtom, groupMappingSelectorFamily, selectedGroupMappingAtom, selectedGroupMappingIdAtom,
+	groupMappingAllAtom, groupMappingAtomFamily, selectedGroupMappingAtom, selectedGroupMappingIdAtom,
 	useAddGroupMappingHook, useDeleteGroupMappingHook, usePatchGroupMappingHook
 } from "store/recoil/groups-mapping.recoil";
 import IconButton from "../../icon-button";
@@ -19,12 +19,12 @@ import DeleteContentModal from "components/modal/delete.content";
 
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
-	const selectedGroupMapping = useRecoilValue<GroupMappingEntity>(groupMappingSelectorFamily(uuid));
-
-	const [name, setName] = useState<string>(selectedGroupMapping.name);
+	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
+	
+	
 	const { closeModal } = useModal();
 	const patchGroupMapping = usePatchGroupMappingHook()
-
+	
 	return (
 		<div className="flex max-w-md flex-col gap-4 mt-3">
 			<div>
@@ -32,16 +32,36 @@ function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 					variant="outlined"
 					label="name"
 					sizing="sm"
-					defaultValue={selectedGroupMapping.name}
-					onChange={event => setName(event.target.value)}
+					value={groupMapping.name}
+					onChange={event => setGroupMapping({
+						...groupMapping, 
+						name: event.target.value
+					})}
 				/>
+			</div>
+			<div>
+					<div className="mb-1 block">
+						<Label htmlFor="ambient-light-intensity-range" value={`ambient light intensity (${groupMapping.ambientLightIntensity})`} />
+					</div>
+					<RangeSlider
+						id="ambient-light-intensity-range"
+						min={0}
+						max={100}
+						step={0.1}
+						defaultValue={groupMapping.ambientLightIntensity}
+						onChange={(event) => setGroupMapping({
+							...groupMapping, 
+							ambientLightIntensity: Number(event.target.value)
+						})}
+					/>
 			</div>
 			<div className={"flex flex-wrap gap-2"}>
 				<Button
 					size={"sm"}
 					onClick={() => {
-						patchGroupMapping(selectedGroupMapping.id,{
-							name: name
+						patchGroupMapping(groupMapping.id,{
+							name: groupMapping.name,
+							ambientLightIntensity: groupMapping.ambientLightIntensity
 						});
 						closeModal();
 					}}
@@ -105,9 +125,10 @@ export default function ObjectListMappingTable(){
 	const { openModal, closeModal } = useModal();
 	const headers = [
 		'name',
-		'edit',
+		'setting',
+		'list',
 		'delete',
-		'list'
+		
 	];
 	return (
 		<>
@@ -115,16 +136,23 @@ export default function ObjectListMappingTable(){
 			?
 				<>
 					<Navbar fluid rounded>
-						<IconButton
-							icon={<RiMenuAddFill />}
-							tooltip={"Add Exhibition"}
-							onClick={() => {
-								openModal({
-									title: 'Add Exhibition',
-									content: <AddContentModal />
-								})
-							}}
-						/>
+						<div className="flex flex-row gap-3">
+							<div>
+								<Badge className="mt-1.5" size="sm" color="info">Exhibition</Badge>
+							</div>
+							<div>
+								<IconButton
+									icon={<RiMenuAddFill />}
+									tooltip={"Add Exhibition"}
+									onClick={() => {
+										openModal({
+											title: 'Add Exhibition',
+											content: <AddContentModal />
+										})
+									}}
+								/>
+							</div>
+						</div>
 					</Navbar>
 					<div className="overflow-x-auto">
 						<Table hoverable>
@@ -180,12 +208,24 @@ export default function ObjectListMappingTable(){
 												gradientDuoTone="purpleToBlue"
 												onClick={()=>{
 													openModal({
-														title: 'Edit Exhibition',
+														title: 'SETTING EXHIBITION',
 														content: <EditContentModal uuid={groupMapping.id}/>
 													})
 												}}
 											>
 												<TbEdit />
+											</Button>
+										</Table.Cell>
+										<Table.Cell>
+											<Button
+												outline
+												gradientDuoTone="tealToLime"
+												onClick={()=>{
+													setSelectedGroupMappingId(groupMapping.id);
+													setMappingTableNode(false);
+												}}
+											>
+												<FaArrowRightLong />
 											</Button>
 										</Table.Cell>
 										<Table.Cell>
@@ -207,18 +247,7 @@ export default function ObjectListMappingTable(){
 												     <MdDelete />
 											</Button>
 										</Table.Cell>
-										<Table.Cell>
-											<Button
-												outline
-												gradientDuoTone="tealToLime"
-												onClick={()=>{
-													setSelectedGroupMappingId(groupMapping.id);
-													setMappingTableNode(false);
-												}}
-											>
-												<FaArrowRightLong />
-											</Button>
-										</Table.Cell>
+								
 									</Table.Row>
 								)
 							})}

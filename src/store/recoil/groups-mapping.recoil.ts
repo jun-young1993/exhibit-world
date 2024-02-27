@@ -50,9 +50,10 @@ export const selectedGroupMappingIdAtom = atom<string>({
 export const selectedGroupMappingSelector = selector<GroupMappingEntity>({
     key: 'selectedGroupMappingSelector',
     get: ({get}) => {
-        const groupMapping = get(groupMappingAllAtom);
+        // const groupMapping = get(groupMappingAllAtom);
         const selectedGroupMappingId = get(selectedGroupMappingIdAtom);
-        const groupMappingEntity = groupMapping.find((mapping) => mapping.id === selectedGroupMappingId);
+        const groupMappingEntity = get(groupMappingAtomFamily(selectedGroupMappingId));
+        // const groupMappingEntity = groupMapping.find((mapping) => mapping.id === selectedGroupMappingId);
         if(groupMappingEntity === undefined){
             throw new Error(`Group Mapping with uuid ${selectedGroupMappingId} not found`);
         }
@@ -110,7 +111,8 @@ export function usePatchGroupMappingHook(){
                             if(mapping.id === uuid){
                                 const patchedGroupMapping: GroupMappingEntity = {
                                     ...mapping,
-                                    name: patchGroupMapping.name ?? ""
+                                    name: patchGroupMapping.name ?? mapping.name,
+                                    ambientLightIntensity: patchGroupMapping.ambientLightIntensity ?? mapping.ambientLightIntensity
                                 }
                                 return patchedGroupMapping;
                             }
