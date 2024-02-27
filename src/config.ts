@@ -1,8 +1,7 @@
 import { getEnv } from "get-config-value";
 import { UserDataSpotLight } from "types/user-data";
-
 // export const serverDomain = 'http://158.180.82.177:80';
-export const serverDomain = getEnv('APP_HOST');
+export const serverDomain: string = process.env.REACT_APP_APP_HOST as string;
 
 // THREE
 // CANVAS SIZE

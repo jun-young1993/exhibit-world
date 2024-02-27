@@ -1,5 +1,6 @@
 import {
     atom,
+    atomFamily,
     selector,
     selectorFamily,
     useRecoilCallback,
@@ -46,7 +47,7 @@ export const selectedGroupMappingIdAtom = atom<string>({
     default: selectedGroupMappingIdSelector
 })
 
-export const selectedGroupMappingSelector = selector<GroupMappingEntity | null>({
+export const selectedGroupMappingSelector = selector<GroupMappingEntity>({
     key: 'selectedGroupMappingSelector',
     get: ({get}) => {
         const groupMapping = get(groupMappingAllAtom);
@@ -59,7 +60,7 @@ export const selectedGroupMappingSelector = selector<GroupMappingEntity | null>(
     }
 });
 
-export const selectedGroupMappingAtom = atom<GroupMappingEntity | null>({
+export const selectedGroupMappingAtom = atom<GroupMappingEntity>({
     key: 'selectedGroupMappingAtom',
     default: selectedGroupMappingSelector
 });
@@ -75,6 +76,11 @@ export const groupMappingSelectorFamily = selectorFamily<GroupMappingEntity, Gro
         return groupMappingEntity;
     }
 })
+
+export const groupMappingAtomFamily = atomFamily<GroupMappingEntity, GroupMappingEntity['id']>({
+    key: 'groupMappingAtomFamily',
+    default: groupMappingSelectorFamily
+});
 
 export function useAddGroupMappingHook(){
     return useRecoilCallback(

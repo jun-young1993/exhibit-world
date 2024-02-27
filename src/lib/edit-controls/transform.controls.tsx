@@ -6,7 +6,7 @@ import {
 } from "../../context/transform-controls.context";
 import { TransformMode } from "../../types/transform";
 import {useRecoilState} from "recoil";
-import {groupAtom} from "../../store/recoil/groups.recoil";
+import {groupAtomFamily} from "../../store/recoil/groups.recoil";
 import {Group, Object3D} from "three";
 import GroupService from "../../services/group.service";
 import GeometryService from "../../services/geometry.service";;
@@ -30,7 +30,7 @@ const EditTransformControls = forwardRef((props: EditTransformControlsProps, ref
 
     const object = props.object;
 
-    const [, setGroup] = useRecoilState(groupAtom(object.uuid));
+    const [, setGroup] = useRecoilState(groupAtomFamily(object.uuid));
     const [transformMode] = useRecoilState(transformModeAtom);
     const transformControls = useTransformControls();
     const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);

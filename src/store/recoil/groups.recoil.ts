@@ -48,9 +48,9 @@ export const groupIdsAtom = atom<GroupEntity['id'][]>({
     default: groupIdsSelector
 })
 
-const groupSelector = selectorFamily<GroupEntity, GroupEntity['id']>({
-    key: "groupSelector",
-    get: (uuid) => async ({get}) => {
+const groupSelectorFamily = selectorFamily<GroupEntity, GroupEntity['id']>({
+    key: "groupSelectorFamily",
+    get: (uuid: GroupEntity['id']) => async ({get}) => {
         const groups = get(groupsAllAtom);
         const groupEntity = groups.find((group) => group.id === uuid);
 
@@ -61,9 +61,9 @@ const groupSelector = selectorFamily<GroupEntity, GroupEntity['id']>({
     }
 })
 
-export const groupAtom = atomFamily<GroupEntity, GroupEntity['id']>({
-    key: 'groupAtom',
-    default: groupSelector
+export const groupAtomFamily = atomFamily<GroupEntity, GroupEntity['id']>({
+    key: 'groupAtomFamily',
+    default: groupSelectorFamily
 })
 
 

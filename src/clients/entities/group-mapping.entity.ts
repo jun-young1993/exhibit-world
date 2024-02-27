@@ -8,4 +8,5 @@ import {GithubStorageEntity} from "./github-storage.entity";
 export interface GroupMappingEntity {
     id: string
     name: string
+    ambientLightIntensity: number
 }

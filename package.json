@@ -34,7 +34,7 @@
     "start:local": "cross-env PORT=3001 react-scripts start",
     "start:dev": "webpack-dev-server --mode development --open --hot --progress",
     "start:prd": "pm2 start ./server.sh --name exhibit-world",
-    "build": "webpack --mode production",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

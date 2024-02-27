@@ -3,7 +3,7 @@ import {useRecoilState} from "recoil";
 import {selectGroupAtom} from "../store/recoil/select-group.recoil";
 import {ThreeEvent, useThree} from "@react-three/fiber";
 import GroupFactory from "../clients/factories/group.factory";
-import {groupAtom} from "../store/recoil/groups.recoil";
+import { groupAtomFamily} from "../store/recoil/groups.recoil";
 import { useLoader } from '@react-three/fiber'
 
 import GithubStorageClient from "../clients/github-storage.client";
@@ -31,7 +31,7 @@ export default function GroupSurface(props: GroupSurface){
 
 
 
-    const [group] = useRecoilState(groupAtom(props.uuid));
+    const [group] = useRecoilState(groupAtomFamily(props.uuid));
 
     useEffect(() => {
         if(object === null){

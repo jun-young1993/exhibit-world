@@ -11,10 +11,12 @@ import { Suspense } from "react";
 import {ExhibitPlayer} from "./exhibit-player";
 import {Physics} from "@react-three/rapier";
 import {ExhibitGround} from "./exhibit-ground";
+import { selectedGroupMappingAtom  } from "store/recoil/groups-mapping.recoil";
 
 
 export default function ExhibitCanvas() {
     const [,set] = useRecoilState(selectGroupAtom);
+    const [selectedGroupMapping] = useRecoilState(selectedGroupMappingAtom);
     return (
         <>
                     <Canvas
@@ -25,7 +27,7 @@ export default function ExhibitCanvas() {
                     >
 
                         <Sky sunPosition={[100, 20, 100]} />
-                        <ambientLight intensity={0.3} />
+                        <ambientLight intensity={selectedGroupMapping.ambientLightIntensity} />
                         {/* <pointLight castShadow intensity={0.8} position={[100, 100, 100]} /> */}
                         <Physics gravity={[0, -30, 0]}>
                             <Suspense fallback={<CanvasLoader />}>

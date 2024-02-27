@@ -1,7 +1,7 @@
-import { Button, Label, Navbar, NavbarComponentProps, Radio, RangeSlider, Table, ToggleSwitch } from "flowbite-react";
+import { Button, FloatingLabel, Label, Navbar, NavbarComponentProps, Radio, RangeSlider, Table, ToggleSwitch } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { groupsAllAtom, usePatchGroupHook } from "store/recoil/groups.recoil";
+import { groupAtomFamily, groupsAllAtom, usePatchGroupHook } from "store/recoil/groups.recoil";
 import { useModal } from "store/recoil/modal.recoild";
 import { selectGroupAtom } from "store/recoil/select-group.recoil";
 import { spotLightUserDataAtom } from "store/recoil/spot-light-user-datas.recoil";
@@ -12,7 +12,8 @@ import { ExhibitModal } from "components/exhibit-modal";
 import { updateUserDataStatusAtom } from "store/recoil/update-user-data.recoil";
 import IconButton from "components/icon-button";
 import { FaArrowLeftLong } from "react-icons/fa6";
-
+import { GroupEntity } from "clients/entities/group.entity";
+import { MdCreate, MdDelete, MdOutlineCancel } from "react-icons/md";
 const ObjectListTableNavBarTheme: NavbarComponentProps['theme'] = {
 	root: {
 		inner: {
@@ -23,7 +24,9 @@ const ObjectListTableNavBarTheme: NavbarComponentProps['theme'] = {
 interface SpotLightUserDataModalProps {
 	data: UserDataSpotLight
 }
-
+interface EditGroupContentModalProps {
+	data: GroupEntity
+}
 function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 
 	const [spotLightUserData, setSpotLightUserData] = useRecoilState(spotLightUserDataAtom(props.data.uuid));
@@ -101,22 +104,64 @@ function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 		</>
 	)
 }
-
-function ContentModal(props: {uuid: string}){
+function EditGroupContentModal(props: EditGroupContentModalProps){
+	const [group,setGroup] = useRecoilState(groupAtomFamily(props.data.id));
+	const [name, setName] = useState<string>(group.name);
+	
+	return (
+		<div className="flex max-w-md flex-col gap-4 mt-3">
+			<div>
+				<FloatingLabel
+					variant="outlined"
+					label="name"
+					sizing="sm"
+					value={group.name}
+					onChange={event => setGroup({
+						...props.data,
+						name: event.target.value
+					})}
+				/>
+			</div>
+		</div>
+	)
+}
+function ContentModal(props: {uuid: GroupEntity['id']}){
 
 	const [spotLightUserData] = useRecoilState(spotLightUserDataAtom(props.uuid));
-	const { setTitle, modalState } = useModal();
-	const modalTitle: string = "SETTING";
-	useEffect(() => {
-		if(modalState.title !== modalTitle){
-			setTitle(modalTitle);
-		}
-	},[modalState]);
+	const [group] = useRecoilState(groupAtomFamily(props.uuid));
+	
+	const { closeModal } = useModal();
+	const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);
+	const patchGroup = usePatchGroupHook();
 	return (
-		<>
+		<div className="flex max-w-md flex-col gap-4 mt-3" >	
+			<EditGroupContentModal data={group} />
 			{spotLightUserData && <SpotLightUserDataModal data={spotLightUserData} />}
-			{!spotLightUserData && "No editable data available"}
-		</>
+			<div className={"flex flex-wrap gap-2"}>
+				<Button
+					size={"sm"}
+					onClick={() => {
+						if(spotLightUserData){
+							setUpdateUserDataStatusAtom(props.uuid);
+						}
+						patchGroup(group.id,{
+							name: group.name
+						})
+						closeModal();
+					}}
+				>
+					<MdCreate className="mr-2 h-3 w-3" />
+					Save
+				</Button>
+				<Button
+					size={"sm"}
+					onClick={() => closeModal()}
+				>
+					<MdOutlineCancel className={"mr-2 h-3 w-3"} />
+					Cancel
+				</Button>
+			</div>
+		</div>
 	)
 }
 
@@ -127,15 +172,11 @@ export default function ObjectListTable(props: ObjectListTableProps)
 {
 	const [groups] = useRecoilState(groupsAllAtom);
 	const [ selectedGroupId, setSelectedGroupId ] = useRecoilState<string | null>(selectGroupAtom);
-	const [ edit, setEdit ] = useState<string | null>(null);
-	const patchGroup = usePatchGroupHook();
-	const [ name, setName ] = useState<string>("");
 	const { openModal } = useModal();
 	
-	const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);
+	
 	const headers = [
 		'name',
-		'edit',
 		'setting'
 	];
 	return (
@@ -189,44 +230,12 @@ export default function ObjectListTable(props: ObjectListTableProps)
 								</Table.Cell>
 								<Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
 									<div className="relative">
-										<input
-											className={`block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
-											${group.id !== edit ? "" : "border-blue-500"} `}
-											onFocus={event => setName(event.target.value)}
-											onChange={event => setName(event.target.value)}
-											defaultValue={group.name}
-											value={group.id !== edit ? group.name : name}
-											readOnly={group.id !== edit}
-											disabled={group.id !== edit}
-
-										/>
+										<div
+											className={`block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+										>
+											{group.name}
+										</div>
 									</div>
-								</Table.Cell>
-								<Table.Cell>
-									<button type="button"
-											className={
-												group.id === edit
-												? "px-2 py-2 text-sm font-medium text-center inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800"
-													: "px-2 py-2 text-sm font-medium text-center inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
-											}
-
-											onClick={() => {
-												if(group.id === edit){
-													setEdit(null);
-													patchGroup(group.id,{
-														name: name
-													});
-												}else{
-													setName(group.name);
-													setEdit(group.id);
-												}
-
-											}}
-									>
-										{group.id === edit
-										? <TbEditCircle />
-										: <TbEdit />}
-									</button>
 								</Table.Cell>
 								<Table.Cell>
 									<Button 
@@ -252,13 +261,8 @@ export default function ObjectListTable(props: ObjectListTableProps)
 				</Table.Body>
 			</Table>
 		</div>
-				<ExhibitModal
-				onClose = {() => {
-					if(selectedGroupId){
-						setUpdateUserDataStatusAtom(selectedGroupId);
-					}
-	
-				}}
+			<ExhibitModal
+		
 			/>
 		</>
 	)

@@ -70,8 +70,12 @@ module.exports = (env, argv) => {
             ],
         },
         plugins: [
+            // new webpack.DefinePlugin({
+            //     "process.env": JSON.stringify(process.env)
+            // }),
             new webpack.ProvidePlugin({
                 React: "react",
+                process: 'process/browser'
             }),
             new InterpolateHtmlPlugin({
                 PUBLIC_URL: './public', // can modify `static` to another name or get it from `process`
@@ -86,10 +90,10 @@ module.exports = (env, argv) => {
                     removeComments: true, // 주석 제거
                 } : false,
             }),
-            new Dotenv({
-                path: './.env',
-                safe: true
-            }),
+            new Dotenv(),
+            new webpack.EnvironmentPlugin({
+                NODE_ENV: prod
+              }),
             new CleanWebpackPlugin(),
         ],
     })
