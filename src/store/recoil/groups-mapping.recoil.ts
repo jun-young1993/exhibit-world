@@ -19,9 +19,14 @@ const groupMappingClient = new GroupMappingClient();
 export const groupMappingSelector = selector<GroupMappingEntity[] | []>({
     key: 'groupMappingSelector',
     get: async (): Promise<GroupMappingEntity[] | []> => {
-                const groupMapping = await groupMappingClient.findAll();
+        try{
+            const groupMapping = await groupMappingClient.findAll();
         
-                return groupMapping;
+            return groupMapping;
+        }catch(error){
+            throw error;
+        }
+                
     },
 })
 

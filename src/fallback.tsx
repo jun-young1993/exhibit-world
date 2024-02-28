@@ -9,22 +9,22 @@ import { groupIdsAtom } from "store/recoil/groups.recoil";
 
 export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) {
 	const [component, setComponent] = useState(<></>)
-	const groupIdsAtomRefresher = useRecoilRefresher_UNSTABLE(groupIdsAtom);
-	groupIdsAtomRefresher();
+	
+	console.log(error instanceof UnauthrizedException);
 	// resetErrorBoundary();
 	useEffect(()=>{
 		switch(error){
 			case (error instanceof UnauthrizedException) :
-				setComponent(<Dashboard defaultMenuItem={<Login />} />)
+				setComponent(<Login />)
 				return ;
 			default:
-				setComponent(<Dashboard defaultMenuItem={<>undefined error</>} />)
+				setComponent(<>undefined error</>)
 
 		}
 	},[error])
 	return (
 		<>
-		{component}
+		<Dashboard defaultMenuItem={component} />
 		</>
 	);
 }

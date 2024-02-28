@@ -1,8 +1,6 @@
-import Login from "./login";
-
 import Dashboard from "./dashboard";
-import {TransformControlsProvider} from "../../context/transform-controls.context";
 import AuthClient from "clients/auth.client";
+import ExhibitToastGroup from "components/toast/exhibit-toast-group";
 
 const authClient = new AuthClient();
 /**
@@ -11,15 +9,13 @@ const authClient = new AuthClient();
  * @returns 
  */
 export default function Home(){
-	// authClient.profile()
-	// .then((user) => {
-	// 	console.log('user',user);
-	// })
-	// .catch(() => {
-	// 	console.log('exception');
-	// })
+
 	return (
+		<>
 			<Dashboard />
+			<ExhibitToastGroup />
+		</>
+			
 	)
 
 }

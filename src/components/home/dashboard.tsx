@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import {HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiLibrary , HiUser} from "react-icons/hi";
 import {MdRebaseEdit} from "react-icons/md";
 import { BiSolidObjectsHorizontalLeft } from "react-icons/bi";
+
 import ExhibitCanvas from "../ExhibitCanvas";
 import ObjectList from "./object-list";
 import Login from "./login";
@@ -12,7 +13,6 @@ import { useRecoilValue } from "recoil";
 import { userAtom } from "store/recoil/user.recoil";
 import { FaUser } from "react-icons/fa";
 import Logined from "./logined";
-import { getCookie } from "utills/cookie";
 
 
 
@@ -108,6 +108,7 @@ export default function Dashboard(props: DashboardProps){
         }
     },[menus, currentMenu])
     return (
+        
         <div className={"w-full min-w-0 h-full flex"}>
             <div className={"flex-none h-full"}>
                     <SideMenu
@@ -119,6 +120,7 @@ export default function Dashboard(props: DashboardProps){
                 {currentNode}
             </div>
         </div>
+        
     )
 }
 
