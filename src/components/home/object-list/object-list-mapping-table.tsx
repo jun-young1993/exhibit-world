@@ -1,4 +1,4 @@
-import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Table} from "flowbite-react";
+import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Spinner, Table, TableCell} from "flowbite-react";
 import {useRecoilState, useRecoilValue} from "recoil"
 import { FaArrowRightLong } from "react-icons/fa6";
 import {useEffect, useState} from "react";
@@ -16,13 +16,16 @@ import { TbEdit } from "react-icons/tb";
 import {GroupEntity} from "../../../clients/entities/group.entity";
 import {GroupMappingEntity} from "../../../clients/entities/group-mapping.entity";
 import DeleteContentModal from "components/modal/delete.content";
-
+import { useToast } from "store/recoil/toast.recoil";
+import { TiExport } from "react-icons/ti";
+import { ExportSyncStatus, exportSyncStatusAtom } from "store/recoil/export-sync-status.recoil";
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
 	
 	
 	const { closeModal } = useModal();
+	const {pushToast} = useToast();
 	const patchGroupMapping = usePatchGroupMappingHook()
 	
 	return (
@@ -64,6 +67,9 @@ function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 							ambientLightIntensity: groupMapping.ambientLightIntensity
 						});
 						closeModal();
+						pushToast({
+							content: "An object mapping has been modified"
+						})
 					}}
 				>
 					<MdCreate className="mr-2 h-3 w-3" />
@@ -85,7 +91,7 @@ function AddContentModal(){
 	const [name, setName] = useState<string| undefined>(undefined);
 	const { closeModal } = useModal();
 	const addGroupMapping = useAddGroupMappingHook()
-
+	const {pushToast} = useToast();
 	return (
 		<div className="flex max-w-md flex-col gap-4 mt-3">
 			<div>
@@ -99,6 +105,9 @@ function AddContentModal(){
 							name: name
 						});
 						closeModal();
+						pushToast({
+							content: "An object mapping has been added."
+						})
 					}}
 				>
 					<MdCreate className="mr-2 h-3 w-3" />
@@ -121,15 +130,19 @@ export default function ObjectListMappingTable(){
 	const [groupMapping] = useRecoilState(groupMappingAllAtom);
 	const [mappingTableNode, setMappingTableNode] = useState<boolean>(true);
 	const [selectedGroupMappingId, setSelectedGroupMappingId] = useRecoilState<GroupMappingEntity['id']>(selectedGroupMappingIdAtom);
+	const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
 	const delteGroupMapping = useDeleteGroupMappingHook();
 	const { openModal, closeModal } = useModal();
+	const {pushToast} = useToast();
 	const headers = [
 		'name',
 		'setting',
 		'list',
+		'export',
 		'delete',
 		
 	];
+	const tooltipPlacement = 'bottom-end';
 	return (
 		<>
 			{mappingTableNode 
@@ -144,6 +157,7 @@ export default function ObjectListMappingTable(){
 								<IconButton
 									icon={<RiMenuAddFill />}
 									tooltip={"Add Exhibition"}
+									tooltipPlacement={tooltipPlacement}
 									onClick={() => {
 										openModal({
 											title: 'Add Exhibition',
@@ -152,6 +166,10 @@ export default function ObjectListMappingTable(){
 									}}
 								/>
 							</div>
+							<div>
+								|
+							</div>
+						
 						</div>
 					</Navbar>
 					<div className="overflow-x-auto">
@@ -229,6 +247,22 @@ export default function ObjectListMappingTable(){
 											</Button>
 										</Table.Cell>
 										<Table.Cell>
+											<Button 
+												outline
+												onClick={() => {
+													if(exportSyncStatus === ExportSyncStatus.IDLE){
+														setExportSyncStatus(ExportSyncStatus.PENDING);
+													}
+												}}
+											>
+												{
+													(exportSyncStatus === ExportSyncStatus.PENDING)
+													? <Spinner size="xs" />
+													: <TiExport />
+												}	
+											</Button>
+										</Table.Cell>
+										<Table.Cell>
 											<Button
 												pill
 												gradientDuoTone="pinkToOrange"
@@ -239,6 +273,9 @@ export default function ObjectListMappingTable(){
 															onClick={()=>{
 																delteGroupMapping(groupMapping.id);
 																closeModal();
+																pushToast({
+																	content: "An object mapping has been deleted."
+																})
 															}}
 														/>
 													})
@@ -247,6 +284,7 @@ export default function ObjectListMappingTable(){
 												     <MdDelete />
 											</Button>
 										</Table.Cell>
+
 								
 									</Table.Row>
 								)
@@ -254,9 +292,6 @@ export default function ObjectListMappingTable(){
 						</Table.Body>
 					</Table>
 					</div>
-					<ExhibitModal
-
-					/>
 				</>
 			: <ObjectListTable 
 				onBackClick={() => setMappingTableNode(true)}

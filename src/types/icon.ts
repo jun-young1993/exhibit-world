@@ -1,6 +1,6 @@
 import {ReactNode, SVGAttributes} from "react";
 
-interface IconBaseProps extends SVGAttributes<SVGElement> {
+export interface IconBaseProps extends SVGAttributes<SVGElement> {
     children?: ReactNode;
     size?: string | number;
     color?: string;

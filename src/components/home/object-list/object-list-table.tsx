@@ -1,22 +1,27 @@
 import { Button, FloatingLabel, Label, Navbar, NavbarComponentProps, Radio, RangeSlider, Table, ToggleSwitch } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { groupAtomFamily, groupsAllAtom, usePatchGroupHook } from "store/recoil/groups.recoil";
+import { groupAtomFamily, groupsAllAtom, useAddGroupHook, useAddSpotLightGroupHook, usePatchGroupHook, useRemoveGroupHook } from "store/recoil/groups.recoil";
 import { useModal } from "store/recoil/modal.recoild";
 import { selectGroupAtom } from "store/recoil/select-group.recoil";
 import { spotLightUserDataAtom } from "store/recoil/spot-light-user-datas.recoil";
 import { UserDataSpotLight } from "types/user-data";
 import { MdOutlineSettings } from "react-icons/md";
-import { TbEditCircle, TbEdit } from "react-icons/tb";
-import { ExhibitModal } from "components/exhibit-modal";
 import { updateUserDataStatusAtom } from "store/recoil/update-user-data.recoil";
-import IconButton from "components/icon-button";
+import IconButton, { IconButtonType } from "components/icon-button";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { GroupEntity } from "clients/entities/group.entity";
-import { MdCreate, MdDelete, MdOutlineCancel } from "react-icons/md";
+import { MdCreate, MdDelete, MdOutlineCancel, MdOutlineDriveFolderUpload } from "react-icons/md";
 import { transformModeAtom } from "store/recoil/transform-mode.recoil";
 import { TransformMode } from "types/transform";
 import { HiCubeTransparent, HiColorSwatch, HiArrowsExpand, HiOutlineRefresh   } from "react-icons/hi";
+import { GiFlashlight } from "react-icons/gi";
+import { useToast } from "store/recoil/toast.recoil";
+import InstanceMismatchError from "Exception/instance-mismatch";
+import { SpotLight } from "three";
+import { objectDefalutValues } from "config";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
+import DeleteContentModal from "components/modal/delete.content";
 const ObjectListTableNavBarTheme: NavbarComponentProps['theme'] = {
 	root: {
 		inner: {
@@ -30,6 +35,8 @@ interface SpotLightUserDataModalProps {
 interface EditGroupContentModalProps {
 	data: GroupEntity
 }
+const exporter = new GLTFExporter();
+
 function SpotLightUserDataModal(props: SpotLightUserDataModalProps){
 
 	const [spotLightUserData, setSpotLightUserData] = useRecoilState(spotLightUserDataAtom(props.data.uuid));
@@ -136,6 +143,8 @@ function ContentModal(props: {uuid: GroupEntity['id']}){
 	const { closeModal } = useModal();
 	const [, setUpdateUserDataStatusAtom] = useRecoilState(updateUserDataStatusAtom);
 	const patchGroup = usePatchGroupHook();
+
+	const {pushToast} = useToast();
 	return (
 		<div className="flex max-w-md flex-col gap-4 mt-3" >	
 			<EditGroupContentModal data={group} />
@@ -151,6 +160,10 @@ function ContentModal(props: {uuid: GroupEntity['id']}){
 							name: group.name
 						})
 						closeModal();
+						pushToast({
+							content: "An object has been modified"
+						})
+
 					}}
 				>
 					<MdCreate className="mr-2 h-3 w-3" />
@@ -176,45 +189,75 @@ export default function ObjectListTable(props: ObjectListTableProps)
 	const [groups] = useRecoilState(groupsAllAtom);
 	const [ selectedGroupId, setSelectedGroupId ] = useRecoilState<string | null>(selectGroupAtom);
 	const [transformMode,setTransformMode] = useRecoilState(transformModeAtom);
-	const { openModal } = useModal();
-	
-	
+	const { openModal, closeModal } = useModal();
+	const addGroup = useAddGroupHook();
+	const addSpotLightGroup = useAddSpotLightGroupHook();
+	const removeGroup = useRemoveGroupHook();
+	const {pushToast} = useToast();
+	const tooltipPlacement = "bottom-end";
 	const headers = [
 		'name',
-		'setting'
+		'setting',
+		'delete'
 	];
 	return (
 		<>
 		<Navbar fluid rounded theme={ObjectListTableNavBarTheme}>
-			<Navbar.Collapse>
+			
 			<IconButton 
 				icon={<FaArrowLeftLong />}
 				tooltip={"exhibition venue list."}
+				tooltipPlacement={tooltipPlacement}
 				onClick={props.onBackClick}
+				
 			/>
-			</Navbar.Collapse>
 			<div>|</div>
-			<Navbar.Collapse>
-			<IconButton
-				icon={transformMode === TransformMode.Translate
-					? <HiCubeTransparent />
-					: transformMode === TransformMode.Rotate
-					? <HiOutlineRefresh />
-					: <HiArrowsExpand />}
-				tooltip={`transfrom`}
-				onClick={() => {
-					if(transformMode === TransformMode.Translate){
-						setTransformMode(TransformMode.Rotate);
+			<IconButton 
+				icon={<MdOutlineDriveFolderUpload />}
+				type={IconButtonType.FILE}
+				tooltipPlacement={tooltipPlacement}
+				tooltip="An object mapping has been add(glb or gltf)."
+				onChangeFile={(event) => {
+					if(!(event.target.files instanceof FileList)){
+						throw new InstanceMismatchError(FileList);
 					}
-					if(transformMode === TransformMode.Rotate){
-						setTransformMode(TransformMode.Scale);
-					}
-					if(transformMode === TransformMode.Scale){
-						setTransformMode(TransformMode.Translate);
-					}
+					addGroup(Array.from(event.target.files))
 				}}
 			/>
-			</Navbar.Collapse>
+			<IconButton 
+				icon={<GiFlashlight />}
+				tooltipPlacement={tooltipPlacement}
+				tooltip="An spot-light mapping has been add."
+				onClick={() => {
+					addSpotLightGroup();
+				}}
+			/>
+			{selectedGroupId &&
+				<>
+				<div>|</div>
+				<IconButton
+					tooltipPlacement={tooltipPlacement}
+					icon={transformMode === TransformMode.Translate
+						? <HiCubeTransparent />
+						: transformMode === TransformMode.Rotate
+						? <HiOutlineRefresh />
+						: <HiArrowsExpand />}
+					tooltip={`transfrom`}
+					onClick={() => {
+						if(transformMode === TransformMode.Translate){
+							setTransformMode(TransformMode.Rotate);
+						}
+						if(transformMode === TransformMode.Rotate){
+							setTransformMode(TransformMode.Scale);
+						}
+						if(transformMode === TransformMode.Scale){
+							setTransformMode(TransformMode.Translate);
+						}
+					}}
+				/>
+				</>
+			}
+			
 			{/* <IconButton icon={<TbEditCircle />}/>
 			<IconButton icon={<TbEditCircle />}/> */}
 			
@@ -283,15 +326,31 @@ export default function ObjectListTable(props: ObjectListTableProps)
 										<MdOutlineSettings />
 									</Button>
 								</Table.Cell>
+								<Table.Cell>
+									<Button
+										pill
+										gradientDuoTone="pinkToOrange"
+										onClick={()=>{
+											openModal({
+												content: <DeleteContentModal 
+													title={"Are you sure you want to delete this group?"}
+													onClick={()=>{
+														removeGroup(group);
+														closeModal();
+													}}
+												/>
+											})
+										}}
+									>
+											<MdDelete />
+									</Button>
+								</Table.Cell>
 							</Table.Row>
 						)
 					})}
 				</Table.Body>
 			</Table>
 		</div>
-			<ExhibitModal
-		
-			/>
 		</>
 	)
 }

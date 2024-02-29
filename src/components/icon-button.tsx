@@ -1,6 +1,6 @@
 import { Tooltip } from "flowbite-react";
-import {ChangeEvent, ChangeEventHandler, MouseEventHandler, ReactNode, useRef, useState} from "react";
-
+import type { Placement } from '@floating-ui/core';
+import {ChangeEvent, ChangeEventHandler, MouseEventHandler, ReactNode, cloneElement, isValidElement, useRef, useState} from "react";
 export enum IconButtonType {
     FILE = 'file'
 }
@@ -8,6 +8,7 @@ export interface IconButtonInterface {
     icon : ReactNode
     description?: string
     tooltip?: string
+    tooltipPlacement?: Placement 
     onClick?: (
         event: React.MouseEvent<HTMLButtonElement>
     )=> void
@@ -36,6 +37,8 @@ export default function IconButton(props: IconButtonInterface){
             }
         }
     }
+    
+
     const DefaultButton = () => (
         <button
         data-tooltip-target="tooltip-default"
@@ -46,7 +49,13 @@ export default function IconButton(props: IconButtonInterface){
             handleButtonClick(event);
         }}
         >
-            {props.icon}
+                {isValidElement(props.icon)
+                ? cloneElement<any>(props.icon,{
+                    className: "h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                })
+                : props.icon}
+                
+            
         </button>
     )
     return (
@@ -63,7 +72,7 @@ export default function IconButton(props: IconButtonInterface){
                 // onChange={handleFileInput}
         />}
             {tooltip 
-            ? <Tooltip content={tooltip} placement="auto" style="auto"> <DefaultButton /> </Tooltip>
+            ? <Tooltip content={tooltip} placement={`${props.tooltipPlacement ? props.tooltipPlacement : 'auto'}`} style="auto"> <DefaultButton /> </Tooltip>
             : <DefaultButton />}
 
         </>

@@ -48,16 +48,6 @@ export default function ObjectListSideMenu() {
         addGroup(Array.from(event.target.files))
     }
     const defaultMenu: MenuItem[] = [{
-        name: MenuType.UPLOAD,
-        icon: ImUpload,
-        top: <input type='file' className="hidden" ref={fileRef} onChange={handleAddFile}/>,
-        onClick: () => {
-            if(!(fileRef?.current instanceof HTMLInputElement)){
-                throw new InstanceMismatchError(HTMLInputElement);
-            };
-            fileRef?.current?.click();
-        }
-    },{
         name: MenuType.SPOT_LIGHT_ADD,
         icon: GiFlashlight,
         onClick: () => {
@@ -119,15 +109,6 @@ export default function ObjectListSideMenu() {
                 setExportSyncStatus(ExportSyncStatus.PENDING);
             }
         }
-    },{
-        name: MenuType.CONFIG,
-        icon: GrDocumentConfig,
-        onClick: () => {
-            openModal({
-                title: MenuType.CONFIG,
-                content: <ConfigModalContent />
-            })
-        }
     }]
     const initMenuItem: MenuItem[][] = [
         defaultMenu,
@@ -156,7 +137,6 @@ export default function ObjectListSideMenu() {
             onClick={() => {}}
             hideTopButton={true}
         />
-        <ExhibitModal />
     </>
     )
 }

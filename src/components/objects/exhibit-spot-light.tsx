@@ -21,8 +21,12 @@ export default function ExhibitSpotLight(props: ExhibitSpotLightPorps){
 			const spotLightHelper = new SpotLightHelper(object, object.userData.helper.color);
 
 			scene.add(spotLightHelper);
+
+			return () => {
+				scene.remove(spotLightHelper);
+			}
 		}
-	},[object])
+	},[object,scene])
 
 	useEffect(() => {
 		if(spotLightUserData){

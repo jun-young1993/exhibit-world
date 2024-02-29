@@ -1,5 +1,11 @@
+import CheckIcon from "components/icon/base-icon";
 import { Alert, Toast, ToastProps } from "flowbite-react";
+import { useEffect, useRef, useState } from "react";
 import { HiFire } from "react-icons/hi";
+import { Icon } from "types/icon";
+import { ExhibitToastProps } from "./exhibit-toast.interface";
+import { toastGroupSelector, useToast } from "store/recoil/toast.recoil";
+import { useRecoilValue } from "recoil";
 const theme: ToastProps['theme'] = {
 	"root": {
 	  "base": "flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400",
@@ -10,19 +16,57 @@ const theme: ToastProps['theme'] = {
 	  "icon": "h-5 w-5 shrink-0"
 	}
       };
-export default function ExhibitToast(){
+
+enum IconType {
+	CHECK = 'CHECK'
+}
+const IconMap = {
+	[IconType.CHECK] : <CheckIcon />
+}
+function ToastIcon({icon}: {icon:IconType}){
+	const [node, setNode] = useState<JSX.Element | null>(null)
+	
+	useEffect(() => {
+		if(node === null){
+			setNode(IconMap[icon]);
+		}
+	},[]);
 	return (
-	    <Toast theme={theme} className="rtl:divide-x-revers">
-		<div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
-		    <HiFire className="h-5 w-5" />
-		</div>
-		<div className="ml-3 text-sm font-normal">Set yourself free.</div>
-		<Toast.Toggle />
+		<>
+			{node}
+		</>
+	)
+}
+export default function ExhibitToast({content, id}: ExhibitToastProps){
+	const {removeToast} = useToast();
+	const toastGroup = useRecoilValue(toastGroupSelector);
+	const [removed, setRemoved] = useState(false);
+	const onRemoveHandle = () => {
+		setRemoved(true);
+		removeToast(id);
+	}
+	
+	useEffect(() => {
+		
+		if(toastGroup.time !== null){
+			const timer = setTimeout(() => {
+				onRemoveHandle();
+			},toastGroup.time)
+
+			return () => clearTimeout(timer);
+		}
+		
+	},[id, removeToast]);
+	return (
+	    <Toast 
+	    	theme={theme}
+		className={`transition-opacity duration-1000 opacity-${removed ? 0 : 100}`}
+	    >
+		<ToastIcon icon={IconType.CHECK} />
+		<div className="ml-3 text-sm font-normal">{content}</div>
+		<Toast.Toggle 
+			onDismiss={() => onRemoveHandle()}
+		/>
 	    </Toast>
-// 	<Alert color="warning" withBorderAccent>
-// 	<span>
-// 	  <span className="font-medium">Info alert!</span> Change a few things up and try submitting again.
-// 	</span>
-//       </Alert>
 	)
 }

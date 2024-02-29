@@ -6,6 +6,7 @@ import {useThree} from "@react-three/fiber";
 import ExhibitClient from "../clients/exhibit.client";
 import {gridHelperAtom} from "../store/recoil/grid-helper.recoil";
 import {GridHelper, Object3D, SpotLightHelper} from "three";
+import { useToast } from "store/recoil/toast.recoil";
 
 const exhibitClient = new ExhibitClient();
 const exporter = new GLTFExporter();
@@ -19,14 +20,14 @@ const exporter = new GLTFExporter();
  */
 export default function useExportSync(){
 
-    const [exportSyncStatus] = useRecoilState(exportSyncStatusAtom);
-
+    const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
+    const {pushToast} = useToast();
     const {scene} = useThree();
-
-
-    useEffect(() => {
-        if(exportSyncStatus === ExportSyncStatus.PENDING){
-
+    
+    function parse()
+    {
+        return new Promise((resolve, reject) => {
+            
             for(const object of scene.children){
                 if(object instanceof SpotLightHelper){
                     scene.remove(object);
@@ -37,22 +38,27 @@ export default function useExportSync(){
             })
 
             const cloneScene = scene.clone();
-            console.log("=>(export-sync.ts:36) scene", scene);
             for(const object of cloneScene.children){
                 if(object instanceof GridHelper){
                     cloneScene.remove(object);
                 }
             }
-
-
             exporter.parse(
                 cloneScene,
                 (gltf) => {
 
-                    exhibitClient.create(gltf as ArrayBuffer);
+                    exhibitClient.create(gltf as ArrayBuffer)
+                    .then(() => {
+                        resolve(null);
+
+                    })
+                    .catch((error) => {
+                        reject(error.toString());
+                    });
                 },
                 (error) => {
-                    console.log("=>(export-sync.ts:23) error", error);
+                    reject(error.toString());
+
                 },
                 {
                     trs: true,
@@ -60,6 +66,29 @@ export default function useExportSync(){
                     onlyVisible: false
                 }
             )
+        })
+    }
+    useEffect(() => {
+        if(exportSyncStatus === ExportSyncStatus.PENDING){
+
+
+            parse()
+            .then(() => {
+                pushToast({
+                    content: "Successfully exported the object."
+                })
+                setExportSyncStatus(ExportSyncStatus.IDLE);
+            })
+            .catch((error) => {
+                pushToast({
+                    content: `Failed to export the object. ${error}`
+                })
+                setExportSyncStatus(ExportSyncStatus.IDLE);
+            })
+
+
+
+
         }
     },[exportSyncStatus])
 }

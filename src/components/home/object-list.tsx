@@ -19,12 +19,6 @@ export default function ObjectList(){
 	return (
 		<>
 		<div className={"w-full min-w-0 h-full flex"}>
-			<div className={"flex-none h-full"}>
-			{/* <div className={"flex-1 w-full h-full"}> */}
-				<ObjectListSideMenu />
-			</div>
-			{/* <div className={"flex-none h-full"}> */}
-			
 			<div className={"flex-1 w-full h-full"}>
 				<PanelGroup autoSaveId="example" direction={panelDirection} className="w-full h-full flex-col-reverse">
 					<Panel className="flex-none h-full">

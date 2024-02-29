@@ -22,16 +22,11 @@ import { useRecoilState } from "recoil";
 import meshesStore from "../../store/meshes.store";
 import MeshesStore from "../../store/meshes.store";
 import PreloadGltf from "../../utills/preload-gltf";
+import { Icon } from "types/icon";
 
 
 
-interface IconBaseProps extends SVGAttributes<SVGElement> {
-    children?: ReactNode;
-    size?: string | number;
-    color?: string;
-    title?: string;
-}
-type IconType = (props: IconBaseProps) => JSX.Element;
+
 const theme = {
     "root": {
         "base": "h-full float-right",
@@ -126,12 +121,12 @@ enum MeshEditItemName {
 interface meshEditItemInterface {
     name: MeshEditItemName,
     element: ReactNode,
-    icon:  IconType
+    icon:  Icon
 }
 
 interface transformItemInterface {
     name: TransformMode,
-    icon: IconType
+    icon: Icon
 }
 
 const imageClient = new ImageClient();

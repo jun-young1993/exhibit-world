@@ -16,7 +16,7 @@ export const objectDefalutValues: {
 	spotLight: {
 		uuid: "",
 		castShadow : true,
-		angle: 0.5,
+		angle: 0.2,
 		distance: 30,
 		intensity: 500,
 		shadow: {

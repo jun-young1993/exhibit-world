@@ -14,9 +14,13 @@ import {selectGroupAtom} from "./select-group.recoil";
 import PatchGroupDto, {PatchGroupInterface} from "../../clients/dto/group/patch-group.dto";
 
 import { selectedGroupMappingIdAtom } from "./groups-mapping.recoil";
+import { SpotLight } from "three";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
+import { objectDefalutValues } from "config";
+import { useToast } from "./toast.recoil";
 
 const groupClient = new GroupClient();
-
+const exporter = new GLTFExporter();
 export const groupsSelector = selector<GroupEntity[] | []>({
     key: 'groupsSelector',
     get: async ({get}): Promise<GroupEntity[] | []> => {
@@ -128,9 +132,39 @@ export function useAddGroupHook(){
     )
 }
 
+export function useAddSpotLightGroupHook(){
+    const addGroup = useAddGroupHook();
+    return useRecoilCallback(
+        () =>
+            () => {
+                const spotLight = new SpotLight("0xffffff");
+                
+                
+                spotLight.userData = objectDefalutValues.spotLight;
+                exporter.parse(
+                    spotLight,
+                    (gltf) => {
+        
+                        const blob  = new Blob([gltf as ArrayBuffer],{ type: "application/octet-stream" });
+                        const file = new File([blob],spotLight.uuid ,{ type: "application/octet-stream" });
+                        const fileList = [file];
+                        addGroup(fileList);
+                    },
+                    (error) => {
+                        console.log('error',error);
+                    },
+                    {
+                        binary: true
+                    }
+                );
+            }
+    )
+ 
+}
+
 export function useRemoveGroupHook(){
     const [,setSelectGroup] = useRecoilState(selectGroupAtom);
-
+    const {pushToast} = useToast();
     const removeGroupId = useRecoilCallback(
         ({snapshot, set}) =>
             (uuid: GroupEntity['id']) => {
@@ -146,9 +180,20 @@ export function useRemoveGroupHook(){
             (groupEntity: GroupEntity) => {
                 const groups = snapshot.getLoadable(groupsAllAtom).getValue();
                 const removedGroups = groups.filter((group) => group.id !== groupEntity.id);
-
-                set(groupsAllAtom,[...removedGroups]);
-                removeGroupId(groupEntity.id);
+                groupClient.remove(groupEntity.id)
+                .then((groupEntity) => {
+                    set(groupsAllAtom,[...removedGroups]);
+                    removeGroupId(groupEntity.id);
+                    pushToast({
+                        content: "An object has been deleted."
+                    })
+                })
+                .catch((error) => {
+                    pushToast({
+                        content: error.toString()
+                    })
+                })
+                
 
             },
     []
