@@ -1,30 +1,42 @@
-import UnauthrizedException from "Exception/unauthrized.exception";
+import UnauthorizedException from "Exception/unauthrized.exception";
 import Dashboard from "components/home/dashboard";
 import Login from "components/home/login";
-import { useEffect, useState } from "react";
-import { FallbackProps } from "react-error-boundary";
-import { useRecoilRefresher_UNSTABLE } from "recoil";
-import { groupIdsAtom } from "store/recoil/groups.recoil";
+import {ReactNode, useEffect, useState} from "react";
+import {FallbackProps} from "react-error-boundary";
+import {useToast} from "./store/recoil/toast.recoil";
+import {IconType} from "./components/toast/exhibit-toast";
+import {isEmpty} from "lodash";
+import SideMenu from "./components/home/side-menu";
 
 
 export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) {
-	const [component, setComponent] = useState(<></>)
-	
-	console.log(error instanceof UnauthrizedException);
-	// resetErrorBoundary();
+	const [component, setComponent] = useState<ReactNode>(null)
+	const {pushToast} = useToast();
+
 	useEffect(()=>{
-		switch(error){
-			case (error instanceof UnauthrizedException) :
-				setComponent(<Login />)
-				return ;
-			default:
-				setComponent(<>undefined error</>)
+		if(!isEmpty(error)){
+			if((error instanceof UnauthorizedException)){
+				pushToast({
+					icon: IconType.FAIL,
+					content: 'Unauthorized access. Please log in with valid credentials.'
+				});
+				// setComponent(<Login />)
+			}else{
+				pushToast({
+					icon: IconType.FAIL,
+					content: `Oops! Something went wrong. Please try again later. ${error}`
+				});
+			}
+
+			resetErrorBoundary();
 
 		}
-	},[error])
+	},[error, pushToast]);
+
+
 	return (
 		<>
-		<Dashboard defaultMenuItem={component} />
+
 		</>
 	);
 }

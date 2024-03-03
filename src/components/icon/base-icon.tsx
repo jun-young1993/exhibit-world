@@ -1,14 +1,26 @@
 import { Icon } from "types/icon"
 import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
-
+import { MdOutlineSmsFailed } from "react-icons/md";
 interface BaseIconProps {
 	icon: Icon
-	backgroundColor: string
+	color: string
 }
-export default function CheckIcon(){
+
+function className(color: string){
+	return `inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-${color}-100 text-${color}-500 dark:bg-${color}-800 dark:text-${color}-200`;
+}
+export function CheckIcon(){
 	return (
-	      <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-		<HiCheck className="h-5 w-5" />
+	      <div className={className('green')}>
+			  <HiCheck className="h-5 w-5" />
 	      </div>
+	)
+}
+
+export function FailIcon(){
+	return (
+		<div className={className('red')}>
+			<MdOutlineSmsFailed className="h-5 w-5" />
+		</div>
 	)
 }

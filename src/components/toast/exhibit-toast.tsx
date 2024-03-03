@@ -1,4 +1,4 @@
-import CheckIcon from "components/icon/base-icon";
+import {CheckIcon, FailIcon} from "components/icon/base-icon";
 import { Alert, Toast, ToastProps } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { HiFire } from "react-icons/hi";
@@ -17,11 +17,14 @@ const theme: ToastProps['theme'] = {
 	}
       };
 
-enum IconType {
-	CHECK = 'CHECK'
+export enum IconType {
+	CHECK = 'CHECK',
+	FAIL = 'FAIL'
 }
 const IconMap = {
-	[IconType.CHECK] : <CheckIcon />
+	[IconType.CHECK] : <CheckIcon />,
+	[IconType.FAIL] : <FailIcon />
+
 }
 function ToastIcon({icon}: {icon:IconType}){
 	const [node, setNode] = useState<JSX.Element | null>(null)
@@ -37,7 +40,7 @@ function ToastIcon({icon}: {icon:IconType}){
 		</>
 	)
 }
-export default function ExhibitToast({content, id}: ExhibitToastProps){
+export default function ExhibitToast({content, id, icon}: ExhibitToastProps){
 	const {removeToast} = useToast();
 	const toastGroup = useRecoilValue(toastGroupSelector);
 	const [removed, setRemoved] = useState(false);
@@ -62,7 +65,7 @@ export default function ExhibitToast({content, id}: ExhibitToastProps){
 	    	theme={theme}
 		className={`transition-opacity duration-1000 opacity-${removed ? 0 : 100}`}
 	    >
-		<ToastIcon icon={IconType.CHECK} />
+		<ToastIcon icon={icon ?? IconType.CHECK} />
 		<div className="ml-3 text-sm font-normal">{content}</div>
 		<Toast.Toggle 
 			onDismiss={() => onRemoveHandle()}

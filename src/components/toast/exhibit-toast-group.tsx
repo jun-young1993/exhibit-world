@@ -11,7 +11,8 @@ export default function ExhibitToastGroup(){
 					return <ExhibitToast 
 						key={toast.id}
 						content={toast.content} 
-						id={toast.id}						 
+						id={toast.id}
+						icon={toast.icon}
 					/>
 				})}
 			    </div>

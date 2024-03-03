@@ -85,7 +85,7 @@ interface DashboardProps {
     defaultMenuItem ?: ReactNode | JSX.Element
 }
 export default function Dashboard(props: DashboardProps){
-    
+
     const [currentMenu, setCurrentMenu] = useState<string | null>(null);
     const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(props.defaultMenuItem ?? <>dashboard</>);
     const user = useRecoilValue(userAtom);
@@ -107,6 +107,7 @@ export default function Dashboard(props: DashboardProps){
             }         
         }
     },[menus, currentMenu])
+
     return (
         
         <div className={"w-full min-w-0 h-full flex"}>

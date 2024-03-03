@@ -12,14 +12,14 @@ import { CookiesProvider } from 'react-cookie';
 export default function App() {
     return (
         <>
-        	<CookiesProvider defaultSetOptions={{ path: '/' }}>
+
             <Router>
                 <Routes>
                     <Route path={"/"} element={<Home />}/>
                     <Route path={"/exhibit/:uuid"} element={<Exhibit />}/>
                 </Routes>
             </Router>
-            </CookiesProvider>
+
         </>
             
     )
