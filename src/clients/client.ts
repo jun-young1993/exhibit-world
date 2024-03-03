@@ -23,7 +23,6 @@ export default class Client {
         
             const url = this.getUrl(endpoint);
 
-            // this.options(init);
             const response = await fetch(url, {
                 ...init, ...{
                     credentials: "include",

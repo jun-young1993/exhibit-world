@@ -16,11 +16,6 @@ import {ImageEntity} from "../../clients/entities/image.entity";
 import GltfClient from "../../clients/gltf.client";
 import {GltfEntity} from "../../clients/entities/gltf.entity";
 import { PiCirclesThreeBold } from "react-icons/pi";
-import {useThree} from "@react-three/fiber";
-import {GltfAtom} from "../../store/recoil/atom/gltf.atom";
-import { useRecoilState } from "recoil";
-import meshesStore from "../../store/meshes.store";
-import MeshesStore from "../../store/meshes.store";
 import PreloadGltf from "../../utills/preload-gltf";
 import { Icon } from "types/icon";
 

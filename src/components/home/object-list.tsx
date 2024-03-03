@@ -1,9 +1,7 @@
 import ExhibitCanvas from "components/ExhibitCanvas";
 import ResizeHandle from "components/lib/resize-handle";
-import {useEffect, useState} from "react";
+import { useState } from "react";
 import { Panel, PanelGroup } from "react-resizable-panels";
-import ObjectListSideMenu from "./object-list/object-list-side-menu";
-import ObjectListTable from "./object-list/object-list-table";
 import ObjectListMappingTable from "./object-list/object-list-mapping-table";
 
 

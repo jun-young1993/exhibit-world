@@ -1,6 +1,6 @@
 
 import { ExhibitToastGroupProps, ExhibitToastProperty, ExhibitToastProps } from "components/toast/exhibit-toast.interface";
-import { atom, selector, useRecoilCallback } from "recoil"
+import {atom, selector, useRecoilCallback, useRecoilState} from "recoil"
 export const toastGroupSelector = selector<ExhibitToastGroupProps>({
 	key: 'toastGroupSelector',
 	get: () => {
@@ -29,7 +29,7 @@ const useAddToastHook = function(){
 			(exhibitToastProps: ExhibitToastProperty) => {
 				const toastGroup = snapshot.getLoadable(toastGroupSelector).getValue();
 				const toasts = snapshot.getLoadable(toastAllAtom).getValue();
-				
+
 				set(toastAllAtom,[...toasts, {
 					...exhibitToastProps,
 					id: Date.now()
@@ -40,7 +40,7 @@ const useAddToastHook = function(){
 				}
 
 			},
-			[]
+			[removeToast]
 	)
 }
 
@@ -48,14 +48,14 @@ const useRemoveToastHook = function(){
 	return useRecoilCallback(
 		({snapshot, set}) => 
 			(exhibitToastId: ExhibitToastProps['id']) => {
-				
+				const toasts = snapshot.getLoadable(toastAllAtom).getValue();
+				const removeTime = 1000;
 				const timer = setTimeout(() => {
-					const toasts = snapshot.getLoadable(toastAllAtom).getValue();
 					const removedToast = toasts.filter((toast) => toast.id !== exhibitToastId);
 					
 					set(toastAllAtom,[...removedToast]);
 					clearTimeout(timer);
-				},1000)
+				},removeTime)
 			},
 			[]
 	)
@@ -64,5 +64,6 @@ const useRemoveToastHook = function(){
 export const useToast = () => {
 	const pushToast = useAddToastHook();
 	const removeToast = useRemoveToastHook();
-	return {pushToast, removeToast};
+	const [toasts] = useRecoilState(toastAllAtom);
+	return {pushToast, removeToast, toasts};
 }

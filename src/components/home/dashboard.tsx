@@ -9,10 +9,11 @@ import ObjectList from "./object-list";
 import Login from "./login";
 import { MenuComponent } from "types/menu-component";
 import ExhibitList from "./exhibit-list";
-import { useRecoilValue } from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import { userAtom } from "store/recoil/user.recoil";
 import { FaUser } from "react-icons/fa";
 import Logined from "./logined";
+import {currentMenuAtom, menuAllAtom} from "../../store/recoil/menu.recoil";
 
 
 
@@ -56,15 +57,15 @@ export const findMenuItem = (name: string, menu: MenuComponent[][]): MenuCompone
     
 	for (const child of menu) {
 	    for(const item of child){
-		if (item.name === name) {
-		    return item;
-		}
-		if (item.children) {
-		    const foundInChildren = findMenuItem(name, [item.children]);
-		    if (foundInChildren) {
-			return foundInChildren;
-		    }
-		}            
+            if (item.name === name) {
+                return item;
+            }
+            if (item.children) {
+                const foundInChildren = findMenuItem(name, [item.children]);
+                if (foundInChildren) {
+                return foundInChildren;
+                }
+            }
 	    }
     
 	}
@@ -85,40 +86,18 @@ interface DashboardProps {
     defaultMenuItem ?: ReactNode | JSX.Element
 }
 export default function Dashboard(props: DashboardProps){
+    const [ currentMenu ] = useRecoilState(currentMenuAtom);
 
-    const [currentMenu, setCurrentMenu] = useState<string | null>(null);
-    const [currentNode , setCurrentNode] = useState<ReactNode | JSX.Element>(props.defaultMenuItem ?? <>dashboard</>);
-    const user = useRecoilValue(userAtom);
-    const defalutMenu = [
-        menuItem, 
-        loginMenuItem
-    ];
-    const [menus, setMenus] = useState<MenuComponent[][]>(defalutMenu);
-    useEffect(() => {
-        if(user !== null){
-            setMenus([menuItem, loginedMenuItem]);
-        }
-    },[user])
-    useEffect(() => {
-        if(currentMenu){
-            const findMenu = findMenuItem(currentMenu,menus);
-            if(findMenu?.component){
-                setCurrentNode(findMenu.component);
-            }         
-        }
-    },[menus, currentMenu])
+
 
     return (
         
         <div className={"w-full min-w-0 h-full flex"}>
             <div className={"flex-none h-full"}>
-                    <SideMenu
-                        menuItems={menus}
-                        onClick={setCurrentMenu}
-                    />
+                    <SideMenu />
             </div>
             <div className={"flex-1 w-full h-full"}>
-                {currentNode}
+                {currentMenu.component}
             </div>
         </div>
         

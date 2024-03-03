@@ -6,6 +6,7 @@ import { Icon } from "types/icon";
 import { ExhibitToastProps } from "./exhibit-toast.interface";
 import { toastGroupSelector, useToast } from "store/recoil/toast.recoil";
 import { useRecoilValue } from "recoil";
+import {isEmpty} from "lodash";
 const theme: ToastProps['theme'] = {
 	"root": {
 	  "base": "flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400",
@@ -45,22 +46,22 @@ export default function ExhibitToast({content, id, icon}: ExhibitToastProps){
 	const {removeToast} = useToast();
 	const toastGroup = useRecoilValue(toastGroupSelector);
 	const [removed, setRemoved] = useState(false);
-	const onRemoveHandle = () => {
+	const onRemoveHandle = (toastId: number) => {
 		setRemoved(true);
-		removeToast(id);
+		removeToast(toastId);
 	}
 	
 	useEffect(() => {
-		
-		if(toastGroup.time !== null){
+
+		if(toastGroup.time !== null && !removed){
 			const timer = setTimeout(() => {
-				onRemoveHandle();
+				onRemoveHandle(id);
 			},toastGroup.time)
 
 			return () => clearTimeout(timer);
 		}
 		
-	},[id, removeToast]);
+	},[id, onRemoveHandle, toastGroup]);
 	return (
 	    <Toast 
 	    	theme={theme}
@@ -69,7 +70,7 @@ export default function ExhibitToast({content, id, icon}: ExhibitToastProps){
 		<ToastIcon icon={icon ?? IconType.CHECK} />
 		<div className="ml-3 text-sm font-normal">{content}</div>
 		<Toast.Toggle 
-			onDismiss={() => onRemoveHandle()}
+			onDismiss={() => onRemoveHandle(id)}
 		/>
 	    </Toast>
 	)

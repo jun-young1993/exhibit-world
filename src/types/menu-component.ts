@@ -2,7 +2,7 @@
 import { ComponentProps, FC, ReactNode } from "react"
 export enum SideMenuType {
 	FILE = 'file'
-    }
+}
 export interface MenuItem {
 	name: string,
 	icon?: FC<ComponentProps<'svg'>>

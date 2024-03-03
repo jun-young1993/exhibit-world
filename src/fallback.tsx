@@ -7,12 +7,16 @@ import {useToast} from "./store/recoil/toast.recoil";
 import {IconType} from "./components/toast/exhibit-toast";
 import {isEmpty} from "lodash";
 import SideMenu from "./components/home/side-menu";
+import {useRecoilState} from "recoil";
+import {currentMenuAtom} from "./store/recoil/menu.recoil";
+import {loginMenu} from "./store/recoil/items/menu.items";
 
 
 export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) {
-	const [component, setComponent] = useState<ReactNode>(null)
-	const {pushToast} = useToast();
 
+	const { pushToast } = useToast();
+	const [ currentMenu, setCurrentMenu ] = useRecoilState(currentMenuAtom);
+	const [component, setComponent] = useState(false);
 	useEffect(()=>{
 		if(!isEmpty(error)){
 			if((error instanceof UnauthorizedException)){
@@ -20,23 +24,27 @@ export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) 
 					icon: IconType.FAIL,
 					content: 'Unauthorized access. Please log in with valid credentials.'
 				});
+				setCurrentMenu(loginMenu)
+				setComponent(true);
 				// setComponent(<Login />)
 			}else{
 				pushToast({
 					icon: IconType.FAIL,
-					content: `Oops! Something went wrong. Please try again later. ${error}`
+					content: `Oops! Something went wrong. Please try again later. ${error.toString()}`
 				});
 			}
-
-			resetErrorBoundary();
-
+			resetErrorBoundary()
 		}
 	},[error, pushToast]);
 
 
+
+
 	return (
 		<>
-
+			{component
+			? <>{error}</>
+			: <></>}
 		</>
 	);
 }
