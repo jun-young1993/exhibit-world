@@ -1,4 +1,4 @@
-import {CheckIcon, FailIcon} from "components/icon/base-icon";
+import {CheckIcon, FailIcon, InfoIcon} from "components/icon/base-icon";
 import { Alert, Toast, ToastProps } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { HiFire } from "react-icons/hi";
@@ -19,12 +19,13 @@ const theme: ToastProps['theme'] = {
 
 export enum IconType {
 	CHECK = 'CHECK',
-	FAIL = 'FAIL'
+	FAIL = 'FAIL',
+	INFO = 'INFO'
 }
-const IconMap = {
+const IconMap: {[key in IconType] : JSX.Element} = {
 	[IconType.CHECK] : <CheckIcon />,
-	[IconType.FAIL] : <FailIcon />
-
+	[IconType.FAIL] : <FailIcon />,
+	[IconType.INFO]: <InfoIcon />
 }
 function ToastIcon({icon}: {icon:IconType}){
 	const [node, setNode] = useState<JSX.Element | null>(null)

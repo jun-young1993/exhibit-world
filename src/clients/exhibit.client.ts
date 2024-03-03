@@ -1,9 +1,9 @@
 import Client from "./client";
-import CreateBulkMeshDto from "./dto/mesh/exhibit-create-bulk-mesh.dto";
 import {GroupEntity} from "./entities/group.entity";
 import {ExhibitEntity} from "./entities/exhibit.entity";
 import {v4} from "uuid";
-import {GithubStorageContentEntity} from "./entities/github-storage.entity";
+import {GroupMappingEntity} from "./entities/group-mapping.entity";
+import {PatchExhibitDtoInterface} from "./dto/exhibit/patch-exhibit.dto";
 
 export default class ExhibitClient extends Client {
     constructor() {
@@ -102,5 +102,22 @@ export default class ExhibitClient extends Client {
                 })
                 .catch((exception) => reject(exception));
         });
+    }
+
+    public patch(uuid: GroupMappingEntity['id'], patchExhibit: PatchExhibitDtoInterface)
+    {
+        return new Promise((resolve, reject) => {
+            this.fetch(`/${uuid}`,{
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': '*/*'
+                },
+                body: JSON.stringify(patchExhibit)
+            })
+                .then((response) => response.json())
+                .then((response) => resolve(response))
+                .catch((exception) => reject(exception));
+        })
     }
 }

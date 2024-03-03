@@ -1,6 +1,7 @@
 import { Icon } from "types/icon"
 import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
 import { MdOutlineSmsFailed } from "react-icons/md";
+import { CiCircleInfo } from "react-icons/ci";
 interface BaseIconProps {
 	icon: Icon
 	color: string
@@ -24,3 +25,12 @@ export function FailIcon(){
 		</div>
 	)
 }
+
+export function InfoIcon(){
+	return (
+		<div className={className('yellow')}>
+			<CiCircleInfo className="h-5 w-5" />
+		</div>
+	)
+}
+

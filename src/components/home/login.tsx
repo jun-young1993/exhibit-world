@@ -4,6 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRecoilState } from "recoil";
 import { userAtom } from "store/recoil/user.recoil";
 import Logined from "./logined";
+import { useRefresherHook} from "../../store/recoil/initialize.recoil";
+
+
 const authClient = new AuthClient();
 export default function Login() {
 	const appAnme = process.env.APP_NAME;
@@ -14,12 +17,13 @@ export default function Login() {
 	const handleEmail = (event: FormEvent<HTMLInputElement>) => {
 		setEmail(event.currentTarget.value);
 	}
-	const handlePassworld = (event: FormEvent<HTMLInputElement>) => {
+	const handlePassword = (event: FormEvent<HTMLInputElement>) => {
 		setPassword(event.currentTarget.value);
 	}
-	const handleRemeber = (checked: boolean) => {
+	const handleRemember = (checked: boolean) => {
 		setRemember(checked);
 	}
+	const refresher = useRefresherHook();
 	const handleSubmit = () => {
 		const loginDto = new LoginDto({
 			email: email,
@@ -27,6 +31,7 @@ export default function Login() {
 		})
 		authClient.login(loginDto)
 		.then((user) => {
+			refresher();
 			setUser(user);
 		})
 		.catch((exception) => {
@@ -54,14 +59,14 @@ export default function Login() {
 					</div>
 					<div>
 						<label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-						<input onChange={handlePassworld} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required />
+						<input onChange={handlePassword} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required />
 					</div>
 					<div className="flex items-start">
 						<div className="flex items-center h-5">
 						<input  
 							aria-describedby="remember" 
 							checked={isRemember}
-							onChange={({ target: { checked } }) => handleRemeber(checked)}
+							onChange={({ target: { checked } }) => handleRemember(checked)}
 							name="remember" 
 							type="checkbox" 
 							readOnly

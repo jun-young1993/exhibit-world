@@ -7,7 +7,7 @@ import {GithubStorageContentEntity, GithubStorageEntity} from "./github-storage.
 export interface ExhibitEntity extends GithubStorageContentEntity{
     id: string,
     githubStorage: GithubStorageEntity,
-    name?: string,
+    name: string,
     createdAt: Date
 }
 

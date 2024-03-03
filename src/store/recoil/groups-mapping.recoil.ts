@@ -4,6 +4,7 @@ import {
     selector,
     selectorFamily,
     useRecoilCallback,
+    useRecoilRefresher_UNSTABLE,
     useRecoilState,
 } from "recoil"
 import GroupMappingClient from "clients/group-mapping.client";
@@ -144,6 +145,16 @@ export function useDeleteGroupMappingHook(){
                 .then((result) => {
                     set(groupMappingAllAtom,[...removeGroupMapping]);
                 })
+            }
+    )
+}
+
+export function useRefresherGroupMappingHook(){
+    const refresh = useRecoilRefresher_UNSTABLE(groupMappingSelector);
+    return useRecoilCallback(
+        ({snapshot, set}) =>
+            () => {
+                refresh();
             }
     )
 }

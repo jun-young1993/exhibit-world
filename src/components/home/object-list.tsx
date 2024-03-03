@@ -27,7 +27,6 @@ export default function ObjectList(){
 						</div>
 					</Panel>
 					<ResizeHandle />
-					
 					<Panel 
 						className="flex-none h-full"
 						style={{
