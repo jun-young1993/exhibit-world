@@ -4,16 +4,25 @@ import {BiSolidObjectsHorizontalLeft} from "react-icons/bi";
 import ObjectList from "../../../components/home/object-list";
 import ExhibitList from "../../../components/home/exhibit-list";
 import Login from "../../../components/home/login";
+import { FaUser } from "react-icons/fa";
+import Logined from "components/home/logined";
 export const loginMenu: MenuComponent = {
     name: 'Sign In',
     icon: HiArrowSmRight,
     component: <Login />
 };
-export const defaultMenuItem: MenuComponent[] =  [{
+export const loginedMenu: MenuComponent = {
+    name: 'User',
+    icon: FaUser,
+    component: <Logined />
+}
+export const dashboardMenu: MenuComponent = {
     name: 'Dashboard',
     icon: HiChartPie,
     component: <>dashboard</>
-},{
+};
+
+export const defaultMenuItem: MenuComponent[] =  [dashboardMenu,{
     name: 'Objects',
     icon: BiSolidObjectsHorizontalLeft,
     component: <ObjectList />,

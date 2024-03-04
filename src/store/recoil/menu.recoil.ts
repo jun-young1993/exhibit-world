@@ -1,10 +1,10 @@
-import {atom, selector, useRecoilCallback} from "recoil";
+import {atom, selector, useRecoilCallback, useRecoilState} from "recoil";
 import {MenuComponent} from "../../types/menu-component";
 import {HiChartPie, HiLibrary} from "react-icons/hi";
 import {BiSolidObjectsHorizontalLeft} from "react-icons/bi";
 import ObjectList from "../../components/home/object-list";
 import ExhibitList from "../../components/home/exhibit-list";
-import {defaultMenuItem} from "./items/menu.items";
+import {defaultMenuItem, loginMenu, loginedMenu} from "./items/menu.items";
 
 export const menuAllSelector = selector<MenuComponent[]>({
 	key: "menuAllSelector",
@@ -37,3 +37,41 @@ export const currentMenuAtom = atom<MenuComponent>({
 	key: "currentMenuAtom",
 	default: currentMenuSelector
 })
+
+
+export const useDeleteMenuHook = function(){
+	return useRecoilCallback(
+		({snapshot, set}) => 
+		(menuComponents : MenuComponent[]) => {
+			const menus = snapshot.getLoadable(menuAllAtom).getValue();
+			const deletedMenus = menus.filter((menu) => {
+				return menuComponents.find((deleteMenu) => deleteMenu.name !== menu.name);
+			});
+			set(menuAllAtom,[...deletedMenus]);
+		}
+	)
+}
+
+export const usePushMenuHook = function(){
+	return useRecoilCallback(
+		({snapshot, set}) => 
+		(menuComponents : MenuComponent[]) => {
+			const menus = snapshot.getLoadable(menuAllAtom).getValue();
+			
+			set(menuAllAtom,[...menus, ...menuComponents]);
+		}
+	)
+}
+
+export const useLoginedMenu = function(){
+	const {deleteMenu, pushMenu, setCurrentMenu} = useMenu();
+	deleteMenu([loginMenu]);
+	pushMenu([loginedMenu]);
+}
+
+export const useMenu = () => {
+	const deleteMenu = useDeleteMenuHook();
+	const pushMenu = usePushMenuHook();
+	const [currentMenu, setCurrentMenu] = useRecoilState(currentMenuAtom);
+	return {deleteMenu,pushMenu,currentMenu,setCurrentMenu,useLoginedMenu};
+}

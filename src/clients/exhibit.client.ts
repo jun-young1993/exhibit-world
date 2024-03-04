@@ -4,6 +4,7 @@ import {ExhibitEntity} from "./entities/exhibit.entity";
 import {v4} from "uuid";
 import {GroupMappingEntity} from "./entities/group-mapping.entity";
 import {PatchExhibitDtoInterface} from "./dto/exhibit/patch-exhibit.dto";
+import { StatusCodes } from "http-status-codes";
 
 export default class ExhibitClient extends Client {
     constructor() {
@@ -35,8 +36,12 @@ export default class ExhibitClient extends Client {
                 },
                 body: formData
             })
-                .then((response) => {
-                    return response.json();
+                .then((response: Response) => {
+                    if(response.status === StatusCodes.CREATED){
+                        return response.json();
+                    }
+                    return reject(response.statusText);
+                    
                 })
                 .then((exhibit: ExhibitEntity) => {
                     resolve(exhibit)

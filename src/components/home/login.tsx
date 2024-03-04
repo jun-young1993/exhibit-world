@@ -2,18 +2,17 @@ import AuthClient from "clients/auth.client";
 import LoginDto from "clients/dto/auth/login.dto";
 import { FormEvent, useState } from "react";
 import { useRecoilState } from "recoil";
-import { userAtom } from "store/recoil/user.recoil";
+import { useSetUserHook, userAtom } from "store/recoil/user.recoil";
 import Logined from "./logined";
-import { useRefresherHook} from "../../store/recoil/initialize.recoil";
 
-
-const authClient = new AuthClient();
 export default function Login() {
 	const appAnme = process.env.APP_NAME;
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [isRemember, setRemember] = useState<boolean>(false);
-	const [user, setUser] = useRecoilState(userAtom);
+	const [user] = useRecoilState(userAtom);
+	
+	const loginUser = useSetUserHook();
 	const handleEmail = (event: FormEvent<HTMLInputElement>) => {
 		setEmail(event.currentTarget.value);
 	}
@@ -23,20 +22,12 @@ export default function Login() {
 	const handleRemember = (checked: boolean) => {
 		setRemember(checked);
 	}
-	const refresher = useRefresherHook();
 	const handleSubmit = () => {
 		const loginDto = new LoginDto({
 			email: email,
 			password: password
 		})
-		authClient.login(loginDto)
-		.then((user) => {
-			refresher();
-			setUser(user);
-		})
-		.catch((exception) => {
-			console.log(exception)
-		});
+		loginUser(loginDto);
 	}
 	
 	return (

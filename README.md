@@ -40,6 +40,9 @@ https://choo.oopy.io/c2a4a27e-fe64-4642-8672-0b9f1e543548
 // drei example
 https://drei.pmnd.rs/?path=/story/staging-accumulativeshadows--accumulative-shadow-st
 
+// click to move 캐릭터 모델 예제
+https://codesandbox.io/p/sandbox/ecctrl-pointtomove-m9z6xh?file=%2Fsrc%2Findex.js
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

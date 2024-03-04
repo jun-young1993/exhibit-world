@@ -1,24 +1,23 @@
-import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Spinner, Table, TableCell} from "flowbite-react";
-import {useRecoilState, useRecoilValue} from "recoil"
+import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Spinner, Table } from "flowbite-react";
+import {useRecoilState } from "recoil"
 import { FaArrowRightLong } from "react-icons/fa6";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import ObjectListTable from "./object-list-table";
 import {
-	groupMappingAllAtom, groupMappingAtomFamily, selectedGroupMappingAtom, selectedGroupMappingIdAtom,
+	groupMappingAllAtom, groupMappingAtomFamily, selectedGroupMappingIdAtom,
 	useAddGroupMappingHook, useDeleteGroupMappingHook, usePatchGroupMappingHook
 } from "store/recoil/groups-mapping.recoil";
 import IconButton from "../../icon-button";
 import { RiMenuAddFill } from "react-icons/ri";
-import {ExhibitModal} from "../../exhibit-modal";
 import {useModal} from "../../../store/recoil/modal.recoild";
 import { MdCreate, MdDelete, MdOutlineCancel } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
-import {GroupEntity} from "../../../clients/entities/group.entity";
 import {GroupMappingEntity} from "../../../clients/entities/group-mapping.entity";
 import DeleteContentModal from "components/modal/delete.content";
 import { useToast } from "store/recoil/toast.recoil";
 import { TiExport } from "react-icons/ti";
 import { ExportSyncStatus, exportSyncStatusAtom } from "store/recoil/export-sync-status.recoil";
+import { LuHelpCircle } from "react-icons/lu";
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
@@ -149,27 +148,39 @@ export default function ObjectListMappingTable(){
 			?
 				<>
 					<Navbar fluid rounded>
-						<div className="flex flex-row gap-3">
-							<div>
-								<Badge className="mt-1.5" size="sm" color="info">Exhibition</Badge>
+						<div className="flex justify-between">
+							<div className="flex flex-row gap-3">
+								<div>
+									<Badge className="mt-1.5" size="sm" color="info">Exhibition</Badge>
+								</div>
+								<div>
+									<IconButton
+										icon={<RiMenuAddFill />}
+										tooltip={"Add Exhibition"}
+										tooltipPlacement={tooltipPlacement}
+										onClick={() => {
+											openModal({
+												title: 'Add Exhibition',
+												content: <AddContentModal />
+											})
+										}}
+									/>
+								</div>
+								<div>
+									|
+								</div>
+							
 							</div>
-							<div>
-								<IconButton
-									icon={<RiMenuAddFill />}
-									tooltip={"Add Exhibition"}
+							<div className="flex flex-row gap-3">
+								<IconButton 
+									icon={<LuHelpCircle />}
+									tooltip={"Help"}
 									tooltipPlacement={tooltipPlacement}
 									onClick={() => {
-										openModal({
-											title: 'Add Exhibition',
-											content: <AddContentModal />
-										})
+										
 									}}
 								/>
 							</div>
-							<div>
-								|
-							</div>
-						
 						</div>
 					</Navbar>
 					<div className="overflow-x-auto">

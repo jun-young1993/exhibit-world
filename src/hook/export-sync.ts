@@ -7,6 +7,7 @@ import ExhibitClient from "../clients/exhibit.client";
 import {gridHelperAtom} from "../store/recoil/grid-helper.recoil";
 import {GridHelper, Object3D, SpotLightHelper} from "three";
 import { useToast } from "store/recoil/toast.recoil";
+import { IconType } from "components/toast/exhibit-toast";
 
 const exhibitClient = new ExhibitClient();
 const exporter = new GLTFExporter();
@@ -50,9 +51,9 @@ export default function useExportSync(){
                     exhibitClient.create(gltf as ArrayBuffer)
                     .then(() => {
                         resolve(null);
-
                     })
                     .catch((error) => {
+                        
                         reject(error.toString());
                     });
                 },
@@ -81,6 +82,7 @@ export default function useExportSync(){
             })
             .catch((error) => {
                 pushToast({
+                    icon: IconType.FAIL,
                     content: `Failed to export the object. ${error}`
                 })
                 setExportSyncStatus(ExportSyncStatus.IDLE);

@@ -20,6 +20,7 @@ export interface ExhibitProps {
 
 
 export default function Exhibit(props: ExhibitProps) {
+    
     let { uuid }= useParams();
     if(isEmpty(uuid)){
         if(props.uuid){
