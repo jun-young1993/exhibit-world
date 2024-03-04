@@ -13,10 +13,15 @@ const authClient = new AuthClient();
 export const userSelector = selector<UserEntity | null>({
     key: "userSelector",
     get: async () => {
-        
-            const user = await authClient.profile();
+            try{
+                const user = await authClient.profile();
             
-            return user;       
+                return user;       
+            }catch(exception){
+                
+                return null;
+            }
+            
     }
 })
 export const userAtom = atom<UserEntity | null>({

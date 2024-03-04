@@ -26,7 +26,6 @@ export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) 
 				});
 				setCurrentMenu(loginMenu)
 				setComponent(true);
-				// setComponent(<Login />)
 			}else{
 				pushToast({
 					icon: IconType.FAIL,

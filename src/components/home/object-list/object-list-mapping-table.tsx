@@ -18,6 +18,7 @@ import { useToast } from "store/recoil/toast.recoil";
 import { TiExport } from "react-icons/ti";
 import { ExportSyncStatus, exportSyncStatusAtom } from "store/recoil/export-sync-status.recoil";
 import { LuHelpCircle } from "react-icons/lu";
+import { HelpEditControlsModal } from "components/modal/help.content";
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
@@ -148,7 +149,7 @@ export default function ObjectListMappingTable(){
 			?
 				<>
 					<Navbar fluid rounded>
-						<div className="flex justify-between">
+						<div className="flex justify-between w-full">
 							<div className="flex flex-row gap-3">
 								<div>
 									<Badge className="mt-1.5" size="sm" color="info">Exhibition</Badge>
@@ -177,7 +178,10 @@ export default function ObjectListMappingTable(){
 									tooltip={"Help"}
 									tooltipPlacement={tooltipPlacement}
 									onClick={() => {
-										
+											openModal({
+												title: "Help.",
+												content: <HelpEditControlsModal />
+											})
 									}}
 								/>
 							</div>
