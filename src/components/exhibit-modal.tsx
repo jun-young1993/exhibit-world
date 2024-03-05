@@ -1,6 +1,7 @@
-import {CustomFlowbiteTheme, Modal} from "flowbite-react";
+import {CustomFlowbiteTheme, Kbd, Modal} from "flowbite-react";
 import Exhibit from "./exhibit";
 import {useModal} from "../store/recoil/modal.recoild";
+import { close } from "inspector";
 const customTheme: CustomFlowbiteTheme['modal'] = {
     root: {
         sizes: {
@@ -26,8 +27,11 @@ export const ExhibitModal = (props: ExhibitModalProps) => {
             }}
             popup
             size={"lg"}
-            // content={"inner"}
-            // popup
+            onKeyUp={(event) => {
+                if(event.code === "Escape"){
+                    closeModal();
+                }
+            }}
         >
             <Modal.Header>{modalState.title}</Modal.Header>
             <Modal.Body>

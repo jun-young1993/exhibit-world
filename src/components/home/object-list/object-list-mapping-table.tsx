@@ -19,6 +19,7 @@ import { TiExport } from "react-icons/ti";
 import { ExportSyncStatus, exportSyncStatusAtom } from "store/recoil/export-sync-status.recoil";
 import { LuHelpCircle } from "react-icons/lu";
 import { HelpEditControlsModal } from "components/modal/help.content";
+import { userAtom } from "store/recoil/user.recoil";
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
@@ -133,6 +134,7 @@ export default function ObjectListMappingTable(){
 	const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
 	const delteGroupMapping = useDeleteGroupMappingHook();
 	const { openModal, closeModal } = useModal();
+	const [user] = useRecoilState(userAtom);
 	const {pushToast} = useToast();
 	const headers = [
 		'name',
@@ -142,6 +144,7 @@ export default function ObjectListMappingTable(){
 		'delete',
 		
 	];
+	
 	const tooltipPlacement = 'bottom-end';
 	return (
 		<>
