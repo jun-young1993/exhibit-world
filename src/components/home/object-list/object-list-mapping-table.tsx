@@ -1,7 +1,7 @@
-import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Spinner, Table } from "flowbite-react";
+import {Badge, Button, FloatingLabel, Label, Navbar, Radio, RangeSlider, Spinner, Table, TextInput } from "flowbite-react";
 import {useRecoilState } from "recoil"
 import { FaArrowRightLong } from "react-icons/fa6";
-import { useState} from "react";
+import { useEffect, useState} from "react";
 import ObjectListTable from "./object-list-table";
 import {
 	groupMappingAllAtom, groupMappingAtomFamily, selectedGroupMappingIdAtom,
@@ -19,7 +19,9 @@ import { TiExport } from "react-icons/ti";
 import { ExportSyncStatus, exportSyncStatusAtom } from "store/recoil/export-sync-status.recoil";
 import { LuHelpCircle } from "react-icons/lu";
 import { HelpEditControlsModal } from "components/modal/help.content";
-import { userAtom } from "store/recoil/user.recoil";
+import { GoSearch } from "react-icons/go";
+import { debounce } from "lodash";
+import { useDebounce } from 'usehooks-ts'
 
 function EditContentModal({uuid}: {uuid: GroupMappingEntity['id']}){
 	const [groupMapping, setGroupMapping] = useRecoilState<GroupMappingEntity>(groupMappingAtomFamily(uuid));
@@ -128,14 +130,37 @@ function AddContentModal(){
 }
 
 export default function ObjectListMappingTable(){
-	const [groupMapping] = useRecoilState(groupMappingAllAtom);
+	const [groupMappingAllData] = useRecoilState(groupMappingAllAtom);
 	const [mappingTableNode, setMappingTableNode] = useState<boolean>(true);
 	const [selectedGroupMappingId, setSelectedGroupMappingId] = useRecoilState<GroupMappingEntity['id']>(selectedGroupMappingIdAtom);
 	const [exportSyncStatus, setExportSyncStatus] = useRecoilState(exportSyncStatusAtom);
 	const delteGroupMapping = useDeleteGroupMappingHook();
+	const [groupMapping, setGroupMapping] = useState<GroupMappingEntity[] | []>([]);
+	
 	const { openModal, closeModal } = useModal();
-	const [user] = useRecoilState(userAtom);
 	const {pushToast} = useToast();
+
+	const [searchText, setSearchText] = useState<string>('');
+	const debouncedSearchText = useDebounce(searchText, 300)
+
+
+	const handleSearchData = function(): GroupMappingEntity[] | []
+	{
+		return groupMappingAllData.filter((mapping) => {
+			if(mapping.id === selectedGroupMappingId){
+				return true;
+			}
+			return mapping.name.includes(debouncedSearchText);
+		})
+	}
+	
+	useEffect(() => {
+		setGroupMapping([...handleSearchData()])
+	},[debouncedSearchText]);
+	useEffect(() => {
+		setGroupMapping([...handleSearchData()]);
+	},[groupMappingAllData])
+
 	const headers = [
 		'name',
 		'setting',
@@ -163,6 +188,7 @@ export default function ObjectListMappingTable(){
 										tooltip={"Add Exhibition"}
 										tooltipPlacement={tooltipPlacement}
 										onClick={() => {
+											console.log('click');
 											openModal({
 												title: 'Add Exhibition',
 												content: <AddContentModal />
@@ -172,6 +198,9 @@ export default function ObjectListMappingTable(){
 								</div>
 								<div>
 									|
+								</div>
+								<div className="max-w-md">
+									<TextInput type="text" rightIcon={GoSearch} placeholder="Search" onChange={event => setSearchText(event.target.value)} />
 								</div>
 							
 							</div>

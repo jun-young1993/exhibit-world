@@ -78,7 +78,9 @@ export function usePatchExhibitHook(){
                             if(exhibit.id === uuid){
                                 const patchedExhibit: ExhibitEntity = {
                                     ...exhibit,
-                                    name: patchExhibit.name ?? exhibit.name
+                                    name: patchExhibit.name ?? exhibit.name,
+                                    isPublic: patchExhibit.isPublic ?? exhibit.isPublic
+
                                 }
                                 return patchedExhibit;
                             }

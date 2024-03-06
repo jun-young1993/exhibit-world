@@ -5,7 +5,7 @@ import {
     useRemoveExhibitHook
 } from "../../store/recoil/exhibit.recoil";
 import {useRecoilState, useRecoilValue} from "recoil";
-import {Button, FloatingLabel, Table, Toast, Tooltip} from "flowbite-react";
+import {Button, FloatingLabel, Table, Toast, ToggleSwitch, Tooltip} from "flowbite-react";
 import {MdCreate, MdDelete, MdOutlineCancel, MdOutlinePreview} from "react-icons/md";
 import {FaCopy} from "react-icons/fa";
 import {HiCheck, HiOutlineExclamationCircle} from "react-icons/hi";
@@ -17,11 +17,13 @@ import {TbEdit} from "react-icons/tb";
 import {useEffect} from "react";
 import {useToast} from "../../store/recoil/toast.recoil";
 import {IconType} from "../toast/exhibit-toast";
+import { useCopyToClipboard } from "usehooks-ts";
 
 function EditContentModal({uuid}: {uuid: ExhibitEntity['id']}) {
     const patchExhibit = usePatchExhibitHook();
     const [exhibit, setExhibit] = useRecoilState(exhibitAtomFamily(uuid));
     const {closeModal} = useModal();
+    
     return (
         <div className="flex max-w-md flex-col gap-4 mt-3">
             <div>
@@ -34,6 +36,18 @@ function EditContentModal({uuid}: {uuid: ExhibitEntity['id']}) {
                         ...exhibit,
                         name: event.target.value
                     })}
+                />
+            </div>
+            <div>
+                <ToggleSwitch 
+                    label="public"
+                    checked={exhibit.isPublic} 
+                    onChange={(checked) => 
+                        setExhibit({
+                            ...exhibit,
+                            isPublic: checked
+                        })
+                    }
                 />
             </div>
             <div className={"flex flex-wrap gap-2"}>
@@ -49,13 +63,6 @@ function EditContentModal({uuid}: {uuid: ExhibitEntity['id']}) {
                     <MdCreate className="mr-2 h-3 w-3" />
                     Save
                 </Button>
-                <Button
-                    size={"sm"}
-                    onClick={() => closeModal()}
-                >
-                    <MdOutlineCancel className={"mr-2 h-3 w-3"} />
-                    Cancel
-                </Button>
             </div>
         </div>
     )
@@ -67,7 +74,7 @@ export default function ExhibitList(){
     const exhibits = useRecoilValue(exhibitAllAtom);
     const { pushToast } = useToast();
     const { openModal, closeModal } = useModal();
-
+    const [copiedText, copy] = useCopyToClipboard()
     const removeExhibit = useRemoveExhibitHook();
     const headers = [
         'preview',
@@ -76,7 +83,6 @@ export default function ExhibitList(){
         'SETTING',
         'created_at',
         'delete'
-
     ]
 
     useEffect(() => {
@@ -87,6 +93,16 @@ export default function ExhibitList(){
             })
         }
     },[]);
+
+    const handleCopyToClipboard = (text: string) => () => {
+        copy(text)
+          .then(() => {
+            console.log('Copied!', { text })
+          })
+          .catch(error => {
+            console.error('Failed to copy!', error)
+          })
+      }
 
 
     return (
@@ -144,6 +160,7 @@ export default function ExhibitList(){
                                                 outline
                                                 gradientDuoTone="redToYellow"
                                                 onClick={async () => {
+                                                    // handleCopyToClipboard(`${window.location.href}exhibit/${exhibit.id}`);
                                                     await navigator.clipboard.writeText(`${window.location.href}exhibit/${exhibit.id}`);
                                                 }}
                                             >

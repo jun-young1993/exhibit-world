@@ -120,7 +120,13 @@ export default class ExhibitClient extends Client {
                 },
                 body: JSON.stringify(patchExhibit)
             })
-                .then((response) => response.json())
+                .then((response: Response) => {
+                    if(response.status === StatusCodes.OK){
+                        return response.json();
+                    }
+                    return reject(response.statusText);
+                    
+                })
                 .then((response) => resolve(response))
                 .catch((exception) => reject(exception));
         })

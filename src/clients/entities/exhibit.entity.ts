@@ -8,6 +8,7 @@ export interface ExhibitEntity extends GithubStorageContentEntity{
     id: string,
     githubStorage: GithubStorageEntity,
     name: string,
+    isPublic: boolean,
     createdAt: Date
 }
 
