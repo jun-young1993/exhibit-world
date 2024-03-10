@@ -1,4 +1,4 @@
-import {atom, selector, useRecoilCallback, useRecoilValue} from "recoil";
+import {atom, selector, useRecoilCallback, useRecoilState, useRecoilValue} from "recoil";
 import {Group, Object3D} from "three";
 import {useThree} from "@react-three/fiber";
 import UserEntity from "clients/entities/user.entity";
@@ -10,6 +10,13 @@ import { IconType } from "components/toast/exhibit-toast";
 import { useDeleteMenuHook, useMenu } from "./menu.recoil";
 import { dashboardMenu, loginMenu, loginedMenu } from "./items/menu.items";
 const authClient = new AuthClient();
+
+export enum UserLoginStatus {
+    LOGOUT = 'logout',
+    LOGGED = 'logged',
+    LOGGING = 'logging'
+}
+
 export const userSelector = selector<UserEntity | null>({
     key: "userSelector",
     get: async () => {
@@ -28,26 +35,42 @@ export const userAtom = atom<UserEntity | null>({
     key: 'userAtom',
     default: userSelector
 })
+export const userStatusSelector = selector<UserLoginStatus>({
+    key: 'userStatusSelector',
+    get: async () => {
+        return UserLoginStatus.LOGOUT
+    }
+})
+export const userStatusAtom = atom<UserLoginStatus>({
+    key: "userStatusAtom",
+    default: userStatusSelector
+})
+
+
 
 export const useSetUserHook = function() {
     const refresher = useRefresherHook();
     const { pushToast } = useToast();
     const {useLoginedMenu, setCurrentMenu} = useMenu();
+    const [userLoginStatus, setUserLoginStatus] = useRecoilState(userStatusAtom);
     return useRecoilCallback(
         ({snapshot, set}) => 
         (userLoginDto: LoginDto) => {
+            setUserLoginStatus(UserLoginStatus.LOGGING);
             authClient.login(userLoginDto)
             .then((user) => {
                 refresher();
                 set(userAtom,user);
                 useLoginedMenu();
                 setCurrentMenu(dashboardMenu);
+                setUserLoginStatus(UserLoginStatus.LOGGED)
             })
             .catch((exception) => {
                 pushToast({
                     icon: IconType.INFO,
                     content: exception.toString()
                 });
+                setUserLoginStatus(UserLoginStatus.LOGOUT)
             })
         }
     )

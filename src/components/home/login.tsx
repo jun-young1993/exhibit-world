@@ -1,9 +1,9 @@
-import AuthClient from "clients/auth.client";
 import LoginDto from "clients/dto/auth/login.dto";
-import { FormEvent, useState } from "react";
-import { useRecoilState } from "recoil";
-import { useSetUserHook, userAtom } from "store/recoil/user.recoil";
+import {FormEvent, useState} from "react";
+import {useRecoilState} from "recoil";
+import {userAtom, UserLoginStatus, userStatusAtom, useSetUserHook} from "store/recoil/user.recoil";
 import Logined from "./logined";
+import {Spinner} from "flowbite-react";
 
 export default function Login() {
 	const appAnme = process.env.APP_NAME;
@@ -11,6 +11,7 @@ export default function Login() {
 	const [password, setPassword] = useState<string>('');
 	const [isRemember, setRemember] = useState<boolean>(false);
 	const [user] = useRecoilState(userAtom);
+	const [userLoginStatus] = useRecoilState(userStatusAtom);
 	
 	const loginUser = useSetUserHook();
 	const handleEmail = (event: FormEvent<HTMLInputElement>) => {
@@ -69,7 +70,15 @@ export default function Login() {
 						</div>
 						<a href="#" className="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500">Lost Password?</a>
 					</div>
-					<button onClick={handleSubmit} className="w-full px-5 py-3 text-base font-medium text-center text-white bg-sky-300 rounded-lg hover:bg-sky-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login to your account</button>
+					<button
+						disabled={userLoginStatus === UserLoginStatus.LOGGING}
+						onClick={handleSubmit}
+						className="w-full px-5 py-3 text-base font-medium text-center text-white bg-sky-300 rounded-lg hover:bg-sky-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+						<span> Login to your account </span>
+						{userLoginStatus === UserLoginStatus.LOGGING
+						?<Spinner aria-label="Spinner button example" size="sm" />
+						: null}
+					</button>
 					<div className="text-sm font-medium text-gray-500 dark:text-gray-400">
 						Not registered? <a className="text-primary-700 hover:underline dark:text-primary-500">Create account</a>
 					</div>
