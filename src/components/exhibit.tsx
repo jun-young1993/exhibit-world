@@ -95,7 +95,9 @@ export default function Exhibit(props: ExhibitProps) {
                     </Physics>
                 </Canvas>
             </KeyboardControls>
+        {isEmpty(props.uuid)
+        ? <ExhibitModal />
+        : null}
 
-        <ExhibitModal />
     </>
 }
