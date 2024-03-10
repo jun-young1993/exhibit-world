@@ -55,7 +55,8 @@ function EditContentModal({uuid}: {uuid: ExhibitEntity['id']}) {
                     size={"sm"}
                     onClick={() => {
                         patchExhibit(uuid,{
-                            name: exhibit.name
+                            name: exhibit.name,
+                            isPublic: exhibit.isPublic
                         });
                         closeModal();
                     }}

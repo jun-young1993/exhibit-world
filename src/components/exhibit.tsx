@@ -11,13 +11,19 @@ import {KeyboardControlsMap} from "../types/keyboard-controls-map";
 import {ExhibitPlayer} from "./exhibit-player";
 import {ExhibitGround} from "./exhibit-ground";
 import Primitive from "./primitive";
+import {ExhibitModal} from "./exhibit-modal";
+import {useModal} from "../store/recoil/modal.recoild";
 const exhibitClient = new ExhibitClient();
 const gltfLoader = new GLTFLoader();
 export interface ExhibitProps {
     uuid?: string
 }
 
-
+function ModalDisableContent(){
+    return <>
+        <span>비활성화된 콘텐츠 입니다.</span>
+    </>
+}
 
 export default function Exhibit(props: ExhibitProps) {
     
@@ -32,15 +38,24 @@ export default function Exhibit(props: ExhibitProps) {
 
 
     const [object, setObject] = useState<GLTF | null>(null)
-
+    const [isPublic, setIsPublic] = useState<boolean>(true);
+    const {openModal} = useModal();
     useEffect(() => {
         if (typeof uuid === "string") {
             exhibitClient.findOne(uuid)
                 .then((exhibit) => {
-                    gltfLoader.load(exhibit.download_url,(gltf) => {
-                        console.log("=>(exhibit.tsx:46) gltf", gltf);
-                        setObject(gltf);
-                    })
+                    if(exhibit.isPublic){
+                        gltfLoader.load(exhibit.download_url,(gltf) => {
+                            console.log("=>(exhibit.tsx:46) gltf", gltf);
+                            setObject(gltf);
+                        })
+                    }else{
+                        setIsPublic(exhibit.isPublic);
+                        openModal({
+                            content: <ModalDisableContent />
+                        })
+                    }
+
                 })
 
         }
@@ -58,27 +73,29 @@ export default function Exhibit(props: ExhibitProps) {
     ], [])
     return <>
         <KeyboardControls
-        map={map}
-        >
+                map={map}
+            >
                 <Canvas
                     dpr={[1, 2]}
                     shadows camera={{ fov: 45 }}
                 >
-                <Sky sunPosition={[100, 20, 100]} />
-                <ambientLight intensity={0.3} />
-                {/* <pointLight castShadow intensity={0.8} position={[100, 100, 100]} /> */}
-                <Physics gravity={[0, -30, 0]}>
-                    <Suspense fallback={<CanvasLoader />}>
+                    <Sky sunPosition={[100, 20, 100]} />
+                    <ambientLight intensity={0.3} />
+                    {/* <pointLight castShadow intensity={0.8} position={[100, 100, 100]} /> */}
+                    <Physics gravity={[0, -30, 0]}>
+                        <Suspense fallback={<CanvasLoader />}>
 
 
-                        {object &&
-                        <Primitive object={object.scene} />
-                        }
-                        <ExhibitGround />
-                        <ExhibitPlayer />
-                    </Suspense>
-                </Physics>
+                            {object &&
+                                <Primitive object={object.scene} />
+                            }
+                            <ExhibitGround />
+                            <ExhibitPlayer />
+                        </Suspense>
+                    </Physics>
                 </Canvas>
-        </KeyboardControls>
+            </KeyboardControls>
+
+        <ExhibitModal />
     </>
 }
