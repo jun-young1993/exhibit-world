@@ -4,7 +4,7 @@ import {ReactNode, useCallback} from "react";
 interface ModalAtomOptions {
     isOpen: boolean;
     content?: ReactNode | string;
-    title?: string;
+    title?: string | ReactNode;
     onClose?: () => void;
 }
 export const modalAtom = atom<ModalAtomOptions>({
@@ -19,7 +19,7 @@ export const modalAtom = atom<ModalAtomOptions>({
 
 interface ModalOptions {
     content?: ReactNode | string,
-    title?: string
+    title?: ReactNode | string
     onClose?: () => void
 }
 export const useModal = () => {

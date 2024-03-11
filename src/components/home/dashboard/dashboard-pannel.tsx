@@ -22,22 +22,19 @@ function VersionBadge(){
 	
 		
 			openModal({
-				title: currentRelease.name,
+				title: (
+					<div className="flex flex-col" key={currentRelease.name}>
+						<div className="min-w-0 flex-auto">
+							<p className="text-sm font-semibold leading-6 text-gray-900">{currentRelease.name}</p>
+						</div>
+						<div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+							<p className="mt-1 text-xs leading-5 text-gray-500"><time dateTime={currentRelease.created_at.toString()}>{currentRelease.created_at.toString()}</time></p>
+						</div>								
+					</div>
+				),
 				content: (
 					<div className={"w-full min-w-0 h-full flex"}>
-						<ul role="list" className="divide-y divide-gray-100">
-							<div className="flex flex-col" key={currentRelease.name}>
-								<li className="flex justify-between gap-x-6 py-5" key={currentRelease.name}>
-									<div className="min-w-0 flex-auto">
-										<p className="text-sm font-semibold leading-6 text-gray-900">{currentRelease.name}</p>
-									</div>
-									<div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-										<p className="mt-1 text-xs leading-5 text-gray-500"><time dateTime={currentRelease.created_at.toString()}>{currentRelease.created_at.toString()}</time></p>
-									</div>
-								</li>
-								<Markdown className={"whitespace-pre"}>{currentRelease.body}</Markdown>
-							</div>
-						</ul>
+							<Markdown className={"whitespace-pre"}>{currentRelease.body}</Markdown>
 					</div>
 				)
 			})	
