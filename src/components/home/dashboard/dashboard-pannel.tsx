@@ -17,40 +17,31 @@ const githubClient = new GithubClient();
 function VersionBadge(){
 	const { openModal } = useModal();
 	const currentRelease = useRecoilValue(currentReleaseSelector);
-	const [selected, setSelected] = useState(currentRelease);
-	const tests = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+
 	const handleClick = () => {
-		githubClient.findByReleases()
-		.then((releases) => {
+	
 		
 			openModal({
-				title: selected.name,
+				title: currentRelease.name,
 				content: (
 					<div className={"w-full min-w-0 h-full flex"}>
 						<ul role="list" className="divide-y divide-gray-100">
-							{releases.map((release) => {
-								
-								return (
-									
-									<div className="flex flex-col" key={release.name}>
-										<li className="flex justify-between gap-x-6 py-5" key={release.name} onClick={()=>setSelected(release)}>
-											<div className="min-w-0 flex-auto">
-												<p className="text-sm font-semibold leading-6 text-gray-900">{release.name}</p>
-											</div>
-											<div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-												<p className="mt-1 text-xs leading-5 text-gray-500"><time dateTime={release.created_at.toString()}>{release.created_at.toString()}</time></p>
-											</div>
-										</li>
-										<Markdown className={"whitespace-pre-line"}>{release.body}</Markdown>
+							<div className="flex flex-col" key={currentRelease.name}>
+								<li className="flex justify-between gap-x-6 py-5" key={currentRelease.name}>
+									<div className="min-w-0 flex-auto">
+										<p className="text-sm font-semibold leading-6 text-gray-900">{currentRelease.name}</p>
 									</div>
-									
-								)
-							})}
+									<div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+										<p className="mt-1 text-xs leading-5 text-gray-500"><time dateTime={currentRelease.created_at.toString()}>{currentRelease.created_at.toString()}</time></p>
+									</div>
+								</li>
+								<Markdown className={"whitespace-pre"}>{currentRelease.body}</Markdown>
+							</div>
 						</ul>
 					</div>
 				)
 			})	
-		})
+		
 		
 	}
 	return (
