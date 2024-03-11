@@ -6,6 +6,7 @@ import ExhibitList from "../../../components/home/exhibit-list";
 import Login from "../../../components/home/login";
 import { FaUser } from "react-icons/fa";
 import Logined from "components/home/logined";
+import DashboardPannel from "components/home/dashboard/dashboard-pannel";
 export const loginMenu: MenuComponent = {
     name: 'Sign In',
     icon: HiArrowSmRight,
@@ -19,7 +20,7 @@ export const loginedMenu: MenuComponent = {
 export const dashboardMenu: MenuComponent = {
     name: 'Dashboard',
     icon: HiChartPie,
-    component: <>dashboard</>
+    component: <DashboardPannel />
 };
 
 export const defaultMenuItem: MenuComponent[] =  [dashboardMenu,{

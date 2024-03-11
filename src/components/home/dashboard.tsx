@@ -17,42 +17,6 @@ import {currentMenuAtom, menuAllAtom} from "../../store/recoil/menu.recoil";
 
 
 
-const menuItem: MenuComponent[] = [{
-    name: 'Dashboard',
-    icon: HiChartPie,
-    component: <>dashboard</>
-},{
-    name: 'Objects',
-    icon: BiSolidObjectsHorizontalLeft,
-    component: <ObjectList />,
-},{
-    name: 'Exhibits',
-    icon: HiLibrary ,
-    component: <ExhibitList />,
-},{
-    name: 'CollapseTest',
-    icon: HiShoppingBag,
-    children: [{
-        name: 'test',
-        component: <>test1</>
-    },{
-        name: 'test2',
-        component: <>test2</>
-    }]
-},{
-    name: 'Inbox',
-    icon: HiInbox
-},{
-    name: 'Users',
-    icon: HiUser
-},{
-    name: 'Products',
-    icon: HiShoppingBag
-},{
-    name: 'Edit',
-    icon: MdRebaseEdit,
-    component: <ExhibitCanvas />
-}]
 export const findMenuItem = (name: string, menu: MenuComponent[][]): MenuComponent | undefined => {
     
 	for (const child of menu) {

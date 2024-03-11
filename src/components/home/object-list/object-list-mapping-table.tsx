@@ -179,9 +179,9 @@ export default function ObjectListMappingTable(){
 					<Navbar fluid rounded>
 						<div className="flex justify-between w-full">
 							<div className="flex flex-row gap-3">
-								<div>
+								{/* <div>
 									<Badge className="mt-1.5" size="sm" color="info">Exhibition</Badge>
-								</div>
+								</div> */}
 								<div>
 									<IconButton
 										icon={<RiMenuAddFill />}
@@ -196,10 +196,7 @@ export default function ObjectListMappingTable(){
 										}}
 									/>
 								</div>
-								<div>
-									|
-								</div>
-								<div className="max-w-md">
+								<div className="max-w-md border-l ml-3 pl-6">
 									<TextInput type="text" rightIcon={GoSearch} placeholder="Search" onChange={event => setSearchText(event.target.value)} />
 								</div>
 							
