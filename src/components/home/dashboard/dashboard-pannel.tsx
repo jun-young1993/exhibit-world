@@ -41,7 +41,7 @@ function VersionBadge(){
 												<p className="mt-1 text-xs leading-5 text-gray-500"><time dateTime={release.created_at.toString()}>{release.created_at.toString()}</time></p>
 											</div>
 										</li>
-										<Markdown>{release.body}</Markdown>
+										<Markdown className={"whitespace-pre-line"}>{release.body}</Markdown>
 									</div>
 									
 								)
