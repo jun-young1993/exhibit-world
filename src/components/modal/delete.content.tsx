@@ -19,7 +19,7 @@ export default function DeleteContentModal({
 			</h3>
 			<div className="flex justify-center gap-4">
 			<Button color="failure"
-				onClick={(event) => onClick(event)}>
+				onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) => onClick(event)}>
 				{"Yes, I'm sure"}
 			</Button>
 			<Button

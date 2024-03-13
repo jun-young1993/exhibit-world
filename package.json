@@ -12,7 +12,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ecctrl": "^1.0.64",
-    "flowbite-react": "^0.7.2",
+    "flowbite-react": "^0.7.3",
     "http-status-codes": "^2.3.0",
     "leva": "^0.9.35",
     "lodash": "^4.17.21",

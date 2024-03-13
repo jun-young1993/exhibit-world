@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 import { useModal } from "store/recoil/modal.recoild";
 import { currentReleaseSelector } from "store/recoil/release.recoil";
 import Markdown from 'react-markdown'
+import Profile from "../profile";
 interface DashboardPannelProps {
 
 }
@@ -43,7 +44,7 @@ function VersionBadge(){
 	}
 	return (
 		<Badge 
-			size="sm"
+			size="xs"
 			className="cursor-pointer"
 			onClick={handleClick}	
 		>
@@ -70,7 +71,10 @@ function CenterMenu(){
 function EndMenu(){
 	return (
 		<>
+			<Profile />
+			<span className="mt-2">
 			<VersionBadge />	
+			</span>
 		</>
 	)
 }
@@ -78,13 +82,13 @@ export default function DashboardPannel(props: DashboardPannelProps){
 	return (
 		<Navbar fluid rounded>
 			<div className="flex justify-between w-full">
-				<div className="flex justify-start">
+				<div className="flex justify-start gap-x-3">
 					<StartMenu />
 				</div>
-				<div className="flex justify-center">
+				<div className="flex justify-center gap-x-3">
 					<CenterMenu />
 				</div>
-				<div className="flex justify-end">
+				<div className="flex justify-end gap-x-3">
 					<EndMenu />
 				</div>
 			</div>
