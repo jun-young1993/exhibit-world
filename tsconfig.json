@@ -19,9 +19,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": ["./node_modules/@types","./typings"]
   },
   "include": [
-    "src"
-  ]
+    "src", 
+    "typepings/index.d.ts"  
+  ],
 }

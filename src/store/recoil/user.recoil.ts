@@ -67,10 +67,35 @@ export const useSetUserHook = function() {
             })
             .catch((exception) => {
                 pushToast({
-                    icon: IconType.INFO,
+                    icon: IconType.FAIL,
                     content: exception.toString()
                 });
                 setUserLoginStatus(UserLoginStatus.LOGOUT)
+            })
+        }
+    )
+}
+
+export const useUserLogoutHook = function(){
+    const { pushToast } = useToast();
+    const refresher = useRefresherHook();
+    const {useLogoutMenu, setCurrentMenu} = useMenu();
+    const [userLoginStatus, setUserLoginStatus] = useRecoilState(userStatusAtom);
+    return useRecoilCallback(
+        ({snapshot, set}) => 
+        () => {
+            authClient.logout()
+            .then(() => {
+                refresher();
+                set(userAtom,null);
+                useLogoutMenu();
+                setUserLoginStatus(UserLoginStatus.LOGOUT)
+            })
+            .catch((exception)=>{
+                pushToast({
+                    icon: IconType.FAIL,
+                    content: exception.toString()
+                });
             })
         }
     )

@@ -1,12 +1,34 @@
 import UserEntity from "clients/entities/user.entity";
-import IconButton from "components/icon-button";
 import { Button, Popover  } from "flowbite-react";
-import { ReactElement } from "react";
 import { LiaUserCircleSolid } from "react-icons/lia";
 import { useRecoilState } from "recoil";
 import { loginMenu } from "store/recoil/items/menu.items";
 import { currentMenuAtom } from "store/recoil/menu.recoil";
-import { userAtom } from "store/recoil/user.recoil";
+import { useUserLogoutHook, userAtom } from "store/recoil/user.recoil";
+import { IoIosLogOut } from "react-icons/io";
+
+function LoginedBody(props:{user: UserEntity}){
+	const userLogout = useUserLogoutHook();
+	return (
+		<div className="px-3 py-2">
+			<p>last login ip: {props.user.loginIp}</p>
+			<hr className="mt-2 mb-2"/>
+			<div className="m-1 hover:bg-gray-200 hover:cursor-pointer rounded ">
+				<Button
+					className="w-full"
+					size={"sm"}
+					onClick={() => userLogout()}
+				>
+					<IoIosLogOut/> 
+					<span className="ml-3">logout</span>
+				</Button>
+
+					
+				
+			</div>
+		</div>
+	)
+}
 
 function Logined(props:{user: UserEntity}){
 	return (
@@ -14,12 +36,10 @@ function Logined(props:{user: UserEntity}){
 			aria-labelledby="default-popover"
 			content={
 			<div className="w-64 text-sm text-gray-500 dark:text-gray-400">
-			<div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
+			<div className="border-b border-gray-200 bg-sky-100 px-3 py-2 dark:border-gray-600 dark:bg-sky-700 text-center">
 			<h4 id="default-popover" className="font-semibold text-gray-900 dark:text-white">{props.user.email}</h4>
 			</div>
-			<div className="px-3 py-2">
-			<p>last login ip: {props.user.loginIp}</p>
-			</div>
+				<LoginedBody user={props.user} />
 			</div>
 			}
 			arrow={false}

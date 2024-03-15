@@ -69,9 +69,15 @@ export const useLoginedMenu = function(){
 	pushMenu([loginedMenu]);
 }
 
+export const useLogoutMenu = function(){
+	const {deleteMenu, pushMenu, setCurrentMenu} = useMenu();
+	deleteMenu([loginedMenu]);
+	pushMenu([loginMenu]);
+}
+
 export const useMenu = () => {
 	const deleteMenu = useDeleteMenuHook();
 	const pushMenu = usePushMenuHook();
 	const [currentMenu, setCurrentMenu] = useRecoilState(currentMenuAtom);
-	return {deleteMenu,pushMenu,currentMenu,setCurrentMenu,useLoginedMenu};
+	return {deleteMenu,pushMenu,currentMenu,setCurrentMenu,useLoginedMenu,useLogoutMenu};
 }
